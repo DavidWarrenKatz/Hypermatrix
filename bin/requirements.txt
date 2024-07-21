@@ -1,0 +1,9 @@
+numpy
+matplotlib
+tensorly
+h5py
+scipy
+umap-learn
+seaborn
+pandas
+matplotlib-venn

@@ -1,4 +1,4 @@
-name: multiomics6
+name: hypermatrix
 channels:
   - conda-forge
   - defaults

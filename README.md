@@ -13,4 +13,4 @@ chmod +x getData.sh
 
 ./getData.sh
 
-This file downloads bulk Hi-C files from a reference Hi-C file. All reference files are GM12878 by defauls, but can be easily changed as needed.
+This file downloads bulk Hi-C files from a reference Hi-C file. All reference files are GM12878 by default, but can be easily changed as needed.

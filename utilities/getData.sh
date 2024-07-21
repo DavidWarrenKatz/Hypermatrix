@@ -3,6 +3,11 @@
 # [TO-DO: 1]: add to readme that the getData.sh file should have chmod +x permissions 
 # [TO-DO:2]: create a yml with installations for https://pypi.org/project/hic-straw/ hicstraw pip install hic-straw
 
+# Activate conda environment 
+# eval $"(conda shell.bash hook)"
+# conda activate hypermatrix
+
+
 # Set the path for data storage
 data_path=../projects/b1198/epifluidlab/david/GSE63525/GM12878/
 mkdir -p $data_path # mkdir if it doesn't exist
@@ -30,7 +35,7 @@ python extract_hic_data.py "$data_path" "$hic_url" "$resolutions_list" "$chromos
 for resolution in "${resolutions[@]}"; do
     for chromosome in "${chromosomes[@]}"; do
         for data in "${data_types[@]}"; do
-            path_to_jar="/projects/b1198/epifluidlab/david/softwareFiles/juicer_tools_1.22.01.jar"
+            path_to_jar="projects/softwarefiles/juicer_tools_1.22.01.jar"
             path_to_short_form="${data_path}hicFiles/short_score_textform/shortScore_res${resolution}_ch${chromosome}_${data}_KR.txt"
             path_to_new_hic="${data_path}hicFiles/individual/res${resolution}_ch${chromosome}_${data}_KR.hic"
             java_command="java -Xmx100G -jar ${path_to_jar} pre -r ${resolution} ${path_to_short_form} ${path_to_new_hic} hg19"
@@ -41,6 +46,7 @@ for resolution in "${resolutions[@]}"; do
 done
 
 # Execute Pearson's correlation matrix
+echo -e "[LOG]: Running Pearson's correlation matrix "
 for resolution in "${resolutions[@]}"; do
     for chromosome in "${chromosomes[@]}"; do
         path_to_hic="${data_path}hicFiles/individual/res${resolution}_ch${chromosome}_observed_KR.hic"

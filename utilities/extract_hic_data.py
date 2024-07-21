@@ -1,6 +1,3 @@
-#!/bin/env python3
-# extract_hic_data.py
-
 import sys
 import numpy as np
 import hicstraw
@@ -9,7 +6,7 @@ import h5py
 def extract_hic_data(path, hic_url, resolutions, chromosomes, data_types):
     hic = hicstraw.HiCFile(hic_url)
     normalization = 'KR'
-    resolutions = [int(r.strip()) for r in resolutions.split(",")]
+    resolutions = [int(r.strip().strip("'")) for r in resolutions.split(",")]
     chromosomes = [c.strip().strip("'") for c in chromosomes.split(",")]
     data_types = [d.strip().strip("'") for d in data_types.split(",")]
 

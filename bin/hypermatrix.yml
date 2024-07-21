@@ -4,8 +4,9 @@ channels:
   - defaults
 dependencies:
   - python=3.8
-  - gcc            # Adding gcc from conda-forge
-  - cxx-compiler   # Adding cxx-compiler from conda-forge
+  - libcurl
+  - gcc            
+  - cxx-compiler 
   - numpy
   - matplotlib
   - seaborn

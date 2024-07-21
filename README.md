@@ -4,6 +4,7 @@
 This preliminary version derived cell-type factors as well as A/B compartment facotrs from integrated bulk epigenetic data and integrated single-cell Hi-C and methylation data. 
 
 Follow the following steps:
+
 git clone https://github.com/DavidWarrenKatz/hypermatrix.git
 
 cd hypermatrix/utilities

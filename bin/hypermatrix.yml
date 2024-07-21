@@ -1,0 +1,19 @@
+name: multiomics6
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - gcc            # Adding gcc from conda-forge
+  - cxx-compiler   # Adding cxx-compiler from conda-forge
+  - numpy
+  - matplotlib
+  - seaborn
+  - requests
+  - h5py
+  - scipy
+  - pip
+  - pip:
+    - hic-straw
+    - pyBigWig
+    - fanc

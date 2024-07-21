@@ -1,5 +1,7 @@
 #!/bin/bash
 # Description: The following script pulls hi-c matrices for further processing downstream
+# [TO-DO: 1]: add to readme that the getData.sh file should have chmod +x permissions 
+# [TO-DO:2]: create a yml with installations for https://pypi.org/project/hic-straw/ hicstraw pip install hic-straw
 
 # Set the path for data storage
 data_path=../projects/b1198/epifluidlab/david/GSE63525/GM12878/

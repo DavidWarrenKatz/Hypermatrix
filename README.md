@@ -2,4 +2,8 @@
  NTF Model For Multi-Omics
 
 
-clone git@github.com:DavidWarrenKatz/hypermatrix.git
+git clone https://github.com/DavidWarrenKatz/hypermatrix.git
+
+cd hypermatrix/utilities
+chmod +x getData.sh 
+./getData.sh

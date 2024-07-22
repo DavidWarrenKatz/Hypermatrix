@@ -9,7 +9,7 @@
 
 
 # Set the path for data storage
-data_path=../projects/GSE63525/GM12878/
+data_path="../projects/GSE63525/GM12878/"
 mkdir -p $data_path # mkdir if it doesn't exist
 
 # Variables
@@ -28,6 +28,9 @@ resolutions_list=${resolutions_list%, }
 chromosomes_list=${chromosomes_list%, }
 data_types_list=${data_types_list%, }
 
+short_form_directory="${data_path}hicFiles/short_score_textform/"
+mkdir -p $short_form_directory # mkdir if it doesn't exist
+            
 # Execute the Python script
 python extract_hic_data.py "$data_path" "$hic_url" "$resolutions_list" "$chromosomes_list" "$data_types_list"
 
@@ -37,8 +40,7 @@ for resolution in "${resolutions[@]}"; do
         for data in "${data_types[@]}"; do
             path_to_jar="projects/softwarefiles/juicer_tools_1.22.01.jar"
             short_form_directory="${data_path}hicFiles/short_score_textform/"
-            mkdir -p $short_form_directory # mkdir if it doesn't exist
-            path_to_short_form="$short_form_directory}shortScore_res${resolution}_ch${chromosome}_${data}_KR.txt"
+            path_to_short_form="${short_form_directory}shortScore_res${resolution}_ch${chromosome}_${data}_KR.txt"
             hic_directory="${data_path}hicFiles/individual/"
             mkdir -p $hic_directory # mkdir if it doesn't exist
             path_to_new_hic="${hic_directory}res${resolution}_ch${chromosome}_${data}_KR.hic"

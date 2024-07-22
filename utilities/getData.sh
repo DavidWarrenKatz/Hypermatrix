@@ -31,6 +31,9 @@ data_types_list=${data_types_list%, }
 short_form_directory="${data_path}hicFiles/short_score_textform/"
 mkdir -p $short_form_directory # mkdir if it doesn't exist
             
+individual_workspace_directory="${data_path}Workspaces/individual/"
+mkdir -p $individual_workspace_directory # mkdir if it doesn't exist
+
 # Execute the Python script
 python extract_hic_data.py "$data_path" "$hic_url" "$resolutions_list" "$chromosomes_list" "$data_types_list"
 

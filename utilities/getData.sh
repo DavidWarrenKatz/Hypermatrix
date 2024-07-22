@@ -60,26 +60,30 @@ done
 echo -e "[LOG]: Running Pearson's correlation matrix "
 for resolution in "${resolutions[@]}"; do
     for chromosome in "${chromosomes[@]}"; do
-        path_to_hic="${data_path}hicFiles/individual/res${resolution}_ch${chromosome}_${data}_KR.hic"
-        pearson_directory="${data_path}pearsons/individual/"
-        mkdir -p $pearson_directory
-        path_to_new_pearsons="${pearson_directory}res${resolution}_ch${chromosome}_${data}_KR_pearsons.txt"
-        pearsons_command="java -jar ${path_to_jar} pearsons -p NONE ${path_to_hic} ${chromosome} BP ${resolution} ${path_to_new_pearsons}"
-        echo "Running: $pearsons_command"
-        $pearsons_command
+        for data in "${data_types[@]}"; do
+            path_to_hic="${data_path}hicFiles/individual/res${resolution}_ch${chromosome}_${data}_KR.hic"
+            pearson_directory="${data_path}pearsons/individual/"
+            mkdir -p $pearson_directory
+            path_to_new_pearsons="${pearson_directory}res${resolution}_ch${chromosome}_${data}_KR_pearsons.txt"
+            pearsons_command="java -jar ${path_to_jar} pearsons -p NONE ${path_to_hic} ${chromosome} BP ${resolution} ${path_to_new_pearsons}"
+            echo "Running: $pearsons_command"
+            $pearsons_command
+        done
     done
 done
 
 # Execute eigenvector calculation
 for resolution in "${resolutions[@]}"; do
     for chromosome in "${chromosomes[@]}"; do
-        path_to_hic="${data_path}hicFiles/individual/res${resolution}_ch${chromosome}_observed_KR.hic"
-        eigenvector_directory="${data_path}eigenvector/"
-        mkdir -p $eigenvector_directory
-        path_to_new_eigenvector="${eigenvector_directory}res${resolution}_ch${chromosome}_observed_KR_eigenvector.txt"
-        eigenvector_command="java -jar ${path_to_jar} eigenvector -p NONE ${path_to_hic} ${chromosome} BP ${resolution} ${path_to_new_eigenvector}"
-        echo "Running: $eigenvector_command"
-        $eigenvector_command
+        for data in "${data_types[@]}"; do
+            path_to_hic="${data_path}hicFiles/individual/res${resolution}_ch${chromosome}_${data}_KR.hic"
+            eigenvector_directory="${data_path}eigenvector/"
+            mkdir -p $eigenvector_directory
+            path_to_new_eigenvector="${eigenvector_directory}res${resolution}_ch${chromosome}_${data}_KR_eigenvector.txt"
+            eigenvector_command="java -jar ${path_to_jar} eigenvector -p NONE ${path_to_hic} ${chromosome} BP ${resolution} ${path_to_new_eigenvector}"
+            echo "Running: $eigenvector_command"
+            $eigenvector_command
+        done
     done
 done
 

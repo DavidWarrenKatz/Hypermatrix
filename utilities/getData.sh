@@ -7,7 +7,6 @@
 # eval $"(conda shell.bash hook)"
 # conda activate hypermatrix
 
-
 # Set the path for data storage
 data_path="../projects/GSE63525/GM12878/"
 mkdir -p $data_path # mkdir if it doesn't exist
@@ -61,10 +60,10 @@ done
 echo -e "[LOG]: Running Pearson's correlation matrix "
 for resolution in "${resolutions[@]}"; do
     for chromosome in "${chromosomes[@]}"; do
-        path_to_hic="${data_path}hicFiles/individual/res${resolution}_ch${chromosome}_observed_KR.hic"
+        path_to_hic="${data_path}hicFiles/individual/res${resolution}_ch${chromosome}_${data}_KR.hic"
         pearson_directory="${data_path}pearsons/individual/"
         mkdir -p $pearson_directory
-        path_to_new_pearsons="${pearson_directory}res${resolution}_ch${chromosome}_observed_KR_pearsons.txt"
+        path_to_new_pearsons="${pearson_directory}res${resolution}_ch${chromosome}_${data}_KR_pearsons.txt"
         pearsons_command="java -jar ${path_to_jar} pearsons -p NONE ${path_to_hic} ${chromosome} BP ${resolution} ${path_to_new_pearsons}"
         echo "Running: $pearsons_command"
         $pearsons_command

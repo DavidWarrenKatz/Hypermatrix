@@ -79,4 +79,4 @@ for resolution in "${resolutions[@]}"; do
 done
 
 # Execute the second Python script
-python process_pearsons.py "$data_path" "$resolutions_list" "$chromosomes_list" "$data_types_list"
+python process_pearson.py "$data_path" "$resolutions_list" "$chromosomes_list" "$data_types_list"

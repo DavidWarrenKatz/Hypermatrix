@@ -27,7 +27,7 @@ def process_pearsons(path, resolutions, chromosomes):
 
             translated_matrix = matrix + 1
 
-            new_filename = f"{path}Workspaces/individual/translated_ch{chromosome}_res{resolution}_pearsons_KR.mat"
+            new_filename = f"{path}Workspaces/individual/translated_ch{chromosome}_res{resolution}_pearsons_KR.h5"
             new_filename_npy = f"{path}Workspaces/individual/translated_ch{chromosome}_res{resolution}_pearsons_KR.npy"
 
             with h5py.File(new_filename, 'w') as hf:

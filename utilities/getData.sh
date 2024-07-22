@@ -41,7 +41,7 @@ python extract_hic_data.py "$data_path" "$hic_url" "$resolutions_list" "$chromos
 for resolution in "${resolutions[@]}"; do
     for chromosome in "${chromosomes[@]}"; do
         for data in "${data_types[@]}"; do
-            path_to_jar="./projects/softwarefiles/juicer_tools_1.22.01.jar"
+            path_to_jar="../projects/softwarefiles/juicer_tools_1.22.01.jar"
             short_form_directory="${data_path}hicFiles/short_score_textform/"
             path_to_short_form="${short_form_directory}shortScore_res${resolution}_ch${chromosome}_${data}_KR.txt"
             hic_directory="${data_path}hicFiles/individual/"

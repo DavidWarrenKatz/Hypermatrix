@@ -2,6 +2,8 @@ import sys
 import numpy as np
 import h5py
 
+data = "oe"
+
 def read_matrix_from_text_file(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
@@ -15,12 +17,12 @@ def read_matrix_from_text_file(file_path):
     return matrix
 
 def process_pearsons(path, resolutions, chromosomes):
-    resolutions = [int(r.strip()) for r in resolutions.split(",")]
+    resolutions = [int(r.strip().strip("'")) for r in resolutions.split(",")]
     chromosomes = [c.strip().strip("'") for c in chromosomes.split(",")]
 
     for chromosome in chromosomes:
         for resolution in resolutions:
-            filename = f"{path}pearsons/individual/res{resolution}_ch{chromosome}_observed_KR_pearsons.txt"
+            filename = f"{path}pearsons/individual/res{resolution}_ch{chromosome}_{data}_KR_pearsons.txt"
             matrix = read_matrix_from_text_file(filename)
 
             translated_matrix = matrix + 1

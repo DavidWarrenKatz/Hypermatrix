@@ -1,22 +1,16 @@
 #!/bin/bash
 # Description: The following script pulls hi-c matrices for further processing downstream
-# [TO-DO: 1]: add to readme that the getData.sh file should have chmod +x permissions 
-# [TO-DO:2]: create a yml with installations for https://pypi.org/project/hic-straw/ hicstraw pip install hic-straw
 
 # Activate conda environment 
 # eval $"(conda shell.bash hook)"
 # conda activate hypermatrix
 
-# Set the path for data storage
-data_path="../projects/GSE63525/GM12878/"
-mkdir -p $data_path # mkdir if it doesn't exist
-
 # Variables
-resolutions=(1000000)
-chromosomes=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22")
-data_types=("oe")
-genomeID="hg19"
-hic_url="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63525/suppl/GSE63525%5FGM12878%5Finsitu%5Fprimary%2Breplicate%5Fcombined%5F30%2Ehic"
+# Run the Python script and source the output to import the variables
+eval $(python3 config_and_print.py)
+
+# Set the path for data storage
+mkdir -p $data_path # mkdir if it doesn't exist
 
 # Convert lists to strings for Python script
 resolutions_list=$(printf "'%s', " "${resolutions[@]}")

@@ -40,6 +40,8 @@ python retrieve_dark_bins.py
 # Execute the Python script
 python extract_hic_data.py "$data_path" "$hic_url" "$resolutions_list" "$chromosomes_list" "$data_types_list"
 
+python process_hic_files.py "$data_path" "$resolutions_list" "$chromosomes_list" "$data_types_list"
+
 # Java command to create .hic files from short form text files
 for resolution in "${resolutions[@]}"; do
     for chromosome in "${chromosomes[@]}"; do

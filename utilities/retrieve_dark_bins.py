@@ -1,7 +1,7 @@
 import numpy as np
 import h5py
 import pyBigWig
-from config import path, resolutions, chromosomes, bigwig_file, mappability_threshold
+from config_and_print import data_path, resolutions, chromosomes, bigwig_file, mappability_threshold
 
 def get_dark_bins(chromosome, resolution, bigwig):
     chrom_name = f'chr{chromosome}'
@@ -43,7 +43,7 @@ for resolution in resolutions:
         result_array = np.array(dark_bins)
         
         # Save the indices to an H5 file
-        h5_filename = path + f'Workspaces/individual/ch{chromosome}_res{resolution}_darkBins.h5'
+        h5_filename = data_path + f'Workspaces/individual/ch{chromosome}_res{resolution}_darkBins.h5'
         with h5py.File(h5_filename, 'w') as h5file:
             h5file.create_dataset('dark_bins_indices', data=result_array)
         

@@ -14,6 +14,7 @@ dependencies:
   - h5py
   - scipy
   - pip
+  - wheel
   - pip:
     - hic-straw
     - pyBigWig

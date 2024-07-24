@@ -27,8 +27,13 @@ mkdir -p $short_form_directory # mkdir if it doesn't exist
 individual_workspace_directory="${data_path}Workspaces/individual/"
 mkdir -p $individual_workspace_directory # mkdir if it doesn't exist
 
-#download the dark regions file
-wget https://www.encodeproject.org/files/ENCFF000EHJ/@@download/ENCFF000EHJ.bigWig -O "../projects/softwarefiles/ENCFF000EHJ_hg19_wgEncodeCrgMapabilityAlign36mer.bigWig"
+
+
+# Download the dark regions file if it doesn't already exist
+dark_regions_file="../projects/softwarefiles/ENCFF000EHJ_hg19_wgEncodeCrgMapabilityAlign36mer.bigWig"
+if [ ! -f "$dark_regions_file" ]; then
+    wget https://www.encodeproject.org/files/ENCFF000EHJ/@@download/ENCFF000EHJ.bigWig -O "$dark_regions_file"
+fi
 
 # Execute the Python script
 python extract_hic_data.py "$data_path" "$hic_url" "$resolutions_list" "$chromosomes_list" "$data_types_list"

@@ -132,6 +132,10 @@ def compute_degree_2_cumulant(matrix):
 
 def compute_non_negative_rank_2_decomposition(matrix):
     try:
+        # Replace NaNs with zeros
+        matrix = np.nan_to_num(matrix, nan=0.0)
+        
+        # Apply non-negative matrix factorization
         model = NMF(n_components=2, init='random', random_state=0)
         W = model.fit_transform(matrix)
         H = model.components_
@@ -139,6 +143,8 @@ def compute_non_negative_rank_2_decomposition(matrix):
     except Exception as e:
         print(f"[ERROR] Failed to compute non-negative rank-2 decomposition: {e}")
         return None, None
+
+
 
 def process_hic_files(path, resolutions, chromosomes, data_types):
     for resolution in resolutions:
@@ -185,6 +191,7 @@ def process_hic_files(path, resolutions, chromosomes, data_types):
                             print(f'[INFO] Degree-2 cumulant matrix already exists: {cumulant_output_file}')
 
                         if not os.path.exists(nn_decomp_output_file):
+                            correlation_matrix = compute_correlation_matrix(filtered_matrix)
                             W, H = compute_non_negative_rank_2_decomposition(correlation_matrix)
                             if W is not None:
                                 save_matrix_to_file(W, nn_decomp_output_file, 'W')

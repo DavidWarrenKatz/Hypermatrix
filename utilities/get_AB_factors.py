@@ -7,8 +7,8 @@ script_content = """#!/bin/bash
 #SBATCH --time=10:00:00
 #SBATCH --ntasks=5
 #SBATCH --mem=150000
-#SBATCH --error=/home/dwk681/workspace/hypermatrix_test/hypermatrix/projects/%JgetStructuredData.err
-#SBATCH --output=/home/dwk681/workspace/hypermatrix_test/hypermatrix/projects/%JgetStructuredData.out
+#SBATCH --error=/home/dwk681/workspace/hypermatrix_test/hypermatrix/projects/%J_getStructuredData.err
+#SBATCH --output=/home/dwk681/workspace/hypermatrix_test/hypermatrix/projects/%J_getStructuredData.out
 
 # Load the necessary modules for conda
 source /etc/profile
@@ -51,7 +51,7 @@ matlab -nodisplay -r "try, \
             T = cpdgen(U); \
             for i = 1:r, \
                 model = struct; \
-                model.variables.u = [W, W] \
+                model.variables.u = [W, W]; \
                 model.factors.U = {'u',@struct_nonneg}; \
                 model.factorizations.myfac.data = T; \
                 model.factorizations.myfac.cpd = {'U', 'U', 'U'}; \
@@ -60,7 +60,7 @@ matlab -nodisplay -r "try, \
                 sol = sdf_nls(model,options); \
                 sol_factors{1,i} = {sol.factors.U}; \
             end, \
-            output_file = sprintf('%sWorkspaces/individual/ch%s_res%d_structedData_2ndCumulant_first3_400iterations.h5', path, chromosome, resolution); \
+            output_file = sprintf('%sWorkspaces/individual/ch%s_res%d_structedData_2ndCumulant_first3_400iterations.mat', path, chromosome, resolution); \
             save(output_file, 'sol_factors'); \
         end, \
     end, \

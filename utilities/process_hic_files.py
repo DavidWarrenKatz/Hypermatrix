@@ -186,9 +186,9 @@ def process_hic_files(path, resolutions, chromosomes, data_types):
 
                         if not os.path.exists(nn_decomp_output_file):
                             W, H = compute_non_negative_rank_2_decomposition(correlation_matrix)
-                            if W is not None and H is not None:
+                            if W is not None:
                                 save_matrix_to_file(W, nn_decomp_output_file, 'W')
-                                save_matrix_to_file(H, nn_decomp_output_file, 'H')
+                                
 
 
 

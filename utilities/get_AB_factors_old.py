@@ -20,7 +20,7 @@ conda activate hypermatrix
 module load matlab/r2022b
 
 # Set the path for data storage
-data_path="../projects/GSE63525/GM12878"
+data_path="../projects/GSE63525/GM12878/"
 
 # Start of MATLAB code
 matlab -nodisplay -r "try, \
@@ -31,10 +31,15 @@ matlab -nodisplay -r "try, \
     for resolution = resolutions, \
         for j = 1:numel(chromosomes), \
             chromosome = chromosomes{j}; \
-            file_path = sprintf('%sWorkspaces/individual/oldFiles/ch%s_res%d_oe_KR_cumulant.h5', path, chromosome, resolution); \
-            dataset_name = '/degree_2_cumulant';  % Name of the dataset within the HDF5 file \
+            file_path = sprintf('%sWorkspaces/individual/ch%s_res%d_oe_KR_cumulant_new.h5', path, chromosome, resolution); \
+            dataset_name = '/degree_2_cumulant'; \
             cumulant = h5read(file_path, dataset_name); \
             disp(['Size of cumulant tensor for chromosome ', chromosome, ': ', num2str(size(cumulant))]); \
+            file_path = sprintf('%sWorkspaces/individual/ch%s_res%d_oe_KR_nn_decomp.h5', path, chromosome, resolution); \
+            W = h5read(file_path, '/W'); \
+            first_column_vector = W(:, 1); \
+            disp('Size of first column vector of the rank-2 decomposition:'); \
+            disp(size(first_column_vector)); \
             r = 3; \
             sol_cell = cell(1,r); \
             sol_factors = cell(1,r); \
@@ -46,16 +51,16 @@ matlab -nodisplay -r "try, \
             T = cpdgen(U); \
             for i = 1:r, \
                 model = struct; \
-                model.variables.u = randn(n,i); \
+                model.variables.u = [W, W] \
                 model.factors.U = {'u',@struct_nonneg}; \
                 model.factorizations.myfac.data = T; \
-                model.factorizations.myfac.cpd  = {'U', 'U', 'U'}; \
+                model.factorizations.myfac.cpd = {'U', 'U', 'U'}; \
                 options.Display = 100; \
                 options.MaxIter = 400; \
                 sol = sdf_nls(model,options); \
                 sol_factors{1,i} = {sol.factors.U}; \
             end, \
-            output_file = sprintf('%sWorkspaces/individual/ch%s_res%d_structedData_2ndCumulant_first3_400iterations.mat', path, chromosome, resolution); \
+            output_file = sprintf('%sWorkspaces/individual/ch%s_res%d_structedData_2ndCumulant_first3_400iterations.h5', path, chromosome, resolution); \
             save(output_file, 'sol_factors'); \
         end, \
     end, \
@@ -66,7 +71,11 @@ exit"
 """
 
 # Path to the SLURM script
-script_path = f"/home/dwk681/workspace/grant/scripts/get_Structured_2nd_cumulant_hic.sh"
+script_path = "scripts/get_Structured_2nd_cumulant_hic.sh"
+
+directory = os.path.dirname(script_path)
+if not os.path.exists(directory):
+    os.makedirs(directory)
 
 # Write the SLURM script to a file
 with open(script_path, "w") as file:

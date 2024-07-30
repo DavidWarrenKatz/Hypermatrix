@@ -16,34 +16,22 @@ for resolution = resolutions
 
         file_path = sprintf('%sWorkspaces/individual/ch%s_res%d_oe_KR_nn_decomp.h5', data_path, chromosome, resolution);
         W = h5read(file_path, '/W');
-        first_column_vector = W(:, 1);
         disp('Size of first column vector of the rank-2 decomposition:');
-        disp(size(first_column_vector));
+        disp(size(W));
 
-        r = 3;
-        sol_cell = cell(1,r);
-        sol_factors = cell(1,r);
-        ranks = 1:r;
-        n = size(cumulant,1);
-        size_tensor = [n n n];
-        R = 2;
-        U = cpd_rnd(size_tensor,R);
-        T = cpdgen(U);
-
-        for i = 1:r
-            model = struct;
-            model.variables.u = [W, W];
-            model.factors.U = {'u',@struct_nonneg};
-            model.factorizations.myfac.data = T;
-            model.factorizations.myfac.cpd = {'U', 'U', 'U'};
-            options.Display = 100;
-            options.MaxIter = 400;
-            sol = sdf_nls(model,options);
-            sol_factors{1,i} = {sol.factors.U};
-        end
+        model = struct;
+        model.variables.u = W';
+        model.factors.U = {'u',@struct_nonneg};
+        model.factorizations.myfac.data = cumulant;
+        model.factorizations.myfac.cpd = {'U', 'U', 'U'};
+        options.Display = 100;
+        options.MaxIter = 400;
+        sol = sdf_nls(model,options);
+        % Extract the required field from the nested structure
+        U = sol.factors.U;        
 
         output_file = sprintf('%sWorkspaces/individual/ch%s_res%d_structedData_2ndCumulant_first3_400iterations.mat', data_path, chromosome, resolution);
-        save(output_file, 'sol_factors');
+        save(output_file, 'U');
     end
 end
 

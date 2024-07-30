@@ -34,6 +34,10 @@ def remove_dark_bins(matrix, dark_bins):
 def compute_correlation_matrix(matrix):
     try:
         correlation_matrix = np.corrcoef(matrix)
+        min_value = np.min(correlation_matrix)
+        if min_value < 0:
+            correlation_matrix -= min_value
+
         return correlation_matrix
     except Exception as e:
         print(f"[ERROR] Failed to compute correlation matrix: {e}")
@@ -52,6 +56,11 @@ def compute_degree_2_cumulant(matrix):
                     numerator = np.sum((matrix[i] - mean_vec[i]) * (matrix[j] - mean_vec[j]) * (matrix[k] - mean_vec[k]))
                     denominator = np.sqrt(np.sum((matrix[i] - mean_vec[i])**2) * np.sum((matrix[j] - mean_vec[j])**2) * np.sum((matrix[k] - mean_vec[k])**2))
                     degree_2_cumulant[i, j, k] = numerator / denominator if denominator != 0 else 0
+
+        min_value = np.min(degree_2_cumulant)
+        if min_value < 0:
+            degree_2_cumulant -= min_value
+
         return degree_2_cumulant
     except Exception as e:
         print(f"[ERROR] Failed to compute degree-2 cumulant: {e}")

@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import h5py
 import pyBigWig
@@ -32,6 +33,14 @@ bw = pyBigWig.open(bigwig_file)
 
 for resolution in resolutions:
     for chromosome in chromosomes:
+        # Construct the HDF5 filename
+        h5_filename = data_path + f'Workspaces/individual/ch{chromosome}_res{resolution}_darkBins.h5'
+        
+        # Check if the file already exists
+        if os.path.exists(h5_filename):
+            print(f'Skipping computation for Chromosome {chromosome}, Resolution {resolution}: File already exists.')
+            continue
+        
         # Get the dark bins
         try:
             dark_bins = get_dark_bins(chromosome, resolution, bw)
@@ -43,7 +52,6 @@ for resolution in resolutions:
         result_array = np.array(dark_bins)
         
         # Save the indices to an H5 file
-        h5_filename = data_path + f'Workspaces/individual/ch{chromosome}_res{resolution}_darkBins.h5'
         with h5py.File(h5_filename, 'w') as h5file:
             h5file.create_dataset('dark_bins_indices', data=result_array)
         
@@ -52,3 +60,4 @@ for resolution in resolutions:
 
 # Close the BigWig file
 bw.close()
+

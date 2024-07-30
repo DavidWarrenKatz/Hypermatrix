@@ -2,6 +2,8 @@ import numpy as np
 import h5py
 import os
 import sys
+from sklearn.decomposition import NMF
+
 
 def load_hic_matrix(file_path):
     try:
@@ -21,6 +23,14 @@ def load_dark_bins(file_path):
         print(f"[ERROR] Failed to load dark bins from {file_path}: {e}")
         return None
 
+def save_matrix_to_file(matrix, file_path, dataset_name):
+    try:
+        with h5py.File(file_path, 'w') as hf:
+            hf.create_dataset(dataset_name, data=matrix)
+        print(f'[INFO] Saved {dataset_name} to {file_path}')
+    except Exception as e:
+        print(f"[ERROR] Failed to save {dataset_name}: {e}")
+
 def remove_dark_bins(matrix, dark_bins):
     try:
         mask = np.ones(matrix.shape[0], dtype=bool)
@@ -34,14 +44,56 @@ def remove_dark_bins(matrix, dark_bins):
 def compute_correlation_matrix(matrix):
     try:
         correlation_matrix = np.corrcoef(matrix)
-        min_value = np.min(correlation_matrix)
+        min_value = np.min(np.nan_to_num(correlation_matrix))
         if min_value < 0:
-            correlation_matrix -= min_value
+            correlation_matrix += np.abs(min_value)
 
         return correlation_matrix
     except Exception as e:
         print(f"[ERROR] Failed to compute correlation matrix: {e}")
         return None
+
+
+# Define the function to compute the third-order cumulant
+def compute_third_order_cumulant(matrix):
+    try:
+        n, m = matrix.shape
+        mean_vec = np.mean(matrix, axis=1, keepdims=True)
+        centered_matrix = matrix - mean_vec
+        m_ijk = np.zeros((n, n, n))
+
+        for i in range(n):
+            for j in range(n):
+                for k in range(n):
+                    m_ijk[i, j, k] = np.mean(centered_matrix[i] * centered_matrix[j] * centered_matrix[k])
+        
+        m_ij = np.dot(centered_matrix, centered_matrix.T) / m
+        m_i = np.mean(centered_matrix, axis=1)
+
+        kappa_ijk = np.zeros((n, n, n))
+        for i in range(n):
+            for j in range(n):
+                for k in range(n):
+                    kappa_ijk[i, j, k] = (
+                        m_ijk[i, j, k]
+                        - (m_i[i] * m_ij[j, k] + m_i[j] * m_ij[i, k] + m_i[k] * m_ij[i, j])
+                        + 2 * m_i[i] * m_i[j] * m_i[k]
+                    )
+
+        # Normalize by dividing by the standard deviations
+        std_vec = np.std(matrix, axis=1, keepdims=True)
+        normalized_kappa_ijk = np.zeros((n, n, n))
+        for i in range(n):
+            for j in range(n):
+                for k in range(n):
+                    denominator = std_vec[i] * std_vec[j] * std_vec[k]
+                    normalized_kappa_ijk[i, j, k] = kappa_ijk[i, j, k] / denominator if denominator != 0 else 0
+
+        return normalized_kappa_ijk
+    except Exception as e:
+        print(f"[ERROR] Failed to compute third-order cumulant: {e}")
+        return None
+
 
 def compute_degree_2_cumulant(matrix):
     try:
@@ -53,18 +105,40 @@ def compute_degree_2_cumulant(matrix):
         for i in range(n):
             for j in range(n):
                 for k in range(n):
+                    # Calculate numerator
                     numerator = np.sum((matrix[i] - mean_vec[i]) * (matrix[j] - mean_vec[j]) * (matrix[k] - mean_vec[k]))
-                    denominator = np.sqrt(np.sum((matrix[i] - mean_vec[i])**2) * np.sum((matrix[j] - mean_vec[j])**2) * np.sum((matrix[k] - mean_vec[k])**2))
-                    degree_2_cumulant[i, j, k] = numerator / denominator if denominator != 0 else 0
+                    
+                    # Calculate denominator
+                    denom_i = np.sum((matrix[i] - mean_vec[i])**2)
+                    denom_j = np.sum((matrix[j] - mean_vec[j])**2)
+                    denom_k = np.sum((matrix[k] - mean_vec[k])**2)
+                    denominator = np.sqrt(denom_i * denom_j * denom_k)
+                    
+                    # Compute cumulant with NaN handling
+                    if denominator != 0:
+                        degree_2_cumulant[i, j, k] = numerator / denominator
+                    else:
+                        degree_2_cumulant[i, j, k] = np.nan
 
-        min_value = np.min(degree_2_cumulant)
+        min_value = np.min(np.nan_to_num(degree_2_cumulant))
         if min_value < 0:
             degree_2_cumulant -= min_value
+
 
         return degree_2_cumulant
     except Exception as e:
         print(f"[ERROR] Failed to compute degree-2 cumulant: {e}")
         return None
+
+def compute_non_negative_rank_2_decomposition(matrix):
+    try:
+        model = NMF(n_components=2, init='random', random_state=0)
+        W = model.fit_transform(matrix)
+        H = model.components_
+        return W, H
+    except Exception as e:
+        print(f"[ERROR] Failed to compute non-negative rank-2 decomposition: {e}")
+        return None, None
 
 def process_hic_files(path, resolutions, chromosomes, data_types):
     for resolution in resolutions:
@@ -80,8 +154,9 @@ def process_hic_files(path, resolutions, chromosomes, data_types):
                     filtered_matrix = remove_dark_bins(hic_matrix, dark_bins)
 
                     if filtered_matrix is not None:
-                        corr_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_corr.h5'
-                        cumulant_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_cumulant.h5'
+                        corr_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_corr_new.h5'
+                        cumulant_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_cumulant_new.h5'
+                        nn_decomp_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_nn_decomp.h5'
 
                         # Check if correlation matrix file already exists
                         if not os.path.exists(corr_output_file):
@@ -98,7 +173,7 @@ def process_hic_files(path, resolutions, chromosomes, data_types):
 
                         # Check if degree-2 cumulant matrix file already exists
                         if not os.path.exists(cumulant_output_file):
-                            degree_2_cumulant = compute_degree_2_cumulant(filtered_matrix)
+                            degree_2_cumulant = compute_third_order_cumulant(filtered_matrix)
                             if degree_2_cumulant is not None:
                                 try:
                                     with h5py.File(cumulant_output_file, 'w') as hf:
@@ -108,6 +183,13 @@ def process_hic_files(path, resolutions, chromosomes, data_types):
                                     print(f"[ERROR] Failed to save degree-2 cumulant matrix: {e}")
                         else:
                             print(f'[INFO] Degree-2 cumulant matrix already exists: {cumulant_output_file}')
+
+                        if not os.path.exists(nn_decomp_output_file):
+                            W, H = compute_non_negative_rank_2_decomposition(correlation_matrix)
+                            if W is not None and H is not None:
+                                save_matrix_to_file(W, nn_decomp_output_file, 'W')
+                                save_matrix_to_file(H, nn_decomp_output_file, 'H')
+
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ import os
 import numpy as np
 import h5py
 import pyBigWig
-from config_and_print import data_path, resolutions, chromosomes, bigwig_file, mappability_threshold
+from config_and_print import data_path, resolutions, chromosomes, mappability_threshold
 
 def get_dark_bins(chromosome, resolution, bigwig):
     chrom_name = f'chr{chromosome}'
@@ -28,8 +28,10 @@ def get_dark_bins(chromosome, resolution, bigwig):
     
     return dark_bins
 
-# Open the BigWig file
-bw = pyBigWig.open(bigwig_file)
+
+# Open the BigWig file for dark regions
+dark_regions_file = "../projects/softwarefiles/dark_regions_hg19.bigWig"
+bw = pyBigWig.open(dark_regions_file)
 
 for resolution in resolutions:
     for chromosome in chromosomes:

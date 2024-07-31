@@ -24,9 +24,15 @@ individual_workspace_directory="${data_path}Workspaces/individual/"
 mkdir -p $individual_workspace_directory # mkdir if it doesn't exist
 
 # Download the dark regions file if it doesn't already exist
-dark_regions_file="../projects/softwarefiles/ENCFF000EHJ_hg19_wgEncodeCrgMapabilityAlign36mer.bigWig"
+dark_regions_file="../projects/softwarefiles/dark_regions_hg19.bigWig"
 if [ ! -f "$dark_regions_file" ]; then
-    wget https://www.encodeproject.org/files/ENCFF000EHJ/@@download/ENCFF000EHJ.bigWig -O "$dark_regions_file"
+    wget $dark_regions_hg19_url -O "$dark_regions_file"
+fi
+
+# Download the H3K4me3 file if it doesn't already exist
+H3K4me3_file="../projects/softwarefiles/H3K4me3.bigwig"
+if [ ! -f "$H3K4me3_file" ]; then
+    wget $H3K4me3_GM12878_hg19_url -O "$H3K4me3_file"
 fi
 
 # Execute the Python script to create dark regions file

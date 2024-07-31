@@ -11,7 +11,7 @@ for resolution = resolutions
     for j = 1:numel(chromosomes)
         chromosome = chromosomes{j};
         file_path = sprintf('%sWorkspaces/individual/ch%s_res%d_oe_KR_cumulant.h5', data_path, chromosome, resolution);
-        output_file = sprintf('%sWorkspaces/individual/ch%s_res%d_structedData_3rdCumulant_rank3_600iterations.h5', data_path, chromosome, resolution);
+        output_file = sprintf('%sWorkspaces/individual/ch%s_res%d_structedData_3rdCumulant_rank10_%diterations.h5', data_path, chromosome, resolution, iterations);
         
         % Check if the output file already exists
         if exist(output_file, 'file') == 2
@@ -19,7 +19,7 @@ for resolution = resolutions
             continue;
         end
         
-        dataset_name = '/degree_2_cumulant';
+        dataset_name = '/degree_3_cumulant';
         cumulant = h5read(file_path, dataset_name);
         model = struct;
         model.variables.u = randn(size(cumulant, 1), 3);
@@ -27,7 +27,7 @@ for resolution = resolutions
         model.factorizations.myfac.data = cumulant;
         model.factorizations.myfac.cpd = {'U', 'U', 'U'};
         options.Display = 100;
-        options.MaxIter = 600;
+        options.MaxIter = iterations;
         sol = sdf_nls(model, options);
         
         % Extract the required field from the nested structure

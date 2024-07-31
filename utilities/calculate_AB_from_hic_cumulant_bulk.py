@@ -5,7 +5,7 @@ import pyBigWig
 import scipy.stats
 import matplotlib.pyplot as plt
 import math
-from config_and_print import data_path, resolutions, chromosomes, iterations
+from config_and_print import data_path, resolutions, chromosomes, iterations, mappability_threshold
 
 # Define paths for saved data
 tensor_active_factor_path = data_path + 'Workspaces/genome_wide_tensor_active_factor.npy'
@@ -74,7 +74,7 @@ else:
 
     for ch in chromosomes:
         for resolution in resolutions:
-            tensor_factor_file = data_path +  f"Workspaces/individual/ch{ch}_res{resolution}_structedData_3rdCumulant_rank2_{iterations}iterations.h5"
+            tensor_factor_file = data_path +  f"Workspaces/individual/ch{ch}_res{resolution}_structuredData_3rdCumulant_rank2_{iterations}iterations.h5"
             dataset_name = '/U'
             with h5py.File(tensor_factor_file, 'r') as f:
                 U = f[dataset_name][:]
@@ -82,10 +82,10 @@ else:
             tensor_factor2 = U[1, :]
             tensor_factor3 = U[2, :]
 
-            aiden_path = new_path + f'eigenvector/res{resolution}_ch{ch}_oe_KR_eigenvector.txt'
+            aiden_path = data_path + f'eigenvector/res{resolution}_ch{ch}_oe_KR_eigenvector.txt'
             aiden_eigenvector = load_and_replace_nan(aiden_path)
 
-            dark_bins_file = new_path + f'Workspaces/individual/ch{ch}_res{resolution}_darkBins.h5'
+            dark_bins_file = data_path + f'Workspaces/individual/ch{ch}_res{resolution}_darkBins_mappability{mappability_threshold}.h5'
             dark_bins = load_dark_bins(dark_bins_file)
 
             mask = np.ones(aiden_eigenvector.shape[0], dtype=bool)

@@ -36,7 +36,7 @@ bw = pyBigWig.open(dark_regions_file)
 for resolution in resolutions:
     for chromosome in chromosomes:
         # Construct the HDF5 filename
-        h5_filename = data_path + f'Workspaces/individual/ch{chromosome}_res{resolution}_darkBins.h5'
+        h5_filename = data_path + f'Workspaces/individual/ch{chromosome}_res{resolution}_darkBins_mappability{mappability_threshold}.h5'
         
         # Check if the file already exists
         if os.path.exists(h5_filename):

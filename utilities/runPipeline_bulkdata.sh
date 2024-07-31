@@ -41,7 +41,7 @@ python retrieve_dark_bins.py
 # Execute the Python script
 python extract_hic_data.py "$data_path" "$hic_url" "$resolutions_list" "$chromosomes_list" "$data_types_list"
 
-python process_hic_files.py "$data_path" "$resolutions_list" "$chromosomes_list" "$data_types_list"
+python process_hic_files_cumulant.py "$data_path" "$resolutions_list" "$chromosomes_list" "$data_types_list"
 
 #Check to make sure tensorlab is available
 # Define the paths

@@ -11,7 +11,7 @@ for resolution = resolutions
     for j = 1:numel(chromosomes)
         chromosome = chromosomes{j};
         file_path = sprintf('%sWorkspaces/individual/ch%s_res%d_oe_KR_cumulant.h5', data_path, chromosome, resolution);
-        output_file = sprintf('%sWorkspaces/individual/ch%s_res%d_structedData_3rdCumulant_rank10_%diterations.h5', data_path, chromosome, resolution, iterations);
+        output_file = sprintf('%sWorkspaces/individual/ch%s_res%d_structuredData_3rdCumulant_rank10_%diterations.h5', data_path, chromosome, resolution, iterations);
         
         % Check if the output file already exists
         if exist(output_file, 'file') == 2

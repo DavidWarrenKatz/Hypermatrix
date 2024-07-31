@@ -2,6 +2,7 @@ import numpy as np
 import h5py
 import os
 import sys
+from config_and_print import mappability_threshold
 
 def load_hic_matrix(file_path):
     try:
@@ -88,7 +89,7 @@ def process_hic_files(path, resolutions, chromosomes, data_types):
         for chromosome in chromosomes:
             for data_type in data_types:
                 hic_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR.h5'
-                dark_bins_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_darkBins.h5'
+                dark_bins_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_darkBins_mappability{mappability_threshold}.h5'
 
                 hic_matrix = load_hic_matrix(hic_file)
                 dark_bins = load_dark_bins(dark_bins_file)

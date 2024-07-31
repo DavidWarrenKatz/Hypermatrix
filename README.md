@@ -1,10 +1,8 @@
 # Hypermatrix
 
-Hypermatrix is a command-line tool designed for the integration of multi-omics data. The 'ABcluster' command inputs single-cell CpG methylation and chromosome conformation information to perform cell-type clustering, A/B compartment calls, and TAD boundary calls for each cell.
+Hypermatrix is a command-line tool designed for the integration of multi-omics data. The 'ABcluster' command inputs single-cell CpG methylation and chromosome conformation information to perform cell-type clustering, A/B compartment calls, and TAD boundary calls for each cell.  The 'differentiate_chromosomes' command differentes between the homologous chromosomes and determines if B compartments are lamina-associated.  
 
 Advancements in single-cell multi-omics technologies have enabled the simultaneous measurement of various omics modalities within individual cells. Integrating multi-omics data while preserving the interaction information between different modalities remains an open challenge. Traditional methods lose critical interaction information by applying matrix methods. To address this, this research project proposes a Non-Negative Tensor Factorization (NTF) model for multi-omics integration called HYPERMATRIX.
-
-This software derives single cell A/B compartments as well as single cell cell-type clustering from integrated bulk epigenetic data and integrated single-cell Hi-C and methylation data. In the future, I hope this can also be used for differentiating between the homologous chromosomes and determining if B compartments are lamina-associated.  
 
 ## Installation
 
@@ -32,7 +30,8 @@ Ensure you have `conda` installed. If not, you can install it from [here](https:
     conda activate hypermatrix
     ```
 
-4. Navigate to the utilities directory:
+4. As a first demonstration, derives A/B compartments integrated bulk epigenetic data and and synthetic data to illustrate the non-negative tensor decomposition method.
+ Navigate to the utilities directory:
 
     ```bash
     cd hypermatrix/utilities

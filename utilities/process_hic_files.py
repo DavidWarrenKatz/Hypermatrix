@@ -53,7 +53,6 @@ def compute_correlation_matrix(matrix):
         print(f"[ERROR] Failed to compute correlation matrix: {e}")
         return None
 
-
 # Define the function to compute the third-order cumulant
 def compute_third_order_cumulant(matrix):
     try:
@@ -87,7 +86,11 @@ def compute_third_order_cumulant(matrix):
             for j in range(n):
                 for k in range(n):
                     denominator = std_vec[i] * std_vec[j] * std_vec[k]
-                    normalized_kappa_ijk[i, j, k] = kappa_ijk[i, j, k] / denominator if denominator != 0 else 0
+                    normalized_kappa_ijk[i, j, k] = kappa_ijk[i, j, k] / denominator if denominator != 0 else np.nan
+
+        min_value = np.min(np.nan_to_num(normalized_kappa_ijk))
+        if min_value < 0:
+            normalized_kappa_ijk -= min_value
 
         return normalized_kappa_ijk
     except Exception as e:
@@ -144,8 +147,6 @@ def compute_non_negative_rank_2_decomposition(matrix):
         print(f"[ERROR] Failed to compute non-negative rank-2 decomposition: {e}")
         return None, None
 
-
-
 def process_hic_files(path, resolutions, chromosomes, data_types):
     for resolution in resolutions:
         for chromosome in chromosomes:
@@ -162,7 +163,7 @@ def process_hic_files(path, resolutions, chromosomes, data_types):
                     if filtered_matrix is not None:
                         corr_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_corr_new.h5'
                         cumulant_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_cumulant_new.h5'
-                        nn_decomp_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_nn_decomp.h5'
+                        #nn_decomp_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_nn_decomp.h5'
 
                         # Check if correlation matrix file already exists
                         if not os.path.exists(corr_output_file):
@@ -190,14 +191,12 @@ def process_hic_files(path, resolutions, chromosomes, data_types):
                         else:
                             print(f'[INFO] Degree-2 cumulant matrix already exists: {cumulant_output_file}')
 
-                        if not os.path.exists(nn_decomp_output_file):
-                            correlation_matrix = compute_correlation_matrix(filtered_matrix)
-                            W, H = compute_non_negative_rank_2_decomposition(correlation_matrix)
-                            if W is not None:
-                                save_matrix_to_file(W, nn_decomp_output_file, 'W')
+                        #if not os.path.exists(nn_decomp_output_file):
+                        #    correlation_matrix = compute_correlation_matrix(filtered_matrix)
+                        #    W, H = compute_non_negative_rank_2_decomposition(correlation_matrix)
+                        #    if W is not None:
+                        #        save_matrix_to_file(W, nn_decomp_output_file, 'W')
                                 
-
-
 
 if __name__ == "__main__":
     data_path = sys.argv[1]    

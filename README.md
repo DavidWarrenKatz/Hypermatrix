@@ -36,16 +36,16 @@ Ensure you have `conda` installed. If not, you can install it from [here](https:
     cd hypermatrix/utilities
     ```
 
-5. Make the `getData.sh` script executable:
+5. Make the `runPipeline_bulkdata.sh` script executable:
 
     ```bash
-    chmod +x getData.sh
+    chmod +x runPipeline_bulkdata.sh
     ```
 
-6. Run the `getData.sh` script to get the necessary data:
+6. Run the `runPipeline_bulkdata.sh` script to get the necessary data:
 
     ```bash
-    ./getData.sh
+    ./runPipeline_bulkdata.sh
     ```
 
 ## Usage

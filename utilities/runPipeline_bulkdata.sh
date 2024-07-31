@@ -47,5 +47,4 @@ chmod +x check_and_run.sh
 chmod +x run_java_commands.sh
 ./check_and_run.sh
 
-# DO not need this anymore 
-#python process_pearson.py "$data_path" "$resolutions_list" "$chromosomes_list" "$data_types_list"
+

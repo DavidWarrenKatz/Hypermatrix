@@ -4,7 +4,6 @@ import os
 import sys
 from sklearn.decomposition import NMF
 
-
 def load_hic_matrix(file_path):
     try:
         with h5py.File(file_path, 'r') as hf:
@@ -161,8 +160,8 @@ def process_hic_files(path, resolutions, chromosomes, data_types):
                     filtered_matrix = remove_dark_bins(hic_matrix, dark_bins)
 
                     if filtered_matrix is not None:
-                        corr_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_corr_new.h5'
-                        cumulant_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_cumulant_new.h5'
+                        corr_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_corr.h5'
+                        cumulant_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_cumulant.h5'
                         #nn_decomp_output_file = f'{path}Workspaces/individual/ch{chromosome}_res{resolution}_{data_type}_KR_nn_decomp.h5'
 
                         # Check if correlation matrix file already exists

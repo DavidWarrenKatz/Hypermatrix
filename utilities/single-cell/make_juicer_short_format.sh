@@ -47,16 +47,10 @@ fi
 ### run the command from hic_cluster, since I might use their imputation step 
 #########################################################################################
 
-# This is a string of resolutions and names for the directory of each resolution
-resolutions="1000000:1Mb"
-
-echo "$resolutions"
-
-# Parse the resolutions string into a hash
+# Parse the resolutions list into a hash
 declare -A resolutionMap
-IFS=',' read -r -a resolutionArray <<< "$resolutions"
-for pair in "${resolutionArray[@]}"; do
-  IFS=':' read -r -a keyValue <<< "$pair"
+for res in "${resolutions[@]}"; do
+  IFS=':' read -r -a keyValue <<< "$res"
   resolutionMap[${keyValue[0]}]=${keyValue[1]}
 done
 
@@ -68,6 +62,12 @@ for hic_file in $output_directory/sc*.hic_matrix.txt.gz; do
     label=${resolutionMap[$res]}
     outdir="$output_directory/hicluster_${label}_raw_dir/"
     mkdir -p "$outdir"
+
+    output_matrix="$outdir/chr1/${prefix}_chr1.txt"
+    if [[ -f "$output_matrix" ]] && [[ -s "$output_matrix" ]]; then
+      echo "Matrix for $prefix at resolution $label already exists. Skipping computation."
+      continue
+    fi
 
     # Generate contact matrices for each resolution
     echo "Generating contact matrices for $prefix at resolution $label"
@@ -98,44 +98,53 @@ echo "All matrices have been generated."
 ### Impute-cell step
 #########################################################################################
 
-# Create directories for imputation results
-for res in "${!resolutionMap[@]}"; do
-  label=${resolutionMap[$res]}
-  imputeDir="$output_directory/hicluster_${label}_impute_dir"
-  mkdir -p "$imputeDir"
-  for chrom in {1..22}; do
-    mkdir -p "$imputeDir/chr$chrom"
-  done
-done
-
-# Process each Hi-C matrix to perform imputation
-for hic_file in $output_directory/sc*.hic_matrix.txt.gz; do
-  prefix=$(basename "$hic_file" .hic_matrix.txt.gz)
-
+if [ "$impute" = "True" ]; then
+  # Create directories for imputation results
   for res in "${!resolutionMap[@]}"; do
     label=${resolutionMap[$res]}
     imputeDir="$output_directory/hicluster_${label}_impute_dir"
-
+    mkdir -p "$imputeDir"
     for chrom in {1..22}; do
-      echo "Imputing $prefix for chromosome $chrom at resolution $label"
-
-      hicluster impute-cell \
-        --indir "$output_directory/hicluster_${label}_raw_dir/chr$chrom/" \
-        --outdir "$imputeDir/chr$chrom/" \
-        --cell "$prefix" \
-        --chrom "chr$chrom" \
-        --res "$res" \
-        --chrom_file "$chrom_file"
-
-      if [ $? -ne 0 ]; then
-        echo "ERROR imputing $prefix for chromosome $chrom at resolution $label"
-        continue
-      fi
-
-      echo "Imputed $prefix for chromosome $chrom at resolution $label"
+      mkdir -p "$imputeDir/chr$chrom"
     done
   done
-done
 
-echo "All imputation steps have been completed."
+  # Process each Hi-C matrix to perform imputation
+  for hic_file in $output_directory/sc*.hic_matrix.txt.gz; do
+    prefix=$(basename "$hic_file" .hic_matrix.txt.gz)
+
+    for res in "${!resolutionMap[@]}"; do
+      label=${resolutionMap[$res]}
+      imputeDir="$output_directory/hicluster_${label}_impute_dir"
+
+      for chrom in {1..22}; do
+        output_impute="$imputeDir/chr$chrom/${prefix}_chr${chrom}_impute.matrix"
+        if [[ -f "$output_impute" ]] && [[ -s "$output_impute" ]]; then
+          echo "Imputed matrix for $prefix for chromosome $chrom at resolution $label already exists. Skipping computation."
+          continue
+        fi
+
+        echo "Imputing $prefix for chromosome $chrom at resolution $label"
+
+        hicluster impute-cell \
+          --indir "$output_directory/hicluster_${label}_raw_dir/chr$chrom/" \
+          --outdir "$imputeDir/chr$chrom/" \
+          --cell "$prefix" \
+          --chrom "chr$chrom" \
+          --res "$res" \
+          --chrom_file "$chrom_file"
+
+        if [ $? -ne 0 ]; then
+          echo "ERROR imputing $prefix for chromosome $chrom at resolution $label"
+          continue
+        fi
+
+        echo "Imputed $prefix for chromosome $chrom at resolution $label"
+      done
+    done
+  done
+
+  echo "All imputation steps have been completed."
+fi
+
 

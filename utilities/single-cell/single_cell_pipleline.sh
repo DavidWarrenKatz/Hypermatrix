@@ -1,13 +1,26 @@
 #!/bin/bash
-# Description: The following script pulls bulk hi-c matrices for further processing downstream
+# Description: The following script converts bam files into hic matrices organized in folders for each chromosome
 
-# Variables
 # Run the Python script and source the output to import the variables
-eval $(python3 config_and_print.py)
+# each individual file still needs to import these variables as well
+eval "$(python3 config_and_print.py)"
 
-# Create output directory if it doesn't exist
-mkdir -p $output_directory
-
+# Execute the filtering script
+chmod +x filter_bam.sh
 ./filter_bam.sh
+
+# Execute the make pairwise contact script
+chmod +x make_pairwise_contact_format_from_bam.sh
+./make_pairwise_contact_format_from_bam.sh
+
+# Execute the filtering script
+chmod +x preprocess_for_hic_cluster.sh
+./preprocess_for_hic_cluster.sh
+
+# Execute the make juicer format script
+chmod +x make_juicer_short_format.sh
+./make_juicer_short_format.sh
+
+
 
 

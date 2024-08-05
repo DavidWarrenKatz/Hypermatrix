@@ -1,3 +1,11 @@
+######################################################################################                   #This shell script iterates through the bam_directory and makes a filtered
+#list of bam files that have a sufficient number of high quality reads. 
+#Only these files will be used for downstream processing.
+#The parameters for filtering are located in the config file.
+#Symbolic links of all the bam files that pass filtering are made into the output directory. 
+#If the filtered list is already present in the output directory, this step is skipped.  
+#Author: David Katz (davidkatz02@gmail.com)                                                              #####################################################################################
+
 #!/bin/bash
 
 eval "$(python3 config_and_print.py)"

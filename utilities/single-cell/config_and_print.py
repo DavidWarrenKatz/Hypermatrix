@@ -1,8 +1,8 @@
 # config_and_print.py
 bam_directory = '/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam'
 software_directory = '../../bin/softwarefiles'
-chrom_file = "../../bin/softwarefiles/hg19.autosome.chrom.sizes"
-fragments_file = f"{bam_directory}/hg19_DpnII.txt"
+chrom_file = f"{software_directory}/hg19.autosome.chrom.sizes"
+fragments_file = f"{software_directory}/hg19_DpnII.txt"
 output_directory = '../../projects/single_cell_files'
 filtered_list = f"{output_directory}/filtered_bam_list.txt"
 schicluster_env = 'schicluster2'

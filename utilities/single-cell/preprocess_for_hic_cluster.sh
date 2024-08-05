@@ -1,4 +1,8 @@
-#!/bin/bash                                                                                                                                                                                                                                     
+######################################################################################                   #This shell script takes the hic.txt files and puts them into the form scHICluster
+#expects. 
+#Author: David Katz (davidkatz02@gmail.com)                                                              #####################################################################################
+
+#!/bin/bash                                                                                                                                                                                                      
 eval "$(python3 config_and_print.py)"
 
 # Iterate over files matching the pattern "sc*.hic.txt" in the output directory
@@ -8,10 +12,7 @@ for in_file in $output_directory/sc*.hic.txt; do
     # Prepare the output filename by replacing ".hic.txt" with ".hic_matrix.txt.gz"
     out_file="${in_file/.hic.txt/.hic_matrix.txt.gz}"
 
-    # Construct a sanitized job name to avoid issues with special characters
-    job_name="process_${in_file//[^a-zA-Z0-9]/_}"
-
-    # Print the job information
+   # Print the job information
     echo "Processing $in_file to $out_file"
 
     # Execute the preprocessing steps

@@ -1,3 +1,9 @@
+######################################################################################                   #This shell script iterates through all the symbolic links in the output directory.
+#The bam files are filtered to only contain good reads, and then processed into juicer format
+#with the function sam2juicer.py
+#Author: David Katz (davidkatz02@gmail.com)                                                              #####################################################################################
+
+
 #!/bin/bash
 
 eval "$(python3 config_and_print.py)"

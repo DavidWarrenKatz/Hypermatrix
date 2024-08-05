@@ -23,9 +23,9 @@ unsuccessful_files=()
 
 while read identifier; do
   good_reads_bam="$output_directory/${identifier}.good_reads.bam"
-  hic_txt="$output_directory/${identifier}.hic.txt"
+  hic_txt="$output_directory/${identifier}.hic_matrix.txt.gz"
 
-  if [[ -f "$good_reads_bam" ]] && [[ -s "$good_reads_bam" ]] && [[ -f "$hic_txt" ]] && [[ -s "$hic_txt" ]]; then
+  if [[ -f "$hic_txt" ]] && [[ -s "$hic_txt" ]]; then
     ((successful_count++))
   else
     unsuccessful_files+=("$identifier")

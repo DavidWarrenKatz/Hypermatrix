@@ -6,18 +6,21 @@ bisulfite_env=bisulfitehic27
 conda activate $bisulfite_env
 
 bam_directory='/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam'
-software_directory='/home/dwk681/workspace/softwareFiles'
-chrom_file="/home/dwk681/workspace/Genomic_Files/ucsc_hg19/hg19.autosome.chrom.sizes"
+software_directory='../../bin/softwarefiles'
+chrom_file="../../bin/softwarefiles/hg19.autosome.chrom.sizes"
 filtered_list='filtered_bam_list.txt'
 
 # Quality criteria
-min_high_quality_reads=100000  
+min_high_quality_reads=200000  
 
 # Load samtools module
 module load samtools
 
 # Create or clear the filtered list file
 > $filtered_list
+
+
+#This code assumes the bam files are in the form sc*.b37.calmd.bam
 
 # Evaluate each BAM file for quality and generate the filtered list
 for bam_file in $bam_directory/sc*.b37.calmd.bam; do

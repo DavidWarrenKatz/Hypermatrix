@@ -1,3 +1,11 @@
+
+######################################################################################                   #This shell script first checks to make sure all the previous preprocessing is complete.
+#Then is runs the generate-matrix command from scHiCluster for every cell.
+#If imputation boolean is set to True, then the imputed matrices from scHICluster 
+#are computed as well. If the matrices are already present in the appropriate 
+#directoryies, the computations are skipped. 
+#Author: David Katz (davidkatz02@gmail.com)                                                              #####################################################################################
+
 #!/bin/bash
 
 eval "$(python3 config_and_print.py)"
@@ -63,9 +71,17 @@ for hic_file in $output_directory/sc*.hic_matrix.txt.gz; do
     outdir="$output_directory/hicluster_${label}_raw_dir/"
     mkdir -p "$outdir"
 
-    output_matrix="$outdir/chr1/${prefix}_chr1.txt"
-    if [[ -f "$output_matrix" ]] && [[ -s "$output_matrix" ]]; then
-      echo "Matrix for $prefix at resolution $label already exists. Skipping computation."
+    skip_computation=true
+    for chrom in {1..22}; do
+      output_matrix="$outdir/chr$chrom/${prefix}_chr${chrom}.txt"
+      if [[ ! -f "$output_matrix" ]] || [[ ! -s "$output_matrix" ]]; then
+        skip_computation=false
+        break
+      fi
+    done
+
+    if [ "$skip_computation" = true ]; then
+      echo "Matrix for $prefix at resolution $label already exists for all chromosomes. Skipping computation."
       continue
     fi
 
@@ -146,5 +162,7 @@ if [ "$impute" = "True" ]; then
 
   echo "All imputation steps have been completed."
 fi
+
+
 
 

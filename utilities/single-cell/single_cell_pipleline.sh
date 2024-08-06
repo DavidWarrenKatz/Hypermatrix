@@ -21,6 +21,9 @@ chmod +x preprocess_for_hic_cluster.sh
 chmod +x make_juicer_short_format.sh
 ./make_juicer_short_format.sh
 
-
+if [ "$cluster_compartments" = "True" ]; then
+chmod +x compartment_calling.sh
+./compartment_calling.sh
+fi
 
 

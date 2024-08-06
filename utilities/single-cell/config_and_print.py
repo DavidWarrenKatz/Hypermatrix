@@ -15,18 +15,29 @@ impute = True
 cluster_compartments = True
 cumulant = True
 
-print(f"bam_directory='{bam_directory}'")
-print(f"methy_directory='{methy_directory}'")
-print(f"software_directory='{software_directory}'")
-print(f"chrom_file='{chrom_file}'")
-print(f"fragments_file='{fragments_file}'")
-print(f"output_directory='{output_directory}'")
-print(f"hg19_fa_url='{hg19_fa_url}'")
-print(f"filtered_list='{filtered_list}'")
-print(f"schicluster_env='{schicluster_env}'")
-print(f"bisulfite_env='{bisulfite_env}'")
-print(f"min_high_quality_reads='{min_high_quality_reads}'")
-print(f"resolutions={resolutions}")
-print(f"impute={impute}")
-print(f"cluster_compartments={cluster_compartments}")
-print(f"cumulant={cumulant}")
+config = {
+    "bam_directory": bam_directory,
+    "methy_directory": methy_directory,
+    "software_directory": software_directory,
+    "chrom_file": chrom_file,
+    "fragments_file": fragments_file,
+    "output_directory": output_directory,
+    "hg19_fa_url": hg19_fa_url,
+    "filtered_list": filtered_list,
+    "schicluster_env": schicluster_env,
+    "bisulfite_env": bisulfite_env,
+    "min_high_quality_reads": min_high_quality_reads,
+    "resolutions": resolutions,
+    "impute": impute,
+    "cluster_compartments": cluster_compartments,
+    "cumulant": cumulant,
+}
+
+
+for key, value in config.items():
+    if isinstance(value, list):
+        print(f"{key}={','.join(value)}")
+    else:
+        print(f"{key}='{value}'")
+
+

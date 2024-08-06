@@ -9,7 +9,7 @@ filtered_list = f"{output_directory}/filtered_bam_list.txt"
 schicluster_env = 'schicluster2'
 bisulfite_env = 'bisulfitehic27'
 min_high_quality_reads=250000
-resolutions = ["1000000:1Mb"]  # Add resolutions here as a list of strings, resolution: label
+resolutions = ("1000000:1Mb")  # Add resolutions here as a list of strings, resolution: label
 impute = True
 cluster_compartments = True
 

@@ -26,6 +26,10 @@ bisulfite_env_python_path=$(which python)
 
 # Process each BAM file in the output directory
 for bam_file in $output_directory/sc*.bam; do
+  # Skip files containing ".good_reads.bam"
+  if [[ "$bam_file" == *".good_reads.bam" ]]; then
+    continue
+  fi
   echo "Processing $bam_file"
   
   # Extract prefix from filename for job naming and command construction

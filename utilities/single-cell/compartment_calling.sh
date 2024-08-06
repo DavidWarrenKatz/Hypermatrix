@@ -35,39 +35,6 @@ fi
 # Path to the downloaded and uncompressed hg19 reference genome
 hg19_fa_path="$software_directory/hg19.fa"
 
-cat > process_chromsizes.py <<EOF
-import numpy as np
-import pandas as pd
-
-# Passed resolutions string from the shell script
-resolutions_string = "$resolutions"
-
-# Parse the resolutions string to a dictionary
-resolutions = dict(res.split(":") for res in resolutions_string.split(","))
-
-# Load chromosome sizes from a file specified by the chrom_file variable
-chromsize = pd.read_csv('$chrom_file', sep='\t', header=None, index_col=0).to_dict()[1]
-
-# Loop over each resolution and chromosome to create BED segments
-for res_str, label in resolutions.items():
-    res = int(res_str)  # Convert resolution string to integer
-    for c in chromsize:
-        # Calculate the number of segments based on chromosome size and resolution
-        ngene = int(chromsize[c] // res) + 1
-        # Generate BED format data for each segment
-        bed = [[c, i*res, (i+1)*res] for i in range(ngene)]
-        # Ensure the last segment extends to the end of the chromosome
-        bed[-1][-1] = chromsize[c]
-        # Save the BED data to a file, one for each chromosome
-        outdir = f'./hicluster_{label}_impute_dir/bins'
-        # Make sure the output directory exists
-        import os
-        if not os.path.exists(outdir):
-            os.makedirs(outdir)
-        np.savetxt(f'{outdir}/{c}.bed', bed, fmt='%s', delimiter='\t')
-        print(f'Resolution: {res_str}, Chromosome: {c}')
-EOF
-
 # Split the resolutions string into an array and iterate over it
 IFS=',' read -r -a resolutionArray <<< "$resolutions"
 for pair in "${resolutionArray[@]}"; do
@@ -92,7 +59,7 @@ for pair in "${resolutionArray[@]}"; do
     
     # Use bedtools to calculate CG density for the segments defined in the sorted BED file
     # This requires a reference genome file and the sorted BED file as inputs
-    bedtools nuc -fi $software_directory/genomes/ucsc_hg19/hg19.fa -bed ./hicluster_${label}_impute_dir/bins/hg19.${label}_bin.bed -pattern CG -C > ./hicluster_${label}_impute_dir/bins/hg19.${label}_bin.cg_density.bed
+    bedtools nuc -fi $software_directory/genomes/ucsc_hg19/hg19.fa -bed $output_directory/hicluster_${label}_impute_dir/bins/hg19.${label}_bin.bed -pattern CG -C > $output_directory/hicluster_${label}_impute_dir/bins/hg19.${label}_bin.cg_density.bed
 done
 
 # Execute the hicluster comp-cpg-cell command

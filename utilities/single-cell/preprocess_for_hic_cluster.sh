@@ -7,12 +7,23 @@ eval "$(python3 config_and_print.py)"
 
 # Iterate over files matching the pattern "sc*.hic.txt" in the output directory
 for in_file in $output_directory/sc*.hic.txt; do
+  # Skip files containing ".good_reads.hic.txt"
+  if [[ "$in_file" == *".good_reads.hic.txt" ]]; then
+    continue
+  fi
+
   # Check if the file exists
   if [[ -f "$in_file" ]]; then
     # Prepare the output filename by replacing ".hic.txt" with ".hic_matrix.txt.gz"
     out_file="${in_file/.hic.txt/.hic_matrix.txt.gz}"
 
-   # Print the job information
+    # Check if the output file already exists
+    if [[ -f "$out_file" ]]; then
+      echo "Output file $out_file already exists, skipping."
+      continue
+    fi
+
+    # Print the job information
     echo "Processing $in_file to $out_file"
 
     # Execute the preprocessing steps
@@ -31,4 +42,5 @@ for in_file in $output_directory/sc*.hic.txt; do
     echo "No files matching pattern found."
   fi
 done
+
 

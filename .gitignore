@@ -1,2 +1,3 @@
 /projects/
-#/bin/softwarefiles/
+/bin/softwarefiles/
+/utilities/single-cell/b37.autosome.500bp_interval.add_value.methy.GM_IMR90_153_samples.bed.gz

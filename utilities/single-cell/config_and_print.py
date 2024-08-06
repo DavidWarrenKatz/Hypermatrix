@@ -1,5 +1,6 @@
 # config_and_print.py
 bam_directory = '/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam'
+methy_directory = '/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam/methylation/filter_low_qual'
 software_directory = '../../bin/softwarefiles'
 chrom_file = f"{software_directory}/hg19.autosome.chrom.sizes"
 fragments_file = f"{software_directory}/hg19_DpnII.txt"
@@ -12,8 +13,10 @@ min_high_quality_reads=250000
 resolutions = ("1000000:1Mb")  # Add resolutions here as a list of strings, resolution: label
 impute = True
 cluster_compartments = True
+cumulant = True
 
 print(f"bam_directory='{bam_directory}'")
+print(f"methy_directory='{methy_directory}'")
 print(f"software_directory='{software_directory}'")
 print(f"chrom_file='{chrom_file}'")
 print(f"fragments_file='{fragments_file}'")
@@ -26,3 +29,4 @@ print(f"min_high_quality_reads='{min_high_quality_reads}'")
 print(f"resolutions={resolutions}")
 print(f"impute={impute}")
 print(f"cluster_compartments={cluster_compartments}")
+print(f"cumulant={cumulant}")

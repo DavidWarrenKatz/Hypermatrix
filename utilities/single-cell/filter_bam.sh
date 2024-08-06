@@ -48,9 +48,3 @@ else
   echo "Filtered list already exists. Skipping filtering step."
 fi
 
-# Create symbolic links to BAM files in the output directory based on the filtered list
-while read -r identifier; do
-  if [ ! -L "$output_directory/$identifier.bam" ]; then
-    ln -s "$bam_directory/$identifier.b37.calmd.bam" "$output_directory/$identifier.bam"
-  fi
-done < "$filtered_list"

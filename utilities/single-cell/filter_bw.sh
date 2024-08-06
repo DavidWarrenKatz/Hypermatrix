@@ -74,12 +74,13 @@ fi
 
 echo "Computation completed successfully"
 
-# Report prefixes of files that were not found
+# Report and save prefixes of files that were not found
 if [ ${#not_found_prefixes[@]} -ne 0 ]; then
     echo "The following prefixes were not found:"
-    printf "%s\n" "${not_found_prefixes[@]}"
+    printf "%s\n" "${not_found_prefixes[@]}" | tee missing_prefixes.txt
 else
     echo "All prefixes were found."
+    rm -f missing_prefixes.txt  # Clean up the missing prefixes file if it's empty
 fi
 
 # Clean up

@@ -9,8 +9,11 @@ eval "$(python3 config_and_print.py)"
 chmod +x filter_bam.sh
 ./filter_bam.sh
 
-
+chmod +x filter_bw.sh
 ./filter_bw.sh
+
+chmod +x update_filted_list.sh
+./update_filted_list.sh
 
 # Execute the make pairwise contact script
 chmod +x make_pairwise_contact_format_from_bam.sh

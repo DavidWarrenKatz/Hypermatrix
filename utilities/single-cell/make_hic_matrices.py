@@ -95,10 +95,19 @@ def process_matrices(input_dir, output_raw_correlation_dir, output_emphasized_co
     """Process each Hi-C data file, compute matrices, and save the results."""
     os.makedirs(output_raw_correlation_dir, exist_ok=True)
     os.makedirs(output_emphasized_correlation_dir, exist_ok=True)
-    os.makedirs(output_emphasized_cumulant_dir, exist_ok=True)
 
     for file_path in glob.glob(os.path.join(input_dir, '*.txt')):
         print(f"Processing file: {file_path}")
+        
+        file_name = os.path.splitext(os.path.basename(file_path))[0] + '.h5'
+        output_correlation_path = os.path.join(output_raw_correlation_dir, file_name)
+        output_emphasized_path = os.path.join(output_emphasized_correlation_dir, file_name)
+
+        # Skip computation if both output files already exist
+        if os.path.exists(output_correlation_path) and os.path.exists(output_emphasized_path):
+            print(f"Skipping {file_path}, both output files already exist.")
+            continue
+
         data = load_hic_data(file_path)
         if not data:
             print(f"No data loaded from {file_path}")
@@ -108,10 +117,6 @@ def process_matrices(input_dir, output_raw_correlation_dir, output_emphasized_co
             print(f"Failed to create matrix from data in {file_path}")
             continue
         
-        file_name = os.path.splitext(os.path.basename(file_path))[0] + '.h5'
-        output_correlation_path = os.path.join(output_raw_correlation_dir, file_name)
-        output_emphasized_path = os.path.join(output_emphasized_correlation_dir, file_name)
-
         emphasized_matrix = None
         if not os.path.exists(output_emphasized_path):
             emphasized_matrix = emphasize_interactions(csr_mat, max_distance)

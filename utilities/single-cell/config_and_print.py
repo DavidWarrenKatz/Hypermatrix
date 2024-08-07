@@ -12,7 +12,7 @@ bisulfite_env = 'bisulfitehic27'
 min_high_quality_reads=250000
 resolutions = ("1000000:1Mb")  # Add resolutions here as a list of strings, resolution: label
 impute = True
-cluster_compartments = True
+cluster_compartments = False
 cumulant = True
 
 config = {

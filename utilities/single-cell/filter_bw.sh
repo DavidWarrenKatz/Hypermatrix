@@ -68,7 +68,7 @@ eval "$full_cmd 2>java_error.log"
 if [ $? -ne 0 ]; then
     echo "Failed to execute Java command"
     cat java_error.log
-    rm -f java_error.log methy_summary.cmd.txt
+    rm -f $output_bed_base
     exit 1
 fi
 
@@ -77,10 +77,10 @@ echo "Computation completed successfully"
 # Report and save prefixes of files that were not found
 if [ ${#not_found_prefixes[@]} -ne 0 ]; then
     echo "The following prefixes were not found:"
-    printf "%s\n" "${not_found_prefixes[@]}" | tee missing_prefixes.txt
+    printf "%s\n" "${not_found_prefixes[@]}" | tee ${config[output_directory]}/missing_prefixes.txt
 else
     echo "All prefixes were found."
-    rm -f missing_prefixes.txt  # Clean up the missing prefixes file if it's empty
+    rm -f ${config[output_directory]}/missing_prefixes.txt  # Clean up the missing prefixes file if it's empty
 fi
 
 # Clean up

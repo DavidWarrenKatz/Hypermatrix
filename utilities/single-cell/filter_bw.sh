@@ -74,15 +74,19 @@ fi
 
 echo "Computation completed successfully"
 
-# Report and save prefixes of files that were not found
+# Report and save prefixes of files that were not found, removing empty lines
 if [ ${#not_found_prefixes[@]} -ne 0 ]; then
     echo "The following prefixes were not found:"
-    printf "%s\n" "${not_found_prefixes[@]}" | tee ${config[output_directory]}/missing_prefixes.txt
+    printf "%s\n" "${not_found_prefixes[@]}" | grep -v '^[[:space:]]*$' | tee "${config[output_directory]}/missing_prefixes.txt"
 else
     echo "All prefixes were found."
-    rm -f ${config[output_directory]}/missing_prefixes.txt  # Clean up the missing prefixes file if it's empty
+    rm -f "${config[output_directory]}/missing_prefixes.txt"  # Clean up the missing prefixes file if it's empty
 fi
 
 # Clean up
 rm -f java_error.log methy_summary.cmd.txt
+
+
+
+
 

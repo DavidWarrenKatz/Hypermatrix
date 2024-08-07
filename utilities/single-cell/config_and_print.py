@@ -13,7 +13,7 @@ min_high_quality_reads=250000
 resolutions = ("1000000:1Mb")  # Add resolutions here as a list of strings, resolution: label
 impute = True
 cluster_compartments = False
-cumulant = True
+cumulant = False
 
 config = {
     "bam_directory": bam_directory,

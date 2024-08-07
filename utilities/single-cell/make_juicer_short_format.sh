@@ -110,11 +110,14 @@ done
 
 echo "All matrices have been generated."
 
+
+
 #########################################################################################
 ### Impute-cell step
 #########################################################################################
 
 if [ "$impute" = "True" ]; then
+  echo "Imputation is enabled. Starting imputation steps..."
   # Create directories for imputation results
   for res in "${!resolutionMap[@]}"; do
     label=${resolutionMap[$res]}
@@ -128,13 +131,17 @@ if [ "$impute" = "True" ]; then
   # Process each Hi-C matrix to perform imputation
   for hic_file in $output_directory/sc*.hic_matrix.txt.gz; do
     prefix=$(basename "$hic_file" .hic_matrix.txt.gz)
+    echo "Processing file: $hic_file (prefix: $prefix)"
 
     for res in "${!resolutionMap[@]}"; do
       label=${resolutionMap[$res]}
       imputeDir="$output_directory/hicluster_${label}_impute_dir"
+      echo "Resolution: $res, Label: $label, ImputeDir: $imputeDir"
 
       for chrom in {1..22}; do
-        output_impute="$imputeDir/chr$chrom/${prefix}_chr${chrom}_impute.matrix"
+        output_impute="$imputeDir/chr$chrom/${prefix}_chr${chrom}_pad1_std1_rp0.5_sqrtvc.hdf5"
+        echo "Checking existence of imputed matrix: $output_impute"
+        
         if [[ -f "$output_impute" ]] && [[ -s "$output_impute" ]]; then
           echo "Imputed matrix for $prefix for chromosome $chrom at resolution $label already exists. Skipping computation."
           continue
@@ -162,6 +169,9 @@ if [ "$impute" = "True" ]; then
 
   echo "All imputation steps have been completed."
 fi
+
+
+
 
 
 

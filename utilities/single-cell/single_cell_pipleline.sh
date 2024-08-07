@@ -53,6 +53,15 @@ conda activate $hypermatrix_env
 # Make the methylation matrices
 python make_methy_matrices.py
 
+# Make the hic matrices
+python make_hic_matrices.py
+
+# Make the hic cumulants if cumulant is set to True
+#[TO DO: make this file]
+if [ "$cluster_compartments" = "True" ]; then
+python make_hic_cumulant.py
+fi
+
 #Make the combined tensor for each cell
 #[TO DO: need to decide if imputation and emphasis and merging will happen]
 

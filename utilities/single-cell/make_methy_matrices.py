@@ -102,7 +102,7 @@ else:
             outer_product_matrices = []
 
             # Create directory for the chromosome
-            chromosome_dir = os.path.join(methy_output_dir, f"chr{chromosome}")
+            chromosome_dir = os.path.join(methy_output_dir, f"{chromosome}")
             os.makedirs(chromosome_dir, exist_ok=True)
 
             # Compute the outer product for each sample
@@ -116,7 +116,7 @@ else:
                 individual_matrix_filename = os.path.join(chromosome_dir, f"{prefix}_outer_product.h5")
                 if not os.path.exists(individual_matrix_filename):
                     with h5py.File(individual_matrix_filename, 'w') as individual_matrix_file:
-                        individual_matrix_file.create_dataset(f"chr_{chromosome}", data=outer_product_matrix, compression="gzip")
+                        individual_matrix_file.create_dataset(f"{chromosome}", data=outer_product_matrix, compression="gzip")
 
             # Stack all the matrices into a tensor
             tensor = np.stack(outer_product_matrices, axis=0)
@@ -125,13 +125,13 @@ else:
             tensor_transposed = tensor.transpose((1, 2, 0))
 
             # Save the transposed tensor to the collective HDF5 file
-            all_chromosomes_file.create_dataset(f"chr{chromosome}", data=tensor_transposed, compression="gzip")
+            all_chromosomes_file.create_dataset(f"{chromosome}", data=tensor_transposed, compression="gzip")
 
             # Also save to an individual HDF5 file for this chromosome if it doesn't exist
-            individual_hdf5_filename = os.path.join(chromosome_dir, f"chr{chromosome}_tensor_methylation.h5")
+            individual_hdf5_filename = os.path.join(chromosome_dir, f"{chromosome}_tensor_methylation.h5")
             if not os.path.exists(individual_hdf5_filename):
                 with h5py.File(individual_hdf5_filename, 'w') as individual_chromosome_file:
-                    individual_chromosome_file.create_dataset(f"chr_{chromosome}", data=tensor_transposed, compression="gzip")
+                    individual_chromosome_file.create_dataset(f"{chromosome}", data=tensor_transposed, compression="gzip")
 
             print(f"Saved tensor for chromosome {chromosome} in both collective and individual HDF5 files.")
 

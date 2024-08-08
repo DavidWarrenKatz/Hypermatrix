@@ -1,4 +1,6 @@
 # config_and_print.py
+import scipy.io
+
 bam_directory = '/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam'
 methy_directory = '/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam/methylation/filter_low_qual'
 software_directory = '../../bin/softwarefiles'
@@ -14,6 +16,9 @@ resolutions = ("1000000:1Mb")  # Add resolutions here as a list of strings, reso
 impute = True
 cluster_compartments = False
 cumulant = False
+iterations = 400
+chromosomes = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22']
+
 
 config = {
     "bam_directory": bam_directory,
@@ -31,8 +36,11 @@ config = {
     "impute": impute,
     "cluster_compartments": cluster_compartments,
     "cumulant": cumulant,
+    "iterations": iterations,
+    "chromosomes": chromosomes
 }
 
+scipy.io.savemat('config.mat', config)
 
 for key, value in config.items():
     if isinstance(value, list):

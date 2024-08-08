@@ -82,14 +82,21 @@ def process_tensor(methy_file_path, hic_path, output_tensor_path):
     hic_matrix = normalize_matrix_columns(hic_matrix_dense)
     methy_matrix = normalize_matrix_columns(methy_matrix)
 
+    # This is my imputation step
+    # Both matrices should be non-negative still, have not taken correlations
     # Take the NMF rank 5 of each matrix
     nmf_rank = 5
     hic_matrix_nmf = nmf(hic_matrix, nmf_rank)
     methy_matrix_nmf = nmf(methy_matrix, nmf_rank)
 
+    #Take correlations and add by one to make non-negative
+    hic_correlation = np.corrcoef(hic_matrix_nmf) + 1
+    methy_correlation = np.corrcoef(methy_matrix_nmf) + 1
+
     # Additional normalization step
-    hic_matrix_nmf = normalize_matrix(hic_matrix_nmf)
-    methy_matrix_nmf = normalize_matrix(methy_matrix_nmf)
+    # Both matrices must have the same norm before tensor decomposition
+    hic_matrix_nmf = normalize_matrix(hic_correlation)
+    methy_matrix_nmf = normalize_matrix(methy_correlation)
 
     # Combine both normalized matrices into a tensor
     tensor = np.stack((hic_matrix_nmf, methy_matrix_nmf), axis=-1)
@@ -111,7 +118,7 @@ for i in range(1, 23):
     chromosome = f'chr{i}'
     for prefix in prefixes:
         methy_file_path = f'{output_directory}/methy_{resolution_label}_outerproduct_dir/{chromosome}/{prefix}_outer_product.h5'
-        hic_path = f'{output_directory}/hic_{resolution_label}_emphasized_correlation_dir/{chromosome}/{prefix}_{chromosome}.h5'
+        hic_path = f'{output_directory}/hic_{resolution_label}_emphasized_dir/{chromosome}/{prefix}_{chromosome}.h5'
         output_tensor_basepath = f'{output_directory}/hic_methy_{resolution_label}_tensor_singlecell/{chromosome}/'
         output_tensor_path = output_tensor_basepath + f'{prefix}_{chromosome}.h5'
         

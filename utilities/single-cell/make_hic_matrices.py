@@ -91,20 +91,18 @@ def csr_pearson_correlation(csr_mat):
 
     return csr_matrix(np.nan_to_num(correlation_matrix))
 
-def process_matrices(input_dir, output_raw_correlation_dir, output_emphasized_correlation_dir, max_distance):
+def process_matrices(input_dir, output_emphasized_dir, max_distance):
     """Process each Hi-C data file, compute matrices, and save the results."""
-    os.makedirs(output_raw_correlation_dir, exist_ok=True)
-    os.makedirs(output_emphasized_correlation_dir, exist_ok=True)
+    os.makedirs(output_emphasized_dir, exist_ok=True)
 
     for file_path in glob.glob(os.path.join(input_dir, '*.txt')):
         print(f"Processing file: {file_path}")
         
         file_name = os.path.splitext(os.path.basename(file_path))[0] + '.h5'
-        output_correlation_path = os.path.join(output_raw_correlation_dir, file_name)
-        output_emphasized_path = os.path.join(output_emphasized_correlation_dir, file_name)
+        output_emphasized_path = os.path.join(output_emphasized_dir, file_name)
 
         # Skip computation if both output files already exist
-        if os.path.exists(output_correlation_path) and os.path.exists(output_emphasized_path):
+        if os.path.exists(output_emphasized_path):
             print(f"Skipping {file_path}, both output files already exist.")
             continue
 
@@ -122,32 +120,21 @@ def process_matrices(input_dir, output_raw_correlation_dir, output_emphasized_co
             emphasized_matrix = emphasize_interactions(csr_mat, max_distance)
 
         if not os.path.exists(output_emphasized_path):
-            emphasized_correlation_matrix = csr_pearson_correlation(emphasized_matrix)
+            emphasized_matrix = emphasized_matrix
             with h5py.File(output_emphasized_path, 'w') as output_file:
                 grp = output_file.create_group('Matrix')
-                grp.create_dataset('data', data=emphasized_correlation_matrix.data)
-                grp.create_dataset('indices', data=emphasized_correlation_matrix.indices)
-                grp.create_dataset('indptr', data=emphasized_correlation_matrix.indptr)
-                grp.attrs['shape'] = emphasized_correlation_matrix.shape
-
-        if not os.path.exists(output_correlation_path):
-            raw_correlation_matrix = csr_pearson_correlation(csr_mat)
-            with h5py.File(output_correlation_path, 'w') as output_file:
-                grp = output_file.create_group('Matrix')
-                grp.create_dataset('data', data=raw_correlation_matrix.data)
-                grp.create_dataset('indices', data=raw_correlation_matrix.indices)
-                grp.create_dataset('indptr', data=raw_correlation_matrix.indptr)
-                grp.attrs['shape'] = raw_correlation_matrix.shape
+                grp.create_dataset('data', data=emphasized_matrix.data)
+                grp.create_dataset('indices', data=emphasized_matrix.indices)
+                grp.create_dataset('indptr', data=emphasized_matrix.indptr)
+                grp.attrs['shape'] = emphasized_matrix.shape
 
 max_genomic_distance = int(10_000_000 / resolution) + 1
 base_input_dir = f'{output_directory}/hicluster_{resolution_label}_raw_dir/'
-base_output_raw_correlation_dir = f'{output_directory}/hic_{resolution_label}_correlation_dir/'
-base_output_emphasized_correlation_dir = f'{output_directory}/hic_{resolution_label}_emphasized_correlation_dir/'
+base_output_emphasized_dir = f'{output_directory}/hic_{resolution_label}_emphasized_dir/'
 
 for i in range(1, 23):  
     chromosome = f'chr{i}'
     input_dir = base_input_dir + f'{chromosome}'
-    output_raw_correlation_dir = base_output_raw_correlation_dir + f'{chromosome}'
-    output_emphasized_correlation_dir = base_output_emphasized_correlation_dir + f'{chromosome}'
-    process_matrices(input_dir, output_raw_correlation_dir, output_emphasized_correlation_dir, max_genomic_distance)
+    output_emphasized_dir = base_output_emphasized_dir + f'{chromosome}'
+    process_matrices(input_dir, output_emphasized_dir, max_genomic_distance)
 

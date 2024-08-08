@@ -44,14 +44,6 @@ else:
     # Ensure the output directory exists
     os.makedirs(methy_output_dir, exist_ok=True)
 
-    # Function to normalize each column of a matrix so that each column has a norm of one.
-    def normalize_matrix_columns(A):
-        column_norms = np.linalg.norm(A, axis=0)
-        if np.any(column_norms == 0):
-            raise ValueError("One or more columns have zero norm. Cannot normalize those columns.")
-        normalized_A = A / column_norms
-        return normalized_A
-
     # Function to calculate the matrix from a compressed file.
     def calculate_matrix(file_path):
         data = []
@@ -77,7 +69,7 @@ else:
             chromosome_lengths[chrom] = int(length)
 
     # Normalize the methylation matrix columns
-    methylation_matrix = normalize_matrix_columns(calculate_matrix(methy_matrix_path))
+    methylation_matrix = calculate_matrix(methy_matrix_path)
     print(f'methylation matrix shape at resolution {resolution_label}')
     print(methylation_matrix.shape)
 

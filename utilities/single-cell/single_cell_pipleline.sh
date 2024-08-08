@@ -66,7 +66,6 @@ fi
 #[TO DO: need to decide if imputation and emphasis and merging will happen]
 python make_combined_methy_hic_tensor_single_cell.py
 
-
 #compute the AB compartments for each cell, display results
 
 #cluster cells

@@ -4,6 +4,13 @@ Hypermatrix is a command-line tool designed for the integration of multi-omics d
 
 Advancements in single-cell multi-omics technologies have enabled the simultaneous measurement of various omics modalities within individual cells. Integrating multi-omics data while preserving the interaction information between different modalities remains an open challenge. Traditional methods lose critical interaction information by applying matrix methods. To address this, this project proposes a Non-Negative Tensor Factorization (NTF) model for multi-omics integration called HYPERMATRIX.
 
+## Visualization
+
+Below is the heatmap comparing the bulk eigenvectors of GM12878 and IMR90 with single-cell compartment calls:
+
+![Eigenvectors Heatmap](files/AB_compartment_heatmap.png)
+
+
 ## Installation
 
 ### Prerequisites

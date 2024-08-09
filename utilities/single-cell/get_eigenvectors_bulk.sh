@@ -4,26 +4,31 @@
 eval $(python3 config_and_print.py)
 
 # Download the GM12878 hic file if it doesn't already exist
-hic_GM12878_file="../../bin/softwarefiles/GSE63525_GM12878.hic"
+hic_GM12878_file="../../bin/softwarefiles/GSE63525_GM12878_30.hic"
 if [ ! -f "$hic_GM12878_file" ]; then
     wget $hic_GM12878_url -O "$hic_GM12878_file"
 fi
 
 # Download the IMR90 hic file if it doesn't already exist
-hic_IMR90_file="../../bin/softwarefiles/GSE63525_IMR90.hic"
+hic_IMR90_file="../../bin/softwarefiles/GSE63525_IMR90_30.hic"
 if [ ! -f "$hic_IMR90_file" ]; then
     wget $hic_IMR90_url -O "$hic_IMR90_file"
 fi
 
-path_to_jar="../../projects/softwarefiles/juicer_tools_1.22.01.jar"
+path_to_jar="../../bin/softwarefiles/juicer_tools_1.22.01.jar"
 
 # Check and run the Java commands only if the files do not already exist
 for resolution in ${resolutions[@]}; do
     for chromosome in ${chromosomes[@]}; do
         for data in ${data_types[@]}; do
-            for prefix in ['GM12878', 'IMR90']
-                path_to_new_hic="../../bin/softwarefiles/GSE63525_${prefix}IMR90.hic"
-                eigenvector_directory="${output_directory}eigenvector/"
+            for prefix in GM12878 IMR90; do
+                if [ "$prefix" == "GM12878" ]; then
+                    path_to_hic="$hic_GM12878_file"
+                else
+                    path_to_hic="$hic_IMR90_file"
+                fi
+
+                eigenvector_directory="${output_directory}/eigenvector/"
                 mkdir -p $eigenvector_directory
                 path_to_new_eigenvector="${eigenvector_directory}res${resolution}_ch${chromosome}_${data}_${prefix}_KR_eigenvector.txt"
 
@@ -34,6 +39,8 @@ for resolution in ${resolutions[@]}; do
                 else
                     echo "Eigenvector file already exists: $path_to_new_eigenvector"
                 fi
+            done
         done
     done
-done	
+done
+	

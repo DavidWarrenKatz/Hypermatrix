@@ -6,7 +6,7 @@
 # [TO DO: everything runs in sequence, rewrite to make it run in parallel]
 # [TO DO: need to replicate the KR normalization from bulk]
 
-<<comment
+
 # Run the Python script and source the output to import the variables
 # each individual file still needs to import these variables as well
 eval "$(python3 config_and_print.py)"
@@ -102,25 +102,20 @@ else
   echo "Unzipping completed."
 fi
 
+<<comment
 #compute the AB compartments for each cell, display results
 # Load the necessary modules
 module load matlab/r2022b
 
 # Execute the MATLAB script
 matlab -nodisplay -r "run('get_AB_single_cell_structured_data.m'); exit;"
-comment
 
 # Download the dark regions file if it doesn't already exist
 dark_regions_file="../../bin/softwarefiles/dark_regions_hg19.bigWig"
 if [ ! -f "$dark_regions_file" ]; then
     wget $dark_regions_hg19_url -O "$dark_regions_file"
 fi
-
-short_form_directory="${output_directory}/hicFiles/short_score_textform/"
-mkdir -p $short_form_directory # mkdir if it doesn't exist
-
-eigenvalue_directory="${output_directory}/eigenvalues"
-mkdir -p $eigenvalue_directory # mkdir if it doesn't exist
+comment
 
 chmod +x get_eigenvectors_bulk.sh 
 ./get_eigenvectors_bulk.sh

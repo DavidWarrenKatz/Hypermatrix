@@ -6,7 +6,7 @@ Advancements in single-cell multi-omics technologies have enabled the simultaneo
 
 ## Visualization
 
-Below is the heatmap comparing the bulk eigenvectors of GM12878 and IMR90 with single-cell compartment calls:
+Below is the heatmap comparing the bulk eigenvectors of GM12878 and IMR90 with single-cell compartment calls. The first 38 cells are GM12878.
 
 ![Eigenvectors Heatmap](files/AB_compartment_heatmap.png)
 

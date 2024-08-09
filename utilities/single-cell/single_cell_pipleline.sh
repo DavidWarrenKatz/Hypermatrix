@@ -102,7 +102,6 @@ else
   echo "Unzipping completed."
 fi
 
-<<comment
 #compute the AB compartments for each cell, display results
 # Load the necessary modules
 module load matlab/r2022b
@@ -115,7 +114,7 @@ dark_regions_file="../../bin/softwarefiles/dark_regions_hg19.bigWig"
 if [ ! -f "$dark_regions_file" ]; then
     wget $dark_regions_hg19_url -O "$dark_regions_file"
 fi
-comment
+
 
 chmod +x get_eigenvectors_bulk.sh 
 ./get_eigenvectors_bulk.sh

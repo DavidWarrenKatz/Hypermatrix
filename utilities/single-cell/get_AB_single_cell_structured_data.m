@@ -60,8 +60,8 @@ for j = 1:numel(chromosomes)
             
             % Construct file paths
             tensor_file_path = sprintf('%s/hic_methy_%s_tensor_singlecell/%s/%s_%s.h5', output_directory, label, chromosome, prefix, chromosome);
-            output_file_U = sprintf('%s/tensor_%s_AB_calls/%s/%s_compartment.h5', output_directory, label, chromosome, prefix);
-            output_file_V = sprintf('%s/tensor_%s_AB_calls/%s/%s_weights.h5', output_directory, label, chromosome, prefix);
+            output_file_U = sprintf('%s/tensor_%s_AB_factors/%s/%s_weights.h5', output_directory, label, chromosome, prefix);
+            output_file_V = sprintf('%s/tensor_%s_AB_factors/%s/%s_compartments.h5', output_directory, label, chromosome, prefix);
 
             % Ensure output directories exist
             [output_dir_U, ~, ~] = fileparts(output_file_U);
@@ -108,8 +108,8 @@ for j = 1:numel(chromosomes)
                 V = sol.factors.V;
                 
                 % Create and write to the HDF5 files
-                output_dataset_U = '/U';
-                output_dataset_V = '/V';
+                output_dataset_U = '/weights';
+                output_dataset_V = '/compartment_factors';
                 
                 h5create(output_file_U, output_dataset_U, size(U));
                 h5write(output_file_U, output_dataset_U, U);

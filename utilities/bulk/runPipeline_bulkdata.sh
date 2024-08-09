@@ -24,13 +24,13 @@ individual_workspace_directory="${data_path}Workspaces/individual/"
 mkdir -p $individual_workspace_directory # mkdir if it doesn't exist
 
 # Download the dark regions file if it doesn't already exist
-dark_regions_file="../projects/softwarefiles/dark_regions_hg19.bigWig"
+dark_regions_file="../../bin/softwarefiles/dark_regions_hg19.bigWig"
 if [ ! -f "$dark_regions_file" ]; then
     wget $dark_regions_hg19_url -O "$dark_regions_file"
 fi
 
 # Download the H3K4me3 file if it doesn't already exist
-H3K4me3_file="../projects/softwarefiles/H3K4me3.bigwig"
+H3K4me3_file="../../bin/softwarefiles/H3K4me3.bigwig"
 if [ ! -f "$H3K4me3_file" ]; then
     wget $H3K4me3_GM12878_hg19_url -O "$H3K4me3_file"
 fi
@@ -45,8 +45,8 @@ python process_hic_files_cumulant.py "$data_path" "$resolutions_list" "$chromoso
 
 #Check to make sure tensorlab is available
 # Define the paths
-zip_file="../projects/softwarefiles/tensorlab/tensorlab_2016-03-28.zip"
-unzip_dir="../projects/softwarefiles/tensorlab/"
+zip_file="../../bin/softwarefiles/tensorlab/tensorlab_2016-03-28.zip"
+unzip_dir="../../bin/softwarefiles/tensorlab/"
 
 # Check if the zip file exists
 if [ ! -f "$zip_file" ]; then

@@ -30,7 +30,7 @@ def get_dark_bins(chromosome, resolution, bigwig):
 
 
 # Open the BigWig file for dark regions
-dark_regions_file = "../projects/softwarefiles/dark_regions_hg19.bigWig"
+dark_regions_file = "../../bin/softwarefiles/dark_regions_hg19.bigWig"
 bw = pyBigWig.open(dark_regions_file)
 
 for resolution in resolutions:

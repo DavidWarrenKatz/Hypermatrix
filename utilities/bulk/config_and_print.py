@@ -1,7 +1,7 @@
 # config_and_print.py
 import scipy.io
 
-data_path = '../projects/GSE63525/GM12878/'
+data_path = '../../projects/GSE63525/GM12878/'
 resolutions = [1000000]
 chromosomes = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22']
 data_types = ['oe']

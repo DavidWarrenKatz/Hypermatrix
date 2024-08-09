@@ -18,7 +18,13 @@ cluster_compartments = False
 cumulant = False
 iterations = 400
 chromosomes = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22']
+dark_regions_hg19_url = 'https://www.encodeproject.org/files/ENCFF000EHJ/@@download/ENCFF000EHJ.bigWig'
+mappability_threshold = 0.6
 
+data_types = ['oe']
+genomeID = "hg19"
+hic_GM12878_url = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63525/suppl/GSE63525%5FGM12878%5Finsitu%5Fprimary%2Breplicate%5Fcombined%5F30%2Ehic"
+hic_IMR90_url = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63525/suppl/GSE63525%5FIMR90%5Fcombined%5F30.hic"
 
 config = {
     "bam_directory": bam_directory,
@@ -37,7 +43,13 @@ config = {
     "cluster_compartments": cluster_compartments,
     "cumulant": cumulant,
     "iterations": iterations,
-    "chromosomes": chromosomes
+    "chromosomes": chromosomes,
+    "dark_regions_hg19_url": dark_regions_hg19_url,
+    "mappability_threshold": mappability_threshold,
+    "data_types": data_types,
+    "genomeID": genomeID,
+    "hic_GM12878_url": hic_GM12878_url,
+    "hic_IMR90_url": hic_IMR90_url
 }
 
 scipy.io.savemat('config.mat', config)

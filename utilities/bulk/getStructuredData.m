@@ -1,5 +1,5 @@
 % getStructuredData.m
-addpath(genpath('../projects/softwarefiles/tensorlab'));
+addpath(genpath('../../projects/softwarefiles/tensorlab'));
 
 % Load configuration file
 config = load('config.mat');

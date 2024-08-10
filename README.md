@@ -2,7 +2,7 @@
 
 Hypermatrix is a command-line tool designed for the integration of multi-omics data. The `ABcluster` command inputs single-cell CpG methylation and chromosome conformation information to perform cell-type clustering, A/B compartment calls, and TAD boundary calls for each cell. Example data to input into this command is the sn-m3C-seq technique described in Dong-Sung Lee et al. (Nature Methods, 2019) and the single-cell version of NOMe-HiC described in Hailu Fu et al. (Genome Biology, 2023). The `differentiate_chromosomes` command differentiates between the homologous chromosomes and determines if B compartments are lamina-associated.
 
-Advancements in single-cell multi-omics technologies have enabled the simultaneous measurement of various omics modalities within individual cells. Integrating multi-omics data while preserving the interaction information between different modalities remains an open challenge. Traditional methods lose critical interaction information by applying matrix methods. To address this, this project proposes a Non-Negative Tensor Factorization (NTF) model for multi-omics integration called HYPERMATRIX.
+Advancements in single-cell multi-omics technologies have enabled the simultaneous measurement of various omics modalities within individual cells. Integrating multi-omics data while preserving the interaction information between different modalities remains an open challenge. Traditional methods lose critical interaction information by applying matrix methods. To address this, this project proposes a Non-Negative Tensor Factorization (NTF) model for multi-omics integration called 'Hypermatrix'.
 
 ## Visualization
 

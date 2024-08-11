@@ -134,6 +134,7 @@ def process_tensor(methy_file_path, hic_path, output_tensor_path):
         hic_matrix = make_matrix_non_negative(csr_pearson_correlation(hic_matrix).toarray())
     
         # Normalize each matrix so that each column has a norm of 1
+        # not sure if this is adding bias
         hic_matrix = normalize_matrix_columns(hic_matrix)
         methy_matrix = normalize_matrix_columns(methy_matrix)
     

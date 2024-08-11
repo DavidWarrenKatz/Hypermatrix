@@ -60,7 +60,7 @@ python make_hic_matrices.py
 
 # Make the hic cumulants if cumulant is set to True
 #[TO DO: make this file]
-if [ "$cluster_compartments" = "True" ]; then
+if [ "$cumulant" = "True" ]; then
 python make_hic_cumulant.py
 fi
 

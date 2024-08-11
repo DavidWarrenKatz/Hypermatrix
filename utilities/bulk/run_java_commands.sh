@@ -5,7 +5,7 @@ resolution=$2
 chromosome=$3
 data=$4
 
-path_to_jar="../../projects/softwarefiles/juicer_tools_1.22.01.jar"
+path_to_jar="../../bin/softwarefiles/juicer_tools_1.22.01.jar"
 short_form_directory="${data_path}hicFiles/short_score_textform/"
 path_to_short_form="${short_form_directory}shortScore_res${resolution}_ch${chromosome}_${data}_KR.txt"
 hic_directory="${data_path}hicFiles/individual/"

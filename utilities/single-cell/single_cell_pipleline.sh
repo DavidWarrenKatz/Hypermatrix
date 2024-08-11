@@ -115,9 +115,15 @@ if [ ! -f "$dark_regions_file" ]; then
     wget $dark_regions_hg19_url -O "$dark_regions_file"
 fi
 
+#Create dark bins file if it does not already exist
+python create_dark_bins.py
 
 chmod +x get_eigenvectors_bulk.sh 
 ./get_eigenvectors_bulk.sh
+
+python make_AB_compartments.py
+
+#create AB compartment calls
 
 #cluster cells
 

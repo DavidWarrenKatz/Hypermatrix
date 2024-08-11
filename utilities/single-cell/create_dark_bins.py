@@ -7,23 +7,11 @@
 # imports
 ############################################
 
-import pyBigWig
-import scipy.io as sio
-import numpy as np
-import math 
-import matplotlib.pyplot as plt
 import os
-import pandas as pd
-from heapq import nlargest
-import copy
-import matplotlib.gridspec as gridspec
-import pandas as pd
-import pickle
-import seaborn as sns
-import h5py
-from scipy.stats import pearsonr
-from config_and_print import methy_directory, filtered_list, chrom_file, resolutions, output_directory, mappability_threshold
-#chromosomes = [f'chr{chrom}' for chrom in chromosomes]
+import math
+import numpy as np
+import pyBigWig
+from config_and_print import resolutions, output_directory, mappability_threshold
 
 # Ensure resolutions is treated as a tuple or list of strings
 if isinstance(resolutions, str):

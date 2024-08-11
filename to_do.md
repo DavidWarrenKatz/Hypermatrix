@@ -5,7 +5,7 @@
 - [ ] Make command-line callable.
 - [ ] Create a function to find differentially expressed regions for KR normalized runs.
 - [ ] Add the clustering cells pipeline code.
-- [ ] Write the SNIPS code
+- [ ] Write the SNPS code
 
 ## Task 2: differentiate_chromosomes
 - [ ] Process the interchromosomal contacts separately with a flag, so the pipeline does not have to run on the genome-wide tensor.

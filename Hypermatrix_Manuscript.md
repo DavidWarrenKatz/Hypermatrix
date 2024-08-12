@@ -9,34 +9,6 @@ If successful, this model will provide a powerful alternative to existing method
 **Background on the NTF Model**   
 A matrix is more than a collection of vectors. The equality of row rank and column rank (Figure 1\) illustrates that there is a fundamental relationship between the rows and columns of a matrix. Information encoded in this relationship, such as eigenvalues, is lost when a matrix is reorganized as a vector. Similarly, if data can more naturally be viewed in three separate but interconnected ways \- as rows, columns, and pillars \- then information is lost when the data is organized as a matrix or as a collection of matrices. In this situation, it is more appropriate to organize the data as a 3-fold tensor (Figure 2).   
 
-<table>
-  <tr>
-    <td style="width: 100px;"></td> <!-- Empty cell to add space -->
-    <td><img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1" width="400"></td>
-    <td><img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2" width="300"></td>
-  </tr>
-</table>
-
-<div style="text-align: left;">
-  <img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1" width="400" style="padding-left: 100px;">
-  <img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2" width="300" style="padding-left: 100px;">
-</div>
-
-<div style="margin-left: 100px;">
-  <img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1" width="400">
-  <img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2" width="300">
-</div>
-
-<div style="text-align: right;">
-  <img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1" width="400">
-  <img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2" width="300">
-</div>
-
-<div style="text-align: center;">
-  <img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1" width="400">
-  <img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2" width="300">
-</div>
-
 <div style="text-align: center;">
   <table style="margin: 0 auto;">
     <tr>
@@ -44,11 +16,6 @@ A matrix is more than a collection of vectors. The equality of row rank and colu
       <td><img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2" width="300"></td>
     </tr>
   </table>
-</div>
-
-<div style="display: flex; justify-content: center; align-items: center;">
-  <img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1" width="500">
-  <img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2" width="300">
 </div>
 
 A *d*\-fold tensor is an array of numbers that extends across *d* dimensions. It generalizes the concept of a matrix, which is a *2*\-fold tensor. A matrix is usually considered as a coordinatization of a linear mapping between vector spaces. This perspective highlights the serious shortcoming of matrices. Namely, matrices can only encode linear or degree two relationships in data. This shortcoming is inherent to all matrix methods since this limitation is inherent to matrices as a data structure. On the other hand, a tensor encodes multidimensional relationships in data. For example, a 3-fold tensor encodes the degree three information encoded in the relationship between the rows, columns, and pillars of the 3-fold tensor.  

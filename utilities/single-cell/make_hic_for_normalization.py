@@ -31,8 +31,21 @@ normalization_method = normalization  # Set to "KR" for Knight-Ruiz or "ICE" for
 # List of autosomal chromosomes
 chromosomes = [str(i) for i in range(1, 23)]  # Chromosomes 1 to 22
 
-# Function to convert the short-form file to HiC Short format with score
+# Phase 1: Create all .hic files in a dictionary
+def create_all_hic_files():
+    hic_files = {}
+    for chromosome in chromosomes:
+        for dataset in datasets:
+            hic_file = create_hic_file(chromosome, dataset)
+            hic_files[(chromosome, dataset)] = hic_file
+    return hic_files
+
 def convert_to_hic_short_format(input_file, chrom, output_file, resolution):
+    # Check if the formatted file already exists
+    if os.path.exists(output_file):
+        print(f"Formatted file already exists: {output_file}. Skipping conversion.")
+        return  # Skip the conversion if the file exists
+    
     with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
         for line in infile:
             parts = line.strip().split()
@@ -56,15 +69,6 @@ def convert_to_hic_short_format(input_file, chrom, output_file, resolution):
             outfile.write(f"{str1} {chr1} {pos1} {frag1} {str2} {chr2} {pos2} {frag2} {score}\n")
 
     print(f"Conversion completed: {output_file}")
-
-# Phase 1: Create all .hic files in a dictionary
-def create_all_hic_files():
-    hic_files = {}
-    for chromosome in chromosomes:
-        for dataset in datasets:
-            hic_file = create_hic_file(chromosome, dataset)
-            hic_files[(chromosome, dataset)] = hic_file
-    return hic_files
 
 # Function to create .hic file from short format with the selected normalization method
 def create_hic_file(chromosome, dataset):

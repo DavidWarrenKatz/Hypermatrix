@@ -5,7 +5,8 @@
 # images for comparison.
 # [TO DO: everything runs in sequence, rewrite to make it run in parallel]
 # [TO DO: need to replicate the KR normalization from bulk]
-
+# [TO DO: add sex chromosomes and contigs and mitochondrial DNA analysis]
+# sex chromosomes will be important for differentiat chromosomes command.
 
 # Run the Python script and source the output to import the variables
 # each individual file still needs to import these variables as well

@@ -12,7 +12,7 @@ A matrix is more than a collection of vectors. The equality of row rank and colu
 <div style="text-align: center;">
   <table style="margin: 0 auto;">
     <tr>
-      <td><img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1" width="300"></td>
+      <td><img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1" width="500"></td>
       <td><img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2" width="300"></td>
     </tr>
   </table>

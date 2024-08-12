@@ -96,7 +96,7 @@ def create_hic_file(chromosome, dataset):
     # Retry mechanism
     max_retries = 10
     for i in range(max_retries):
-        if is_valid_hic_file(hic_file) and validate_hic_file(hic_file):
+        if is_valid_hic_file(hic_file) and validate_hic_file(hic_file, chromosome):
             print(f"HIC file successfully created: {hic_file}")
             return hic_file
         else:

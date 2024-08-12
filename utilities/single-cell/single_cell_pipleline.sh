@@ -68,9 +68,9 @@ python make_hic_cumulant.py
 fi
 
 #Make the combined tensor for each cell
-#[TO DO: need to decide if imputation and emphasis and merging will happen]
+#[TO DO: need to decide if imputation and emphasis and merging will happen]i
+#Right now, emphasis, correlation, shift
 python make_combined_methy_hic_tensor_single_cell.py
-
 
 #Check to make sure tensorlab is available
 # Define the paths

@@ -2,6 +2,7 @@
 # generate the interval bed file used in the methylation processing for scNome-Seq
 ##################################################################################
 
+import os
 from config_and_print import chrom_file, resolutions, output_directory, software_directory
 
 # Ensure resolutions is treated as a tuple or list of strings
@@ -36,7 +37,38 @@ def generate_interval_bed(chrom_size_file, resolution, output_bed_file):
                 end = min(start + resolution, size)
                 f_out.write(f"{chrom}\t{start}\t{end}\n")
 
-output_bed_file = f'hg19.common_chr.{resolution_label}_interval.autosome.bed'  # Output BED file
+# Define the output BED file path
+output_bed_file = os.path.join(output_directory, f'hg19.common_chr.{resolution_label}_interval.autosome.bed')
 
-generate_interval_bed(chrom_size_file, resolution, output_bed_file)
+# Check if the file already exists
+if os.path.exists(output_bed_file):
+    print(f"File '{output_bed_file}' already exists. Skipping the generation step.")
+else:
+    print(f"Generating interval BED file: '{output_bed_file}'")
+    generate_interval_bed(chrom_file, resolution, output_bed_file)
+    print(f"Interval BED file generated successfully: '{output_bed_file}'")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

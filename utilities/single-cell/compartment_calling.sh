@@ -31,7 +31,7 @@ fi
 # Uncompress the hg19.fa.gz file if it is not already uncompressed
 if [ ! -f "$software_directory/hg19.fa" ]; then
   echo "Uncompressing hg19.fa.gz..."
-  gunzip "$software_directory/hg19.fa.gz"
+  gunzip -d "$software_directory/hg19.fa.gz"
 else
   echo "hg19.fa already exists in the software directory."
 fi
@@ -47,9 +47,9 @@ for pair in "${resolutionArray[@]}"; do
     IFS=':' read -r resolution label <<< "$pair"
     # Create the output directory variable for the current resolution
     if [ "$impute" = "True" ]; then
-        dir="./hicluster_${label}_impute_dir/bins"
+        dir="${output_directory}/hicluster_${label}_impute_dir/bins"
     else
-        dir="./hic_${label}_raw_dir/bins"
+        dir="${output_directory}/hic_${label}_raw_dir/bins"
     fi
     
     # Create the directory
@@ -67,11 +67,11 @@ for pair in "${resolutionArray[@]}"; do
     IFS=':' read -r resolution label <<< "$pair"
     # Concatenate and sort all chromosome BED files into a single file for the current resolution
     # Sorting is based on chromosome number and start position
-    cat ./hicluster_${label}_impute_dir/bins/chr*.bedi | sort -k1,1 -k2,2n > ./hicluster_${label}_impute_dir/bins/hg19.${label}_bin.bed
+    cat $dir/bins/chr*.bedi | sort -k1,1 -k2,2n > $dir/bins/hg19.${label}_bin.bed
     
     # Use bedtools to calculate CG density for the segments defined in the sorted BED file
     # This requires a reference genome file and the sorted BED file as inputs
-    bedtools nuc -fi $software_directory/genomes/ucsc_hg19/hg19.fa -bed $output_directory/hicluster_${label}_impute_dir/bins/hg19.${label}_bin.bed -pattern CG -C > $output_directory/hicluster_${label}_impute_dir/bins/hg19.${label}_bin.cg_density.bed
+    bedtools nuc -fi $hg19_fa_path -bed $dir/bins/hg19.${label}_bin.bed -pattern CG -C > $dir/bins/hg19.${label}_bin.cg_density.bed
 done
 
 # Execute the hicluster comp-cpg-cell command

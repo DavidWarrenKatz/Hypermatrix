@@ -5,6 +5,10 @@
 
 eval "$(python3 config_and_print.py)"
 
+# Source the conda environment setup script
+# NEED TO UPDATE THIS SO THAT IT WORKS ON OTHER MACHINES
+source /software/miniconda3/4.12.0/etc/profile.d/conda.sh
+
 schicluster_env=schicluster2
 bisulfite_env=bisulfitehic27
 
@@ -19,7 +23,7 @@ echo "Python path in bisulfite_env: $bisulfite_env_python_path"
 # First, check if the hg19.fa.gz file exists in the software directory
 if [ ! -f "$software_directory/hg19.fa.gz" ]; then
   echo "Downloading hg19.fa.gz into the software directory..."
-  wget -P $software_directory $hg19_fa_url 
+  wget --no-passive-ftp -P $software_directory $hg19_fa_url 
 else
   echo "hg19.fa.gz already exists in the software directory."
 fi
@@ -35,18 +39,26 @@ fi
 # Path to the downloaded and uncompressed hg19 reference genome
 hg19_fa_path="$software_directory/hg19.fa"
 
+# I beleive the scHiCluster code recommends using the imputed matrix, but I am not doing that here
 # Split the resolutions string into an array and iterate over it
 IFS=',' read -r -a resolutionArray <<< "$resolutions"
 for pair in "${resolutionArray[@]}"; do
     # Split each pair into resolution and label
     IFS=':' read -r resolution label <<< "$pair"
-    # Create the output directory for the current resolution
-    mkdir -p "./hicluster_${label}_impute_dir/bins"
-    echo "Created directory: ./hicluster_${label}_impute_dir/bins"
+    # Create the output directory variable for the current resolution
+    if [ "$impute" = "True" ]; then
+        dir="./hicluster_${label}_impute_dir/bins"
+    else
+        dir="./hic_${label}_raw_dir/bins"
+    fi
+    
+    # Create the directory
+    mkdir -p "$dir"
+    echo "Created directory: $dir"    
 done
 
 # Execute the Python script                                                                                            
-python process_chromsizes.py
+python process_chromsizes.py $dir
 
 # Split the resolutions string into an array and iterate over it
 IFS=',' read -r -a resolutionArray <<< "$resolutions"

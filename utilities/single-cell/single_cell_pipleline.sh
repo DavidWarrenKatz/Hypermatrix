@@ -29,16 +29,6 @@ chmod +x filter_bw.sh
 chmod +x update_filted_list.sh
 ./update_filted_list.sh
 
-# Make single cells KR normalized if normalization is not NONE
-# [TO DO: need to get this working]
-if [ "$normalization" != "NONE" ]; then
-    echo "Normalization is set to $normalization. Running make_hic_for_normalization.py..."
-    python make_hic_for_normalization.py
-else
-    echo "Normalization is set to NONE. Skipping normalization step."
-fi
-
-<<comment
 # Execute the make pairwise contact script
 chmod +x make_pairwise_contact_format_from_bam.sh
 ./make_pairwise_contact_format_from_bam.sh
@@ -52,6 +42,17 @@ chmod +x preprocess_for_hic_cluster.sh
 #imputed directories
 chmod +x make_juicer_short_format.sh
 ./make_juicer_short_format.sh
+
+# Make single cells KR normalized if normalization is not NONE
+# [TO DO: need to get this working]
+if [ "$normalization" != "NONE" ]; then
+    echo "Normalization is set to $normalization. Running make_hic_for_normalization.py..."
+    #python make_hic_for_normalization.py
+    chmod +x make_hic_for_normalization.sh
+    ./make_hic_for_normalization.sh
+else
+    echo "Normalization is set to NONE. Skipping normalization step."
+fi
 
 # Execute the compartment calling scripts from scHICluster
 # [TO DO: need to get this working]
@@ -150,5 +151,4 @@ python make_AB_compartments.py
 #if cumulnat flag is TRUE, need to repeat the clustering and calls 
 #with 3rd degree cumulants
 
-comment
 

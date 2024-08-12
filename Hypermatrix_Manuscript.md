@@ -9,6 +9,11 @@ If successful, this model will provide a powerful alternative to existing method
 **Background on the NTF Model**   
 A matrix is more than a collection of vectors. The equality of row rank and column rank (Figure 1\) illustrates that there is a fundamental relationship between the rows and columns of a matrix. Information encoded in this relationship, such as eigenvalues, is lost when a matrix is reorganized as a vector. Similarly, if data can more naturally be viewed in three separate but interconnected ways \- as rows, columns, and pillars \- then information is lost when the data is organized as a matrix or as a collection of matrices. In this situation, it is more appropriate to organize the data as a 3-fold tensor (Figure 2).   
 
+<div style="text-align: left;">
+  <img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1" width="400" style="padding-left: 100px;">
+  <img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2" width="300" style="padding-left: 100px;">
+</div>
+
 <div style="margin-left: 100px;">
   <img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1" width="400">
   <img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2" width="300">

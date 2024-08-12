@@ -12,15 +12,6 @@ A matrix is more than a collection of vectors. The equality of row rank and colu
 | ![Figure 1: Illustration of row rank and column rank equality](files/row_rank_equals_column_rank_example.png) | ![Figure 2: Illustration of a 3-fold tensor](files/2_by_2_2_Tensor_Example.png) |
 |:------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------:|
 
-<div style="display: flex;">
-  <div style="flex: 1;">
-    <img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1: Illustration of row rank and column rank equality" width="200" height="auto">
-  </div>
-  <div style="flex: 1;">
-    <img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2: Illustration of a 3-fold tensor" width="200" height="auto">
-  </div>
-</div>
-
 A *d*\-fold tensor is an array of numbers that extends across *d* dimensions. It generalizes the concept of a matrix, which is a *2*\-fold tensor. A matrix is usually considered as a coordinatization of a linear mapping between vector spaces. This perspective highlights the serious shortcoming of matrices. Namely, matrices can only encode linear or degree two relationships in data. This shortcoming is inherent to all matrix methods since this limitation is inherent to matrices as a data structure. On the other hand, a tensor encodes multidimensional relationships in data. For example, a 3-fold tensor encodes the degree three information encoded in the relationship between the rows, columns, and pillars of the 3-fold tensor.  
 A 3-fold rank one tensor is a 3-fold tensor whose rows span a one-dimensional vector space. A *d*\-fold rank one tensor is defined equivalently.  Every tensor is the sum of rank one tensors, and the rank of a tensor *B* is the minimum natural number *n* such that *B* is equal to the sum of *n* rank one tensors. Note that the rows of a 3-fold tensor span a one-dimensional vector space if and only if the columns and the pillars of the tensor span one-dimensional vector spaces as well. It is in this sense that rank one tensors are a natural class of simplest nontrivial tensors. Thus, the rank of a tensor is a natural measurement of a tensor’s complexity.   
 Low-rank tensor factorization decomposes a tensor as the sum of *r* rank one tensors for some natural number *r*. These rank one components are naturally interpreted as latent factors that best explain the information encoded in the relationships between the slices of the tensor. Hence, low-rank tensor factorization is an algorithm that extracts latent features from a tensor while preserving the relationships between the rows, columns, and pillars of a tensor, as well as preserving the information encoded in the relationships between all of the other slices of a tensor.   

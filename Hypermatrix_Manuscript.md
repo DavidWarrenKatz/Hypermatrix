@@ -11,10 +11,10 @@ A matrix is more than a collection of vectors. The equality of row rank and colu
 
 <div style="display: flex;">
   <div style="flex: 1;">
-    <img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1: Illustration of row rank and column rank equality" width="400" height="auto">
+    <img src="files/row_rank_equals_column_rank_example.png" alt="Figure 1: Illustration of row rank and column rank equality" width="200" height="auto">
   </div>
   <div style="flex: 1;">
-    <img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2: Illustration of a 3-fold tensor" width="400" height="auto">
+    <img src="files/2_by_2_2_Tensor_Example.png" alt="Figure 2: Illustration of a 3-fold tensor" width="200" height="auto">
   </div>
 </div>
 

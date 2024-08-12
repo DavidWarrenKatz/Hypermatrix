@@ -1,0 +1,90 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox} % for boxed text
+\tcbuselibrary{skins} % for better skinning support
+
+% Increase the overall text width (optional)
+\usepackage[margin=1in]{geometry}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!black, title=Figure 1. Example of the Equality of Row Rank and Column Rank, left=5pt, right=5pt, top=10pt, bottom=10pt, enlarge right by=-.5mm]
+Consider the matrix $A$ defined as:
+\[
+A = \begin{bmatrix}
+    1 & \frac{3}{2} & 0 & 0 & 0\\
+    1 & 0 & \frac{1}{2} & 0 & 1\\
+    0 & 1 & 0 & 1 & 1 \\
+    0 & 0 & 1 & 3 & 5
+\end{bmatrix}
+\]
+
+\subsection*{Non-redundant Columns}
+The fourth and fifth columns of matrix $A$ can be expressed as linear combinations of the first three columns:
+\begin{align*}
+\begin{bmatrix}
+    0 \\
+    0 \\
+    1 \\
+    3
+\end{bmatrix} &= -\frac{3}{2} \begin{bmatrix}
+    1 \\
+    1\\
+    0 \\
+    0
+\end{bmatrix}
++ 1 \begin{bmatrix}
+    \frac{3}{2} \\
+    0\\
+    1 \\
+    0
+\end{bmatrix}
++ 3 \begin{bmatrix}
+    0 \\
+    \frac{1}{2}\\
+    0 \\
+    1
+\end{bmatrix}, \ \text{ and } \ 
+\begin{bmatrix}
+    0 \\
+    1 \\
+    1 \\
+    5
+\end{bmatrix} = 2 \begin{bmatrix}
+    0 \\
+    \frac{1}{2}\\
+    0 \\
+    1
+\end{bmatrix}
++ 1 \begin{bmatrix}
+    0 \\
+    0\\
+    1\\
+    3
+\end{bmatrix}
+\end{align*}
+Thus, $A$ has three non-redundant columns. 
+\subsection*{Non-redundant Rows}
+Similarly, the fourth row can be written in terms of the first three rows:
+\[
+\begin{bmatrix}
+    0 & 0 & 1 & 3 & 5
+\end{bmatrix}
+= -2 \begin{bmatrix}
+    1 & \frac{3}{2} & 0 &0 &0
+\end{bmatrix}
++ 2 \begin{bmatrix}
+    1 & 0 & \frac{1}{2} & 0 &1
+\end{bmatrix}
++ 3 \begin{bmatrix}
+    0 & 1 & 0 & 1 &1
+\end{bmatrix}
+\]
+Thus, $A$ has three non-redundant rows. 
+\subsection*{The number of non-redundant rows always equals the number of non-redundant columns}
+It is a remarkable observation that this is in fact always the case for matrices of real numbers. $\it{All}$ real matrices have the same maximum number of non-redundant rows and non-redundant columns. The equality of row rank and column rank makes it clear that a matrix is more than a collection of numbers. There is a fundamental relationship between the rows and columns of a matrix. 
+\end{tcolorbox}
+
+\end{document}

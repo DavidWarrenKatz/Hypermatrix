@@ -15,6 +15,9 @@ eval "$(python3 config_and_print.py)"
 chmod +x filter_bam.sh
 ./filter_bam.sh
 
+# Generate the interval bed file
+python generate_interval_bed.py
+
 # Execute the filter bigwig files script
 chmod +x filter_bw.sh
 ./filter_bw.sh

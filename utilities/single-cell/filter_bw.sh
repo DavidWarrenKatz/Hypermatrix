@@ -21,7 +21,7 @@ for key in "${!config[@]}"; do
 done
 
 # Configuration
-java_path="/home/dwk681/workspace/softwareFiles/java/jdk1.8.0_281/bin/java"
+java_path="../../bin/softwareFiles/java" #jk1.8.0_281
 java_opts="-Xmx18G"
 java_classpath="${config[software_directory]}/dnaaseUtils-0.14-jar-with-dependencies.jar:${config[software_directory]}/java-genomics-io.jar:${config[software_directory]}/igv.jar"
 main_class="main.java.edu.mit.compbio.utils.AlignMultiWigInsideBed"

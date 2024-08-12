@@ -68,7 +68,7 @@ for hic_file in $output_directory/sc*.hic_matrix.txt.gz; do
 
   for res in "${!resolutionMap[@]}"; do
     label=${resolutionMap[$res]}
-    outdir="$output_directory/hicluster_${label}_raw_dir/"
+    outdir="$output_directory/hic_${label}_raw_dir/"
     mkdir -p "$outdir"
 
     skip_computation=true

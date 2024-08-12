@@ -7,6 +7,7 @@
 # [TO DO: need to replicate the KR normalization from bulk]
 # [TO DO: add sex chromosomes and contigs and mitochondrial DNA analysis]
 # sex chromosomes will be important for differentiat chromosomes command.
+# Right now, o/e is only done in bulk data, no single cell pipeline
 
 # Run the Python script and source the output to import the variables
 # each individual file still needs to import these variables as well
@@ -28,6 +29,16 @@ chmod +x filter_bw.sh
 chmod +x update_filted_list.sh
 ./update_filted_list.sh
 
+# Make single cells KR normalized if normalization is not NONE
+# [TO DO: need to get this working]
+if [ "$normalization" != "NONE" ]; then
+    echo "Normalization is set to $normalization. Running make_hic_for_normalization.py..."
+    python make_hic_for_normalization.py
+else
+    echo "Normalization is set to NONE. Skipping normalization step."
+fi
+
+<<comment
 # Execute the make pairwise contact script
 chmod +x make_pairwise_contact_format_from_bam.sh
 ./make_pairwise_contact_format_from_bam.sh
@@ -138,3 +149,6 @@ python make_AB_compartments.py
 
 #if cumulnat flag is TRUE, need to repeat the clustering and calls 
 #with 3rd degree cumulants
+
+comment
+

@@ -38,7 +38,7 @@ def generate_interval_bed(chrom_size_file, resolution, output_bed_file):
                 f_out.write(f"{chrom}\t{start}\t{end}\n")
 
 # Define the output BED file path
-output_bed_file = os.path.join(output_directory, f'hg19.common_chr.{resolution_label}_interval.autosome.bed')
+output_bed_file = os.path.join(software_directory, f'hg19.common_chr.{resolution_label}_interval.autosome.bed')
 
 # Check if the file already exists
 if os.path.exists(output_bed_file):

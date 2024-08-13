@@ -1,10 +1,16 @@
 #!/bin/bash
 
 # Run the Python script and source the output to import the variables
-eval $(python3 config_and_print.py)
+eval "$(python3 config_and_print.py)"
 
 # Ensure that the chromosomes variable is split into an array
 IFS=',' read -r -a chromosomes <<< "${chromosomes}"
+
+declare -A resolutionMap
+for res in "${resolutions[@]}"; do
+  IFS=':' read -r -a keyValue <<< "$res"
+  resolutionMap[${keyValue[0]}]=${keyValue[1]}
+done
 
 # Download the GM12878 hic file if it doesn't already exist
 hic_GM12878_file="../../bin/softwarefiles/GSE63525_GM12878_30.hic"
@@ -21,8 +27,8 @@ fi
 path_to_jar="../../bin/softwarefiles/juicer_tools_1.22.01.jar"
 
 # Check and run the Java commands only if the files do not already exist
-for res_label in ${resolutions[@]}; do
-    resolution=$(echo $res_label | cut -d':' -f1)  # Extract just the numeric part of the resolution
+for res in "${!resolutionMap[@]}"; do
+    label=${resolutionMap[$res]}
     for chromosome in "${chromosomes[@]}"; do
         for data in ${data_types[@]}; do
             for prefix in GM12878 IMR90; do
@@ -34,10 +40,10 @@ for res_label in ${resolutions[@]}; do
 
                 eigenvector_directory="${output_directory}/eigenvector/"
                 mkdir -p $eigenvector_directory
-                path_to_new_eigenvector="${eigenvector_directory}res${resolution}_ch${chromosome}_${data}_${prefix}_KR_eigenvector.txt"
+                path_to_new_eigenvector="${eigenvector_directory}res${resolution}_ch${chromosome}_${data}_${prefix}_${normalization}_eigenvector.txt"
 
                 if [[ ! -f "$path_to_new_eigenvector" ]]; then
-                    eigenvector_command="java -jar ${path_to_jar} eigenvector -p NONE ${path_to_hic} ${chromosome} BP ${resolution} ${path_to_new_eigenvector}"
+                    eigenvector_command="java -jar ${path_to_jar} eigenvector -p ${normalization} ${path_to_hic} ${chromosome} BP ${resolution} ${path_to_new_eigenvector}"
                     echo "Running: $eigenvector_command"
                     $eigenvector_command
                 else

@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import scipy.sparse as sp
+import math
 from config_and_print import resolutions, output_directory, software_directory
 
 # Ensure resolutions is treated as a tuple or list of strings
@@ -38,8 +39,9 @@ def load_chromosome_sizes(file_path, resolution):
     with open(file_path, 'r') as f:
         for line in f:
             chrom, size = line.strip().split()
-            chrom_sizes[chrom] = int(size) // resolution
+            chrom_sizes[chrom] = math.ceil(int(size) / resolution)
     return chrom_sizes
+
 
 def load_sparse_matrix(file_path, shape):
     """
@@ -55,15 +57,28 @@ def load_sparse_matrix(file_path, shape):
     rows = []
     cols = []
     data = []
+    error_lines = []
     
     with open(file_path, 'r') as f:
-        for line in f:
-            row, col, value = map(int, line.strip().split())
-            if row <= 0 or col <= 0:
-                raise ValueError(f"Negative or zero row/column index found in file {file_path}: row={row}, col={col}")
-            rows.append(row)  
-            cols.append(col)  
-            data.append(value)
+        for i, line in enumerate(f):
+            try:
+                row, col, value = map(int, line.strip().split())
+                if row < 0 or col < 0:
+                    raise ValueError(f"Negative row/column index found: row={row}, col={col}")
+                rows.append(row)
+                cols.append(col)
+                data.append(value)
+            except ValueError as e:
+                error_message = f"Error in file {file_path} at line {i+1}: {str(e)}"
+                print(error_message)
+                error_lines.append(error_message)
+
+    if error_lines:
+        error_log_path = file_path.replace('.txt', '_error_log.txt')
+        with open(error_log_path, 'w') as error_log:
+            for error in error_lines:
+                error_log.write(f"{error}\n")
+        print(f"Errors encountered. Details saved in {error_log_path}")
 
     matrix = sp.csr_matrix((data, (rows, cols)), shape=shape)
     return matrix
@@ -121,4 +136,5 @@ chrom_sizes = load_chromosome_sizes(f"{software_directory}/hg19.autosome.chrom.s
 
 # Process all chromosomes
 process_all_chromosomes(chrom_sizes, resolution)
+
 

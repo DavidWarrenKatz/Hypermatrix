@@ -17,7 +17,7 @@ import pickle
 import seaborn as sns
 import h5py
 from scipy.stats import pearsonr
-from config_and_print import methy_directory, filtered_list, chrom_file, resolutions, output_directory, mappability_threshold
+from config_and_print import methy_directory, filtered_list, chrom_file, resolutions, output_directory, mappability_threshold, normalization
 #chromosomes = [f'chr{chrom}' for chrom in chromosomes]
 
 # Ensure resolutions is treated as a tuple or list of strings
@@ -124,10 +124,10 @@ bulk_data = {}
 path_to_eigenvectors = '../../projects/single_cell_files/eigenvector/'
 
 for i in range(1, 23):
-    file = path_to_eigenvectors + f'res{resolution}_ch{i}_oe_GM12878_KR_eigenvector.txt'
+    file = path_to_eigenvectors + f'res{resolution}_ch{i}_oe_GM12878_{normalization}_eigenvector.txt'
     key = os.path.splitext(os.path.basename(file))[0]  
     bulk_data[key] = pd.read_csv(file, header=None, names=['eigenvalue'])
-    file = path_to_eigenvectors + f'res{resolution}_ch{i}_oe_IMR90_KR_eigenvector.txt'
+    file = path_to_eigenvectors + f'res{resolution}_ch{i}_oe_IMR90_{normalization}_eigenvector.txt'
     key = os.path.splitext(os.path.basename(file))[0]  
     bulk_data[key] = pd.read_csv(file, header=None, names=['eigenvalue'])
     
@@ -188,7 +188,7 @@ else:
 #make sure each GM12878 eigenvector has positive value for active A compartment
 ################################################################################
 for i in range(1, 23):
-    key_gm12878 = f'res{resolution}_ch{i}_oe_GM12878_KR_eigenvector'
+    key_gm12878 = f'res{resolution}_ch{i}_oe_GM12878_{normalization}_eigenvector'
     chromosome_key = f'chr{i}'
     h3k9ac_df = pd.DataFrame(h3k9ac[chromosome_key], columns=['H3K9ac_signal'])
     
@@ -207,8 +207,8 @@ for i in range(1, 23):
 ################################################################################
 for i in range(1, 23):
     # Construct keys for GM12878 and IMR90
-    key_gm12878 = f'res{resolution}_ch{i}_oe_GM12878_KR_eigenvector'
-    key_imr90 = f'res{resolution}_ch{i}_oe_GM12878_KR_eigenvector'
+    key_gm12878 = f'res{resolution}_ch{i}_oe_GM12878_{normalization}_eigenvector'
+    key_imr90 = f'res{resolution}_ch{i}_oe_GM12878_{normalization}_eigenvector'
     
     # Retrieve DataFrames for GM12878 and IMR90
     df_gm12878 = bulk_data[key_gm12878]
@@ -246,8 +246,8 @@ original_bulk_data = copy.deepcopy(bulk_data)
 
 for i in range(1, 23):
     # Construct the keys for GM12878 and IMR90
-    key_gm12878 = f'res{resolution}_ch{i}_oe_GM12878_KR_eigenvector'
-    key_imr90 = f'res{resolution}_ch{i}_oe_IMR90_KR_eigenvector'
+    key_gm12878 = f'res{resolution}_ch{i}_oe_GM12878_{normalization}_eigenvector'
+    key_imr90 = f'res{resolution}_ch{i}_oe_IMR90_{normalization}_eigenvector'
     chrom = f'chr{i}'
 
     # Check if the chromosome exists in the bins_to_remove and in the data
@@ -358,7 +358,7 @@ for i in range(1, 23):
         else:
             sample_id = prefix  
             cell_type = updated_cell_color_dict.get(sample_id, 'GM12878')  # Default set to GM12878
-            key = f'res{resolution}_ch{i}_oe_{cell_type.upper()}_KR_eigenvector'  
+            key = f'res{resolution}_ch{i}_oe_{cell_type.upper()}_{normalization}_eigenvector'  
 
             print(f"Processing sample_id: {sample_id}, cell_type: {cell_type}, key: {key}, resolution {resolution}")
 
@@ -399,4 +399,14 @@ for i in range(1, 23):
     print(f"Finished processing {chromosome}, {results_df.shape[0]} rows added.")
     chromosome_results[chromosome] = results_df
                                                     
-                                                               
+# Save original_bulk_data to a file
+bulk_data_output_file = '../../projects/single_cell_files/original_bulk_data.pkl'
+with open(bulk_data_output_file, 'wb') as f:
+    pickle.dump(original_bulk_data, f)
+print(f"original_bulk_data saved to {bulk_data_output_file}")
+
+# Save chromosome_results to a file
+chromosome_results_output_file = '../../projects/single_cell_files/chromosome_results.pkl'
+with open(chromosome_results_output_file, 'wb') as f:
+    pickle.dump(chromosome_results, f)
+print(f"chromosome_results saved to {chromosome_results_output_file}")                                                               

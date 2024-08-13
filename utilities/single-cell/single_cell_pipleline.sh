@@ -45,7 +45,6 @@ chmod +x preprocess_for_hic_cluster.sh
 chmod +x make_juicer_short_format.sh
 ./make_juicer_short_format.sh
 
-<<comment
 # Make single cells KR normalized if normalization is not NONE
 if [ "$normalization" != "NONE" ]; then
     echo "Normalization is set to $normalization. Running make_hic_for_normalization.py..."
@@ -164,4 +163,3 @@ python make_AB_compartments.py
 #if cumulnat flag is TRUE, need to repeat the clustering and calls 
 #with 3rd degree cumulants
 
-comment

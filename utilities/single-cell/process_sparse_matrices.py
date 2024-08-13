@@ -92,7 +92,7 @@ def save_sparse_matrix(matrix, file_path):
             f.write(f"{row + 1}\t{col + 1}\t{value}\n")  # Convert back to one-based index
 
 def load_and_process_matrix(prefix, chromosome, shape):
-    file_path = f"{outout_directory}/chromosome/{prefix}_{chromosome}.txt"
+    file_path = f"{output_directory}/hic_{resolution_label}_raw_dir/{chromosome}/{prefix}_{chromosome}.txt"
     
     if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
         print(f"File {file_path} is missing or size zero. Unable to process.")
@@ -107,7 +107,7 @@ def load_and_process_matrix(prefix, chromosome, shape):
     return processed_matrix
 
 def process_all_chromosomes(chrom_sizes, resolution):
-    with open(f"{outout_directory}/filtered_bam_list.txt", "r") as file:
+    with open(f"{output_directory}/filtered_bam_list.txt", "r") as file:
         prefixes = file.read().splitlines()
 
     for chromosome, size in chrom_sizes.items():

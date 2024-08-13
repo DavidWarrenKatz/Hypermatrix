@@ -43,13 +43,25 @@ chmod +x preprocess_for_hic_cluster.sh
 chmod +x make_juicer_short_format.sh
 ./make_juicer_short_format.sh
 
+<<comment
 # Make single cells KR normalized if normalization is not NONE
-# [TO DO: need to get this working]
 if [ "$normalization" != "NONE" ]; then
     echo "Normalization is set to $normalization. Running make_hic_for_normalization.py..."
     #python make_hic_for_normalization.py
     chmod +x make_hic_for_normalization.sh
     ./make_hic_for_normalization.sh
+else
+    echo "Normalization is set to NONE. Skipping normalization step."
+fi
+comment
+
+#Some matrices will be too sparse for KR processing
+#This addiitional step will try to regularize them
+if [ "$normalization" != "NONE" ]; then
+    echo "Normalization is set to $normalization. Running process_sparse_matrices.py ..."
+    python process_sparse_matrices.py
+    chmod +x make_hic_for_normalization_afterprocessing.sh
+    ./make_hic_for_normalization_afterprocessing.sh
 else
     echo "Normalization is set to NONE. Skipping normalization step."
 fi

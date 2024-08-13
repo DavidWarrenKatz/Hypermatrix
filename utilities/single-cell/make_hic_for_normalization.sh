@@ -84,7 +84,6 @@ create_hic_file() {
 validate_hic_file() {
     hic_file=$1
     chrom=$2
-
     java -jar "$juicer_tools_path" dump observed NONE "$hic_file" "$chrom" "$chrom" BP "$resolution" /dev/null
     return $?
 }

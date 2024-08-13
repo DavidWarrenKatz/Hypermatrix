@@ -8,6 +8,8 @@
 # [TO DO: add sex chromosomes and contigs and mitochondrial DNA analysis]
 # sex chromosomes will be important for differentiat chromosomes command.
 # Right now, o/e is only done in bulk data, no single cell pipeline
+# re-write so that the code does not use hicluster to make bin 0-indexed short format from .hic files
+# the matrices produced by scHIcluster do not seem quite right. They are missing the diagonal for example
 
 # Run the Python script and source the output to import the variables
 # each individual file still needs to import these variables as well
@@ -53,7 +55,6 @@ if [ "$normalization" != "NONE" ]; then
 else
     echo "Normalization is set to NONE. Skipping normalization step."
 fi
-comment
 
 #Some matrices will be too sparse for KR processing
 #This addiitional step will try to regularize them
@@ -163,4 +164,4 @@ python make_AB_compartments.py
 #if cumulnat flag is TRUE, need to repeat the clustering and calls 
 #with 3rd degree cumulants
 
-
+comment

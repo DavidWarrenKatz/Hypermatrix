@@ -59,10 +59,12 @@ def load_sparse_matrix(file_path, shape):
     with open(file_path, 'r') as f:
         for line in f:
             row, col, value = map(int, line.strip().split())
-            rows.append(row - 1)  # Convert to zero-based index
-            cols.append(col - 1)  # Convert to zero-based index
+            if row <= 0 or col <= 0:
+                raise ValueError(f"Negative or zero row/column index found in file {file_path}: row={row}, col={col}")
+            rows.append(row)  
+            cols.append(col)  
             data.append(value)
-    
+
     matrix = sp.csr_matrix((data, (rows, cols)), shape=shape)
     return matrix
 
@@ -89,7 +91,7 @@ def save_sparse_matrix(matrix, file_path):
     coo_matrix = matrix.tocoo()
     with open(file_path, 'w') as f:
         for row, col, value in zip(coo_matrix.row, coo_matrix.col, coo_matrix.data):
-            f.write(f"{row + 1}\t{col + 1}\t{value}\n")  # Convert back to one-based index
+            f.write(f"{row}\t{col}\t{value}\n")  
 
 def load_and_process_matrix(prefix, chromosome, shape):
     file_path = f"{output_directory}/hic_{resolution_label}_raw_dir/{chromosome}/{prefix}_{chromosome}.txt"

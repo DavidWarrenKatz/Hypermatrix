@@ -23,6 +23,10 @@ while IFS= read -r line; do
     datasets+=("$line")
 done < "$filtered_list"
 
+# Retry and sleep configuration
+max_retries=3
+sleep_time=10
+
 # Function to convert to HiC Short format
 convert_to_hic_short_format() {
     input_file=$1
@@ -52,7 +56,7 @@ convert_to_hic_short_format() {
     echo "Conversion completed: $output_file"
 }
 
-# Function to create .hic file
+# Function to create .hic file with retry mechanism
 create_hic_file() {
     chrom=$1
     dataset=$2
@@ -61,18 +65,12 @@ create_hic_file() {
     formatted_file="$data_path/chr$chrom/${dataset}_chr${chrom}_juicer_formatted.txt"
     hic_file="$data_path/chr$chrom/${dataset}_chr${chrom}.hic"
 
-    # Convert to HiC Short format with score using the provided resolution
     convert_to_hic_short_format "$short_form_file" "$chrom" "$formatted_file" "$resolution"
 
-    # Run juicer tools to create .hic file
-    if ! validate_hic_file "$hic_file" "$chrom"; then
-        java -Xmx100G -jar "$juicer_tools_path" pre -r "$resolution" "$formatted_file" "$hic_file" hg19
-    fi
-
-    # Retry mechanism with exponential backoff
-    max_retries=10
-    sleep_time=20
     for ((i=1; i<=max_retries; i++)); do
+        if ! validate_hic_file "$hic_file" "$chrom"; then
+            java -Xmx100G -jar "$juicer_tools_path" pre -r "$resolution" "$formatted_file" "$hic_file" hg19
+        fi
         if validate_hic_file "$hic_file" "$chrom"; then
             echo "HIC file successfully created: $hic_file"
             return 0
@@ -94,33 +92,61 @@ validate_hic_file() {
     return $?
 }
 
-# Function to apply KR normalization and convert back to short format
-kr_normalize_and_convert() {
+# Function to perform KR normalization with retry mechanism
+kr_normalize() {
     hic_file=$1
     chrom=$2
     dataset=$3
 
-    if [[ ! -f "$hic_file" ]]; then
-        echo "Skipping KR normalization due to missing or invalid HIC file for ${dataset} chr${chrom}."
+    kr_bp_file="$data_path/chr$chrom/${dataset}_chr${chrom}_KR_short_bp.txt"
+
+    if [[ -f "$kr_bp_file" && -s "$kr_bp_file" ]]; then
+        echo "KR BP matrix already exists and is non-empty: $kr_bp_file. Skipping KR normalization."
         return
     fi
 
-    kr_bp_file="$data_path/chr$chrom/${dataset}_chr${chrom}_KR_short_bp.txt"
+    for ((i=1; i<=max_retries; i++)); do
+        java -jar "$juicer_tools_path" dump observed KR "$hic_file" "chr$chrom" "chr$chrom" BP "$resolution" "$kr_bp_file"
+        if [[ -f "$kr_bp_file" && -s "$kr_bp_file" ]]; then
+            echo "KR normalization completed for $dataset chr${chrom}. Matrix saved to $kr_bp_file"
+            return 0
+        else
+            echo "KR normalization not completed yet or is invalid, retrying ($i/$max_retries)..."
+            sleep $((sleep_time * i))
+        fi
+    done
+
+    echo "Failed to create a valid KR matrix after $max_retries retries: $kr_bp_file"
+    return 1
+}
+
+# Function to convert KR normalized matrix to short format with retry mechanism
+convert_kr_to_short_format() {
+    kr_bp_file=$1
+    chrom=$2
+    dataset=$3
+    resolution=$4
+
     kr_bin_file="$data_path/chr$chrom/${dataset}_chr${chrom}_KR_short_bin.txt"
 
-    # Check if both kr_matrix_file and kr_short_file exist and are non-empty
-    if [[ -f "$kr_bp_file" && -s "$kr_bp_file" && -f "$kr_bin_file" && -s "$kr_bin_file" ]]; then
-        echo "KR matrix and short format files already exist and are non-empty: $kr_bp_file, $kr_bin_file. Skipping computation."
+    if [[ -f "$kr_bin_file" && -s "$kr_bin_file" ]]; then
+        echo "KR short format file already exists and is non-empty: $kr_bin_file. Skipping conversion."
         return
     fi
 
-    # Perform KR normalization and output the matrix
-    java -jar "$juicer_tools_path" dump observed KR "$hic_file" "chr$chrom" "chr$chrom" BP "$resolution" "$kr_bp_file"
+    for ((i=1; i<=max_retries; i++)); do
+        awk -v res="$resolution" '{print int($1/res) "\t" int($2/res) "\t" $3}' "$kr_bp_file" > "$kr_bin_file"
+        if [[ -f "$kr_bin_file" && -s "$kr_bin_file" ]]; then
+            echo "Conversion to short format completed for $dataset chr${chrom}. Short format saved to $kr_bin_file"
+            return 0
+        else
+            echo "Conversion to short format not completed yet or is invalid, retrying ($i/$max_retries)..."
+            sleep $((sleep_time * i))
+        fi
+    done
 
-    # Adjust $1 and $2 by dividing by the resolution and save to kr_short_file
-    awk -v res="$resolution" '{print int($1/res) "\t" int($2/res) "\t" $3}' "$kr_bp_file" > "$kr_bin_file"
-
-    echo "KR normalization completed for $dataset chr${chrom}. Short format saved to $kr_bin_file"
+    echo "Failed to create a valid KR short format file after $max_retries retries: $kr_bin_file"
+    return 1
 }
 
 # Main execution flow
@@ -133,11 +159,20 @@ for chrom in $chromosomes; do
     wait  # Wait for all background tasks to finish before proceeding
 done
 
-# Phase 2: Apply KR normalization to all created .hic files
+# Phase 2: Perform KR normalization on all .hic files
 for chrom in $chromosomes; do
     for dataset in "${datasets[@]}"; do
         hic_file="$data_path/chr$chrom/${dataset}_chr${chrom}.hic"
-        kr_normalize_and_convert "$hic_file" "$chrom" "$dataset" &
+        kr_normalize "$hic_file" "$chrom" "$dataset" &
+    done
+    wait  # Wait for all background tasks to finish before proceeding
+done
+
+# Phase 3: Convert KR normalized matrices to short format
+for chrom in $chromosomes; do
+    for dataset in "${datasets[@]}"; do
+        kr_bp_file="$data_path/chr$chrom/${dataset}_chr${chrom}_KR_short_bp.txt"
+        convert_kr_to_short_format "$kr_bp_file" "$chrom" "$dataset" "$resolution" &
     done
     wait  # Wait for all background tasks to finish before proceeding
 done
@@ -146,4 +181,21 @@ echo "Processing completed."
 
 # Optional: Clean-up temporary files
 # rm -f "$data_path"/chr*/${dataset}_chr*_{juicer_formatted,KR_matrix}.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -4,6 +4,11 @@
 eval "$(python3 config_and_print.py)"
 juicer_tools_path="$software_directory/juicer_tools_1.22.01.jar"
 
+# Log file
+log_file="hic_processing.log"
+exec > >(tee -i $log_file)
+exec 2>&1
+
 # Extract resolution and label from the resolutions string
 IFS=':' read -r resolution resolution_label <<< "$resolutions"
 
@@ -25,8 +30,8 @@ convert_to_hic_short_format() {
     output_file=$3
     resolution=$4
 
-    if [[ -f "$output_file" ]]; then
-        echo "Formatted file already exists: $output_file. Skipping conversion."
+    if [[ -f "$output_file" && -s "$output_file" ]]; then
+        echo "Formatted file already exists and is non-empty: $output_file. Skipping conversion."
         return
     fi
 
@@ -64,15 +69,16 @@ create_hic_file() {
         java -Xmx100G -jar "$juicer_tools_path" pre -r "$resolution" "$formatted_file" "$hic_file" hg19
     fi
 
-    # Retry mechanism
+    # Retry mechanism with exponential backoff
     max_retries=10
+    sleep_time=20
     for ((i=1; i<=max_retries; i++)); do
         if validate_hic_file "$hic_file" "$chrom"; then
             echo "HIC file successfully created: $hic_file"
             return 0
         else
             echo "HIC file not created yet or is invalid, retrying ($i/$max_retries)..."
-            sleep 20
+            sleep $((sleep_time * i))
         fi
     done
 
@@ -99,14 +105,22 @@ kr_normalize_and_convert() {
         return
     fi
 
-    kr_matrix_file="$data_path/chr$chrom/${dataset}_chr${chrom}_KR_matrix.txt"
-    kr_short_file="$data_path/chr$chrom/${dataset}_chr${chrom}_KR_short.txt"
+    kr_bp_file="$data_path/chr$chrom/${dataset}_chr${chrom}_KR_short_bp.txt"
+    kr_bin_file="$data_path/chr$chrom/${dataset}_chr${chrom}_KR_short_bin.txt"
 
-    java -jar "$juicer_tools_path" dump observed KR "$hic_file" "chr$chrom" "chr$chrom" BP "$resolution" "$kr_matrix_file"
+    # Check if both kr_matrix_file and kr_short_file exist and are non-empty
+    if [[ -f "$kr_bp_file" && -s "$kr_bp_file" && -f "$kr_bin_file" && -s "$kr_bin_file" ]]; then
+        echo "KR matrix and short format files already exist and are non-empty: $kr_bp_file, $kr_bin_file. Skipping computation."
+        return
+    fi
 
-    awk '{print $1 "\t" $2 "\t" $3}' "$kr_matrix_file" > "$kr_short_file"
+    # Perform KR normalization and output the matrix
+    java -jar "$juicer_tools_path" dump observed KR "$hic_file" "chr$chrom" "chr$chrom" BP "$resolution" "$kr_bp_file"
 
-    echo "KR normalization completed for $dataset chr${chrom}. Short format saved to $kr_short_file"
+    # Adjust $1 and $2 by dividing by the resolution and save to kr_short_file
+    awk -v res="$resolution" '{print int($1/res) "\t" int($2/res) "\t" $3}' "$kr_bp_file" > "$kr_bin_file"
+
+    echo "KR normalization completed for $dataset chr${chrom}. Short format saved to $kr_bin_file"
 }
 
 # Main execution flow
@@ -114,17 +128,22 @@ kr_normalize_and_convert() {
 # Phase 1: Create all .hic files
 for chrom in $chromosomes; do
     for dataset in "${datasets[@]}"; do
-        create_hic_file "$chrom" "$dataset"
+        create_hic_file "$chrom" "$dataset" &
     done
+    wait  # Wait for all background tasks to finish before proceeding
 done
 
 # Phase 2: Apply KR normalization to all created .hic files
 for chrom in $chromosomes; do
     for dataset in "${datasets[@]}"; do
         hic_file="$data_path/chr$chrom/${dataset}_chr${chrom}.hic"
-        kr_normalize_and_convert "$hic_file" "$chrom" "$dataset"
+        kr_normalize_and_convert "$hic_file" "$chrom" "$dataset" &
     done
+    wait  # Wait for all background tasks to finish before proceeding
 done
 
 echo "Processing completed."
+
+# Optional: Clean-up temporary files
+# rm -f "$data_path"/chr*/${dataset}_chr*_{juicer_formatted,KR_matrix}.txt
 

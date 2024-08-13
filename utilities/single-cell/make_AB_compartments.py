@@ -325,7 +325,7 @@ def normalize_vectors(V):
     norms = np.linalg.norm(V, axis=0)
     norms[norms == 0] = 1  # Prevent division by zero
     V_normalized = V / norms
-    return .02 * V_normalized - .001
+    return .02 * V_normalized - .01
 
 # Function to replace specific bins with NaNs, ensuring the bin is valid
 def replace_bins_with_nans(compartment_values, bins_to_remove):

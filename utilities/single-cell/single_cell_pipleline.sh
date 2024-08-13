@@ -151,7 +151,7 @@ chmod +x get_eigenvectors_bulk.sh
 
 python make_AB_compartments.py
 
-#create AB compartment calls
+#analyze AB compartment calls
 
 #cluster cells
 

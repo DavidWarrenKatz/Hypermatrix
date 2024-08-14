@@ -50,7 +50,7 @@ Non-negative tensors are particularly well-behaved. Although the problem of find
 
 For every non-negative *d*\-fold tensor *B* and every natural number *r* less than *d*, there exists a unique rank *r* approximation of *B*. Furthermore, there are known theoretical algorithms to find the unique low-rank approximation. Unfortunately, no such algorithms have been implemented. However, there are many fast and accurate algorithms to find approximations of such optimal low rank approximations, such as the sdf\_nls function from the Matlab package Tensorlab \[Vervliet *et al.*, 2016\]. It is an open question whether these approximations of optimal low rank approximations of a tensor *B* are sufficient low rank approximations of *B* themselves. The results presented in this paper demonstrate that an approximation of the optimal rank *r* approximation of a *d*\-fold tensor is indeed sufficient to extract the *d*\-dimensional information encoded in the relationship between the slices of the tensor.
 
-<div style="text-align: center;">
+<div style="display: flex; justify-content: center;">
     <img src="files/input_output_image_biorender.png" width="600" height="auto">
 </div>
 
@@ -60,8 +60,8 @@ Many tensor models, such as scHiCluster \[Zhou *et al.*, 2019\], reshape tensor 
 <div style="text-align: center;">
   <table style="margin: 0 auto;">
     <tr>
-      <td><img src="files/tensor_matrix_striped_visualization.png" alt="Figure 1" width="400"></td>
-      <td><img src="files/Block_Tensor_Example.png" alt="Figure 2" width="550"></td>
+      <td><img src="files/tensor_matrix_striped_visualization.png" alt="Figure 1" width="450"></td>
+      <td><img src="files/Block_Tensor_Example.png" alt="Figure 2" width="500"></td>
     </tr>
   </table>
 </div>

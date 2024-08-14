@@ -339,7 +339,7 @@ def replace_bins_with_nans(compartment_values, bins_to_remove):
 # Loop through each chromosome directory
 for i in range(1, 23):
     chromosome = f'chr{i}'
-    results_df = pd.DataFrame(columns=['Sample', 'A/B Compartment', 'Correlation With Bulk', 'Cell Type'])
+    results_df = pd.DataFrame(columns=['Sample', 'A/B Compartment', 'Correlation With Bulk', 'Correlation With Other Bulk', 'Cell Type'])
 
     for prefix in prefixes:
         input_file = os.path.join(base_tensor_dir, chromosome, f'{prefix}_compartments.h5')
@@ -356,6 +356,7 @@ for i in range(1, 23):
             with h5py.File(output_file, 'r') as output_h5:
                 best_vector = output_h5['AB_Compartment'][:]
                 best_corr = output_h5['correlation'][()]
+                best_corr_with_other = output_h5['correlation_with_other_bulk'][()]
                 cell_type = output_h5['cell_type'][()].decode()
 
         else:  
@@ -368,13 +369,29 @@ for i in range(1, 23):
                 tensor_factors = load_h5_file(input_file, '/compartment_factors')
                 tensor_factors = normalize_vectors(tensor_factors)
                 print(f"Loaded tensor factors from {input_file}, shape: {tensor_factors.shape}")
-                #bulk_eigenvector = bulk_data[key]['eigenvalue'][:-1]
+
                 # Ensure bulk_eigenvector has the same length as tensor_factors[i, :]
-                bulk_eigenvector = bulk_data[key]['eigenvalue'][:tensor_factors.shape[1]]
+                bulk_eigenvector = original_bulk_data[key]['eigenvalue'][:tensor_factors.shape[1]]
                 print(f"Bulk eigenvector shape: {bulk_eigenvector.shape}")
 
                 best_vector, best_index, best_corr = get_best_correlated_vector(tensor_factors, bulk_eigenvector)
                 print(f"Best correlation: {best_corr} at index {best_index}")
+
+                # Determine the other cell type
+                other_cell_type = 'IMR90' if cell_type == 'GM12878' else 'GM12878'
+                other_key = f'res{resolution}_ch{i}_oe_{other_cell_type.upper()}_{normalization}_eigenvector'
+
+                # Calculate the correlation with the bulk of the other cell type
+                if other_key in bulk_data:
+                    other_bulk_eigenvector = original_bulk_data[other_key]['eigenvalue'][:tensor_factors.shape[1]]
+
+                    valid_indices = ~np.isnan(best_vector) & ~np.isnan(other_bulk_eigenvector)
+                    if np.any(valid_indices):
+                        best_corr_with_other = pearsonr(best_vector[valid_indices], other_bulk_eigenvector[valid_indices])[0]
+                    else:
+                        best_corr_with_other = np.nan
+
+                print(f"Correlation with other bulk ({other_cell_type}): {best_corr_with_other}")
 
                 # Retrieve the bins to remove for this chromosome
                 bins_to_remove_for_chrom = bins_to_remove[chromosome]
@@ -386,6 +403,7 @@ for i in range(1, 23):
                 with h5py.File(output_file, 'w') as output_h5:
                     output_h5.create_dataset('AB_Compartment', data=best_vector)
                     output_h5.create_dataset('correlation', data=best_corr)
+                    output_h5.create_dataset('correlation_with_other_bulk', data=best_corr_with_other)
                     output_h5.create_dataset('cell_type', data=cell_type)
 
                 # Save the A/B Compartment values as a text file
@@ -396,6 +414,7 @@ for i in range(1, 23):
             'Sample': sample_id,
             'A/B Compartment': [best_vector],
             'Correlation With Bulk': best_corr,
+            'Correlation With Other Bulk': best_corr_with_other,
             'Cell Type': cell_type
         })
     
@@ -403,7 +422,8 @@ for i in range(1, 23):
 
     print(f"Finished processing {chromosome}, {results_df.shape[0]} rows added.")
     chromosome_results[chromosome] = results_df
-                                                    
+
+                                                   
 # Save original_bulk_data to a file
 original_bulk_data_output_file = '../../projects/single_cell_files/original_bulk_data.pkl'
 with open(original_bulk_data_output_file, 'wb') as f:

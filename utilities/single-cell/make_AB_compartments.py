@@ -354,7 +354,7 @@ for i in range(1, 23):
             with h5py.File(output_file, 'r') as output_h5:
                 best_vector = output_h5['AB_Compartment'][:]
                 best_corr = output_h5['correlation'][()]
-                cell_type = output_h5['cell_type'][()]
+                cell_type = output_h5['cell_type'][()].decode()
 
         else:  
             cell_type = updated_cell_color_dict.get(sample_id, 'GM12878')  # Default set to GM12878

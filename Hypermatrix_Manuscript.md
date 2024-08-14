@@ -55,12 +55,15 @@ For every non-negative *d*\-fold tensor *B* and every natural number *r* less th
 **The NTF model with Synthetic Data**  
 Many tensor models, such as scHiCluster \[Zhou *et al.*, 2019\], reshape tensor data into a matrix. The scatter plots in Figure 4 illustrate how reshaping a tensor into a matrix can result in the loss of crucial information from the original tensor. The NTF model, on the other hand, decomposes the original tensor as a unified entity, without losing information between the slices of the tensor. In Figure 4, a 3-fold tensor representing synthetic data is depicted. Visually, it is evident that this tensor consists of six types of matrix slices, each representing a distinct cell type. Each type of matrix slice is more similar to slices of the same cell type than to those of different types. The bottom left scatter plot in Figure 4 shows that tensor decomposition effectively recovers a unique factor for each cell type. The sample components of the cell type factors derived from the NTF model can be used to accurately cluster the cells according to their types. On the other hand, the bottom right scatter plot shows that a matrix decomposition of the tensor, after being reshaped into a matrix, fails to cluster the cells correctly. In fact, in this case, a matrix decomposition incorrectly identifies three clusters that do not exist in the original data. Figure 5 shows that matrix reshaping methods are only comparable to tensor methods for matrices with simplified structure. 
 
-<div>
-    <img src="files/tensor_matrix_striped_visualization.png" width="500" height="auto">
+<div style="text-align: center;">
+  <table style="margin: 0 auto;">
+    <tr>
+      <td><img src="files/tensor_matrix_striped_visualization.png" alt="Figure 1" width="500"></td>
+      <td><img src="files/Block_Tensor_Example.png" alt="Figure 2" width="300"></td>
+    </tr>
+  </table>
 </div>
-<div>
-    <img src="files/Block_Tensor_Example.png" width="500" height="auto">
-</div>
+
 
 **The NTF model with Bulk Data**  
 Rank Two Decompositions of Bulk Hi-C and Bulk DNA Methylation Data Produces A/B Compartment Factors  

@@ -289,28 +289,30 @@ def load_h5_file(file_path, dataset_name):
     return data
 
 def get_best_correlated_vector(V, eigenvector):
-    """Find the row in V that best correlates with the given eigenvector."""
+    """Find the row in V (or its negative) that best correlates with the given eigenvector."""
     eigenvector = eigenvector.values.flatten()
     best_corr = -np.inf  # Initialize with a very low correlation
     best_index = -1
     best_vector = None
 
-    # Check each row in V for correlation with the eigenvector
+    # Check each row in V and its negative for correlation with the eigenvector
     for i in range(V.shape[0]):  # Iterate over all rows in V
-        # Synchronize non-NaN data
-        valid_indices = ~np.isnan(V[i, :]) & ~np.isnan(eigenvector)
-        if np.any(valid_indices):
-            corr, _ = pearsonr(V[i, valid_indices], eigenvector[valid_indices])
-            if corr > best_corr:  # Check if this is the best correlation so far
-                best_corr = corr
-                best_index = i
-                best_vector = V[i, :]
+        for vec in [V[i, :], -V[i, :]]:  # Check both the row and its negative
+            # Synchronize non-NaN data
+            valid_indices = ~np.isnan(vec) & ~np.isnan(eigenvector)
+            if np.any(valid_indices):
+                corr, _ = pearsonr(vec[valid_indices], eigenvector[valid_indices])
+                if corr > best_corr:  # Check if this is the best correlation so far
+                    best_corr = corr
+                    best_index = i
+                    best_vector = vec
 
     return best_vector, best_index, best_corr
 
+
+
 # Directory setup
-output_directory = '../../projects/single_cell_files/'
-filtered_bam_list = os.path.join(output_directory, 'filtered_bam_list.txt')
+filtered_bam_list = filtered_list 
 base_tensor_dir = os.path.join(output_directory, 'tensor_1Mb_AB_factors')
 
 # Extract prefixes from the file
@@ -362,11 +364,13 @@ for i in range(1, 23):
 
             print(f"Processing sample_id: {sample_id}, cell_type: {cell_type}, key: {key}, resolution {resolution}")
 
-            if key in original_bulk_data:
+            if key in bulk_data:
                 tensor_factors = load_h5_file(input_file, '/compartment_factors')
                 tensor_factors = normalize_vectors(tensor_factors)
                 print(f"Loaded tensor factors from {input_file}, shape: {tensor_factors.shape}")
-                bulk_eigenvector = original_bulk_data[key]['eigenvalue'][:-1]
+                #bulk_eigenvector = bulk_data[key]['eigenvalue'][:-1]
+                # Ensure bulk_eigenvector has the same length as tensor_factors[i, :]
+                bulk_eigenvector = bulk_data[key]['eigenvalue'][:tensor_factors.shape[1]]
                 print(f"Bulk eigenvector shape: {bulk_eigenvector.shape}")
 
                 best_vector, best_index, best_corr = get_best_correlated_vector(tensor_factors, bulk_eigenvector)
@@ -411,7 +415,6 @@ bulk_data_output_file = '../../projects/single_cell_files/nan_removed_bulk_data.
 with open(bulk_data_output_file, 'wb') as f:
     pickle.dump(bulk_data, f)
 print(f"bulk_data saved to {bulk_data_output_file}")
-
 
 # Save chromosome_results to a file
 chromosome_results_output_file = '../../projects/single_cell_files/chromosome_results.pkl'

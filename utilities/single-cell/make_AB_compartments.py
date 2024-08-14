@@ -342,7 +342,8 @@ for i in range(1, 23):
     for prefix in prefixes:
         input_file = os.path.join(base_tensor_dir, chromosome, f'{prefix}_compartments.h5')
         output_dir = os.path.join(output_directory, 'tensor_1Mb_AB_calls', chromosome)
-
+        sample_id = prefix 
+        
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         output_file = os.path.join(output_dir, f'{prefix}_tensor_AB_compartment_call.h5')
@@ -352,11 +353,10 @@ for i in range(1, 23):
             print(f"{output_file} already exists. Loading existing results.")
             with h5py.File(output_file, 'r') as output_h5:
                 best_vector = output_h5['AB_Compartment'][:]
-                best_corr = output_h5['correlation']
-                cell_type = output_h5['cell_type']
- 
-        else:
-            sample_id = prefix  
+                best_corr = output_h5['correlation'][()]
+                cell_type = output_h5['cell_type'][()]
+
+        else:  
             cell_type = updated_cell_color_dict.get(sample_id, 'GM12878')  # Default set to GM12878
             key = f'res{resolution}_ch{i}_oe_{cell_type.upper()}_{normalization}_eigenvector'  
 
@@ -389,24 +389,32 @@ for i in range(1, 23):
                 print(f"Saved A/B Compartment values to {text_output_file}")
 
         new_row = pd.DataFrame({
-            'Sample': [sample_id],
+            'Sample': sample_id,
             'A/B Compartment': [best_vector],
-            'Correlation With Bulk': [best_corr],
-            'Cell Type': [cell_type]
+            'Correlation With Bulk': best_corr,
+            'Cell Type': cell_type
         })
+    
         results_df = pd.concat([results_df, new_row], ignore_index=True)
 
     print(f"Finished processing {chromosome}, {results_df.shape[0]} rows added.")
     chromosome_results[chromosome] = results_df
                                                     
 # Save original_bulk_data to a file
-bulk_data_output_file = '../../projects/single_cell_files/original_bulk_data.pkl'
-with open(bulk_data_output_file, 'wb') as f:
+original_bulk_data_output_file = '../../projects/single_cell_files/original_bulk_data.pkl'
+with open(original_bulk_data_output_file, 'wb') as f:
     pickle.dump(original_bulk_data, f)
-print(f"original_bulk_data saved to {bulk_data_output_file}")
+print(f"original_bulk_data saved to {original_bulk_data_output_file}")
+
+# Save original_bulk_data to a file
+bulk_data_output_file = '../../projects/single_cell_files/nan_removed_bulk_data.pkl'
+with open(bulk_data_output_file, 'wb') as f:
+    pickle.dump(bulk_data, f)
+print(f"bulk_data saved to {bulk_data_output_file}")
+
 
 # Save chromosome_results to a file
 chromosome_results_output_file = '../../projects/single_cell_files/chromosome_results.pkl'
 with open(chromosome_results_output_file, 'wb') as f:
     pickle.dump(chromosome_results, f)
-print(f"chromosome_results saved to {chromosome_results_output_file}")                                                               
+print(f"chromosome_results saved to {chromosome_results_output_file}")                                                                                                                             

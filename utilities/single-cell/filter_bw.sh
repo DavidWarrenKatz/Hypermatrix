@@ -20,8 +20,14 @@ for key in "${!config[@]}"; do
     echo "$key=${config[$key]}"
 done
 
-# Configuration
-java_path="../../bin/softwareFiles/java" #jk1.8.0_281
+# Dynamically find the most appropriate version of Java
+# use jk1.8.0_281 if this is not working for you
+java_path=$(command -v java)
+if [[ -z "$java_path" ]]; then
+    echo "Java not found. Please install Java and try again."
+    exit 1
+fi
+
 java_opts="-Xmx18G"
 java_classpath="${config[software_directory]}/dnaaseUtils-0.14-jar-with-dependencies.jar:${config[software_directory]}/java-genomics-io.jar:${config[software_directory]}/igv.jar"
 main_class="main.java.edu.mit.compbio.utils.AlignMultiWigInsideBed"
@@ -84,9 +90,5 @@ else
 fi
 
 # Clean up
-rm -f java_error.log methy_summary.cmd.txt
-
-
-
-
+#rm -f java_error.log methy_summary.cmd.txt
 

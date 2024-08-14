@@ -32,13 +32,15 @@ def generate_interval_bed(chrom_size_file, resolution, output_bed_file):
 
     with open(output_bed_file, 'w') as f_out:
         for chrom, size in chromosome_sizes:
+            # Remove "chr" prefix
+            chrom = chrom.replace('chr', '')
             size = int(size)
             for start in range(0, size, resolution):
                 end = min(start + resolution, size)
                 f_out.write(f"{chrom}\t{start}\t{end}\n")
 
 # Define the output BED file path
-output_bed_file = os.path.join(software_directory, f'hg19.common_chr.{resolution_label}_interval.autosome.bed')
+output_bed_file = os.path.join(software_directory, f'b37.common_chr.{resolution_label}_interval.autosome.bed')
 
 # Check if the file already exists
 if os.path.exists(output_bed_file):
@@ -47,28 +49,4 @@ else:
     print(f"Generating interval BED file: '{output_bed_file}'")
     generate_interval_bed(chrom_file, resolution, output_bed_file)
     print(f"Interval BED file generated successfully: '{output_bed_file}'")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

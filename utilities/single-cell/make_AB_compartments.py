@@ -295,7 +295,8 @@ def get_best_correlated_vector(V, eigenvector):
     eigenvector = eigenvector.values.flatten()
     best_corr = -np.inf  # Initialize with a very low correlation
     best_index = -1
-    best_vector = None
+    #best_vector = None
+    best_vector = np.zeros_like(V[0, :])  # Initialize with a default vector of zeros
 
     for i in range(V.shape[0]):  # Iterate over all rows in V
         for vec in [V[i, :], -V[i, :]]:  # Check both the row and its negative
@@ -384,6 +385,10 @@ for i in range(1, 23):
                 best_vector, best_index, best_corr = get_best_correlated_vector(tensor_factors, bulk_eigenvector)
                 print(f"Best correlation: {best_corr} at index {best_index}")
 
+                if best_vector is None:
+                    print(f"Warning: No valid best vector found for {sample_id}. Skipping this sample.")
+                    continue  # Skip processing this sample
+
                 # Determine the other cell type
                 other_cell_type = 'IMR90' if cell_type == 'GM12878' else 'GM12878'
                 other_key = f'res{resolution}_ch{i}_oe_{other_cell_type.upper()}_{normalization}_eigenvector'
@@ -392,13 +397,25 @@ for i in range(1, 23):
                 if other_key in bulk_data:
                     other_bulk_eigenvector = original_bulk_data[other_key]['eigenvalue'][:tensor_factors.shape[1]]
 
+                    # Ensure that the eigenvectors are numeric
+                    try:
+                        best_vector = best_vector.astype(float)
+                        other_bulk_eigenvector = other_bulk_eigenvector.astype(float)
+                    except ValueError as e:
+                        print(f"Error converting to float: {e}")
+                        best_corr_with_other = np.nan
+                        print(f"Skipping due to conversion error.")
+                        continue  # Skip this iteration or handle it as needed
+
+                    # Now apply the NaN check
                     valid_indices = ~np.isnan(best_vector) & ~np.isnan(other_bulk_eigenvector)
                     if np.any(valid_indices):
                         best_corr_with_other = pearsonr(best_vector[valid_indices], other_bulk_eigenvector[valid_indices])[0]
                     else:
                         best_corr_with_other = np.nan
 
-                print(f"Correlation with other bulk ({other_cell_type}): {best_corr_with_other}")
+                    print(f"Correlation with other bulk ({other_cell_type}): {best_corr_with_other}")
+
 
                 # Retrieve the bins to remove for this chromosome
                 bins_to_remove_for_chrom = bins_to_remove[chromosome]

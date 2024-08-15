@@ -65,8 +65,10 @@ def third_order_cumulant_matrix(data):
     
     return cumulants
 
-def process_hic_files_for_cumulant(input_dir):
+def process_hic_files_for_cumulant(input_dir, output_cumulant_dir):
     """Process each Hi-C file and calculate the third-order cumulant tensor."""
+    os.makedirs(output_cumulant_dir, exist_ok=True)
+    
     for file_path in glob.glob(os.path.join(input_dir, '*.h5')):
         print(f"Processing Hi-C matrix from file: {file_path}")
         
@@ -79,24 +81,22 @@ def process_hic_files_for_cumulant(input_dir):
         cumulant_tensor = third_order_cumulant_matrix(csr_mat)
         print(f"Cumulant tensor for {file_path} calculated.")
         
-        output_path = file_path.replace('.h5', '_cumulant.npy')
-        np.save(output_path, cumulant_tensor)
+        file_name = os.path.splitext(os.path.basename(file_path))[0] + '_cumulant.h5'
+        output_path = os.path.join(output_cumulant_dir, file_name)
+        
+        with h5py.File(output_path, 'w') as h5file:
+            h5file.create_dataset('cumulant_tensor', data=cumulant_tensor)
         print(f"Cumulant tensor saved to {output_path}")
 
 base_output_emphasized_dir = f'{output_directory}/hic_{resolution_label}_emphasized_dir/'
+base_output_cumulant_dir = f'{output_directory}/hic_{resolution_label}_cumulant_dir/'
+
 for i in range(1, 23):  
     chromosome = f'chr{i}'
     input_dir = os.path.join(base_output_emphasized_dir, chromosome)
+    output_cumulant_dir = os.path.join(base_output_cumulant_dir, chromosome)
+    
     print(f'Processing cumulant tensors for {chromosome}')
-    process_hic_files_for_cumulant(input_dir)
-
-
-
-
-
-
-
-
-
+    process_hic_files_for_cumulant(input_dir, output_cumulant_dir)
 
 

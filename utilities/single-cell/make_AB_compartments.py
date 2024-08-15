@@ -297,11 +297,18 @@ def get_best_correlated_vector(V, eigenvector):
     best_index = -1
     best_vector = None
 
-    # Check each row in V and its negative for correlation with the eigenvector
     for i in range(V.shape[0]):  # Iterate over all rows in V
         for vec in [V[i, :], -V[i, :]]:  # Check both the row and its negative
+            vec = vec.astype(np.float64)  # Ensure vec is a floating-point array
+            eigenvector = eigenvector.astype(np.float64)  # Ensure eigenvector is floating-point
+            
+            # Check if the vector is constant
+            if np.all(vec == vec[0]) or np.all(eigenvector == eigenvector[0]):
+                continue  # Skip constant vectors
+            
             # Synchronize non-NaN data
             valid_indices = ~np.isnan(vec) & ~np.isnan(eigenvector)
+            
             if np.any(valid_indices):
                 corr, _ = pearsonr(vec[valid_indices], eigenvector[valid_indices])
                 if corr > best_corr:  # Check if this is the best correlation so far
@@ -310,7 +317,6 @@ def get_best_correlated_vector(V, eigenvector):
                     best_vector = vec
 
     return best_vector, best_index, best_corr
-
 
 # Directory setup
 filtered_bam_list = filtered_list 

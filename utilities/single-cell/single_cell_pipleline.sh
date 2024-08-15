@@ -92,6 +92,12 @@ if [ "$cumulant" = "True" ]; then
 python make_hic_cumulant.py
 fi
 
+# Make the hic cumulants if cumulant is set to True
+#[TO DO: make this file]
+if [ "$cumulant" = "True" ]; then
+python make_methy_cumulant.py
+fi
+
 #Make the combined tensor for each cell
 #[TO DO: need to decide if imputation and emphasis and merging will happen]i
 #Right now, emphasis, correlation, shift

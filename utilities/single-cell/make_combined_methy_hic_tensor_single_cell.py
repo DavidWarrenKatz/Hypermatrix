@@ -4,6 +4,7 @@ import os
 from scipy.sparse import csr_matrix, identity
 from sklearn.decomposition import NMF
 from config_and_print import methy_directory, filtered_list, chrom_file, resolutions, output_directory
+from scipy.ndimage import binary_dilation
 
 def parse_resolution(resolution_str):
     if ':' in resolution_str:
@@ -23,6 +24,18 @@ def normalize_matrix_columns(A):
     normalized_A = A / column_norms
     normalized_A[:, zero_norms] = 0
     return normalized_A
+
+def enforce_neighborhood_zeroing(methy_matrix, hic_matrix, neighborhood_size=4):
+    # Create a boolean mask where hic_matrix is non-zero
+    non_zero_mask = (hic_matrix != 0)
+    
+    # Dilate the non_zero_mask to include the neighborhood of the non-zero values
+    dilated_non_zero_mask = binary_dilation(non_zero_mask, structure=np.ones((neighborhood_size*2 + 1, neighborhood_size*2 + 1)))
+    
+    # Set values in methy_matrix to zero wherever the dilated_non_zero_mask is False
+    methy_matrix[~dilated_non_zero_mask] = 0
+    
+    return methy_matrix
 
 def load_csr_matrix_from_hdf5(file_path):
     with h5py.File(file_path, 'r') as file:
@@ -115,7 +128,8 @@ def process_tensor(methy_file_path, hic_path, output_tensor_path):
             
             # Ensure both matrices are the same size before setting elements to zero
             methy_matrix, hic_matrix = ensure_same_size(methy_matrix, hic_matrix)
-            methy_matrix[hic_matrix == 0] = 0
+            methy_matrix = enforce_neighborhood_zeroing(methy_matrix, hic_matrix, neighborhood_size=4)
+            #methy_matrix[hic_matrix == 0] = 0
         else:
             hic_matrix = identity(methy_matrix.shape[0]).toarray()  # Convert to dense format
             print(f"Hi-C matrix not found, created identity matrix with shape: {hic_matrix.shape}")

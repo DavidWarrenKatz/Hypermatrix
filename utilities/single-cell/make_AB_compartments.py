@@ -187,6 +187,8 @@ else:
 ################################################################################    
 #make sure each GM12878 eigenvector has positive value for active A compartment
 ################################################################################
+#[TO DO: Should probably smooth before taking correlations, perhaps only in the
+#case where Normalization == None, clear visual correlation but low Pearsons]
 for i in range(1, 23):
     key_gm12878 = f'res{resolution}_ch{i}_oe_GM12878_{normalization}_eigenvector'
     chromosome_key = f'chr{i}'
@@ -208,7 +210,7 @@ for i in range(1, 23):
 for i in range(1, 23):
     # Construct keys for GM12878 and IMR90
     key_gm12878 = f'res{resolution}_ch{i}_oe_GM12878_{normalization}_eigenvector'
-    key_imr90 = f'res{resolution}_ch{i}_oe_GM12878_{normalization}_eigenvector'
+    key_imr90 = f'res{resolution}_ch{i}_oe_IMR90_{normalization}_eigenvector'
     
     # Retrieve DataFrames for GM12878 and IMR90
     df_gm12878 = bulk_data[key_gm12878]
@@ -241,7 +243,7 @@ original_bulk_data = copy.deepcopy(bulk_data)
 #################################################################################
 #remove dark regions
 #dark reigons are obviously correlated
-#I want to remove dark regions to get meeaningfully correlated regions
+#I want to remove dark regions to get meaningfully correlated regions
 ###############################################################################
 
 for i in range(1, 23):
@@ -308,7 +310,6 @@ def get_best_correlated_vector(V, eigenvector):
                     best_vector = vec
 
     return best_vector, best_index, best_corr
-
 
 
 # Directory setup

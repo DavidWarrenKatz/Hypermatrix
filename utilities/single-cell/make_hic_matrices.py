@@ -94,16 +94,16 @@ def csr_pearson_correlation(csr_mat):
 def process_matrices(input_dir, output_emphasized_dir, max_distance):
     """Process each Hi-C data file, compute matrices, and save the results."""
     os.makedirs(output_emphasized_dir, exist_ok=True)
-
+    print(f"input directory{input_dir}")
     for file_path in glob.glob(os.path.join(input_dir, '*.txt')):
         print(f"Processing file: {file_path}")
         
         file_name = os.path.splitext(os.path.basename(file_path))[0] + '.h5'
         output_emphasized_path = os.path.join(output_emphasized_dir, file_name)
-
+        
         # Skip computation if both output files already exist
         if os.path.exists(output_emphasized_path):
-            print(f"Skipping {file_path}, both output files already exist.")
+            print(f"Skipping {output_emphasized_path}, emphasized hic matrix already exist.")
             continue
 
         data = load_hic_data(file_path)
@@ -129,12 +129,13 @@ def process_matrices(input_dir, output_emphasized_dir, max_distance):
                 grp.attrs['shape'] = emphasized_matrix.shape
 
 max_genomic_distance = int(10_000_000 / resolution) + 1
-base_input_dir = f'{output_directory}/hicluster_{resolution_label}_raw_dir/'
+base_input_dir = f'{output_directory}/hic_{resolution_label}_raw_dir/'
 base_output_emphasized_dir = f'{output_directory}/hic_{resolution_label}_emphasized_dir/'
 
 for i in range(1, 23):  
     chromosome = f'chr{i}'
     input_dir = base_input_dir + f'{chromosome}'
     output_emphasized_dir = base_output_emphasized_dir + f'{chromosome}'
+    print(f'processing chr{i}')
     process_matrices(input_dir, output_emphasized_dir, max_genomic_distance)
 

@@ -185,7 +185,7 @@ else:
         h3k9ac = pickle.load(file)
 
 ################################################################################    
-#make sure each GM12878 eigenvector has positive value for active A compartment
+#make sure each bulk GM12878 eigenvector has positive value for active A compartment
 ################################################################################
 #[TO DO: Should probably smooth before taking correlations, perhaps only in the
 #case where Normalization == None, clear visual correlation but low Pearsons]
@@ -244,6 +244,8 @@ original_bulk_data = copy.deepcopy(bulk_data)
 #remove dark regions
 #dark reigons are obviously correlated
 #I want to remove dark regions to get meaningfully correlated regions
+#this bulk_data is used for calculating genome wide bulk correlation later
+#consider moving this segment of code, since is not needed here
 ###############################################################################
 
 for i in range(1, 23):
@@ -269,7 +271,7 @@ for i in range(1, 23):
             bulk_data[key_gm12878] = bulk_data[key_gm12878].drop(valid_indices).reset_index(drop=True)
             bulk_data[key_imr90] = bulk_data[key_imr90].drop(valid_indices).reset_index(drop=True)
 
-
+######################################################################
 # This is where AB_calls are saved
 
 def extract_prefixes(file_path):
@@ -314,7 +316,7 @@ def get_best_correlated_vector(V, eigenvector):
                 corr, _ = pearsonr(vec[valid_indices], eigenvector[valid_indices])
                 if corr > best_corr:  # Check if this is the best correlation so far
                     best_corr = corr
-                    best_index = i
+                    best_index = i    #we never actually use index, I just like it printed out to see if it consistently first, safely remove this
                     best_vector = vec
 
     return best_vector, best_index, best_corr
@@ -357,7 +359,7 @@ for i in range(1, 23):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         output_file = os.path.join(output_dir, f'{prefix}_tensor_AB_compartment_call.h5')
-        text_output_file = os.path.join(output_dir, f'{prefix}_tensor_AB_compartment_call.txt')
+        text_output_file = os.path.join(output_dir, f'{prefix}_tensor_AB_compartment_call.txt') #This is redundent, but I like looking at text files
 
         if os.path.exists(output_file):
             print(f"{output_file} already exists. Loading existing results.")
@@ -368,8 +370,8 @@ for i in range(1, 23):
                 cell_type = output_h5['cell_type'][()].decode()
 
         else:  
-            cell_type = updated_cell_color_dict.get(sample_id, 'GM12878')  # Default set to GM12878
-            key = f'res{resolution}_ch{i}_oe_{cell_type.upper()}_{normalization}_eigenvector'  
+            cell_type = updated_cell_color_dict.get(sample_id, 'IMR90').upper()  # Default should be set to GM12878?
+            key = f'res{resolution}_ch{i}_oe_{cell_type}_{normalization}_eigenvector'  
 
             print(f"Processing sample_id: {sample_id}, cell_type: {cell_type}, key: {key}, resolution {resolution}")
 
@@ -391,7 +393,8 @@ for i in range(1, 23):
 
                 # Determine the other cell type
                 other_cell_type = 'IMR90' if cell_type == 'GM12878' else 'GM12878'
-                other_key = f'res{resolution}_ch{i}_oe_{other_cell_type.upper()}_{normalization}_eigenvector'
+                other_cell_type = other_cell_type.upper()
+                other_key = f'res{resolution}_ch{i}_oe_{other_cell_type}_{normalization}_eigenvector'
 
                 # Calculate the correlation with the bulk of the other cell type
                 if other_key in bulk_data:
@@ -413,6 +416,7 @@ for i in range(1, 23):
                         best_corr_with_other = pearsonr(best_vector[valid_indices], other_bulk_eigenvector[valid_indices])[0]
                     else:
                         best_corr_with_other = np.nan
+                        print('There are no valid indices for pearson correlation with other bulk')
 
                     print(f"Correlation with other bulk ({other_cell_type}): {best_corr_with_other}")
 

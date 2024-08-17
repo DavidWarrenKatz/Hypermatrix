@@ -15,6 +15,7 @@
 # each individual file still needs to import these variables as well
 eval "$(python3 config_and_print.py)"
 
+<<comment
 # Execute the filtering script
 chmod +x filter_bam.sh
 ./filter_bam.sh
@@ -164,11 +165,16 @@ python make_AB_compartment_image.py
 
 python make_all_cells_tensor.py
 
-
+comment
 # Load the necessary modules
 module load matlab/r2022b
 # Execute the MATLAB script
 matlab -nodisplay -r "run('get_cell_type_factors_all_cell.m'); exit;"
+
+
+
+module load matlab/r2022b
+matlab -nodisplay -r "run('cell_type_factors_seperate_modalities.m'); exit;"
 
 #Execute script to find differential bins
 #python find_differential_bins.py

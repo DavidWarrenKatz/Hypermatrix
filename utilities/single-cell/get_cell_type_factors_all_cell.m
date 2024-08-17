@@ -58,9 +58,9 @@ for j = 1:numel(chromosomes)
             
             % Construct file paths    
             tensor_file_path = sprintf('%s/hic_methy_%s_all_cells_tensors/%s_all_cells_tensor.h5', output_directory, label, chromosome);
-            output_file_U = sprintf('%s/tensor_%s_cell_type_factors/%s_genomic_factors.h5', output_directory, label, chromosome);
-            output_file_V = sprintf('%s/tensor_%s_cell_type_factors/%s_sample_factors.h5', output_directory, label, chromosome);
-            output_file_W = sprintf('%s/tensor_%s_cell_type_factors/%s_modality_factors.h5', output_directory, label, chromosome);
+            output_file_U = sprintf('%s/tensor_%s_cell_type_factors/%s_modality_factors.h5', output_directory, label, chromosome);
+            output_file_V = sprintf('%s/tensor_%s_cell_type_factors/%s_genomic_factors.h5', output_directory, label, chromosome);
+            output_file_W = sprintf('%s/tensor_%s_cell_type_factors/%s_sample_factors.h5', output_directory, label, chromosome);
 
             % Ensure output directories exist
             [output_dir_U, ~] = fileparts(output_file_U);
@@ -99,9 +99,9 @@ for j = 1:numel(chromosomes)
 
                 % Perform the tensor computation
                 model = struct;
-                model.variables.u = randn(size(tensor, 2), 2);
-                model.variables.v = randn(size(tensor, 4), 2);
-                model.variables.w = randn(size(tensor, 1), 2);
+                model.variables.u = randn(size(tensor, 2), 10);
+                model.variables.v = randn(size(tensor, 4), 10);
+                model.variables.w = randn(size(tensor, 1), 10);
                 model.factors.U = {'u', @struct_nonneg};
                 model.factors.V = {'v', @struct_nonneg};
                 model.factors.W = {'w', @struct_nonneg};
@@ -119,9 +119,9 @@ for j = 1:numel(chromosomes)
                 W = sol.factors.W;
 
                 % Create and write to the HDF5 files
-                output_dataset_U = '/genomic_weights';
-                output_dataset_V = '/sample_weights';
-                output_dataset_W = '/modality_weights';
+                output_dataset_U = '/modality_weights';
+                output_dataset_V = '/genomic_weights';
+                output_dataset_W = '/sample_weights';
                 
                 h5create(output_file_U, output_dataset_U, size(U));
                 h5write(output_file_U, output_dataset_U, U);

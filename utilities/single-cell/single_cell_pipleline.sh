@@ -162,6 +162,14 @@ python make_AB_compartments.py
 #This part is specfic to IMR90 GM12878 experiment
 python make_AB_compartment_image.py
 
+python make_all_cells_tensor.py
+
+
+# Load the necessary modules
+module load matlab/r2022b
+# Execute the MATLAB script
+matlab -nodisplay -r "run('get_cell_type_factors_all_cell.m'); exit;"
+
 #Execute script to find differential bins
 #python find_differential_bins.py
 

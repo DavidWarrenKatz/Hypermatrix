@@ -58,24 +58,32 @@ for j = 1:numel(chromosomes)
             resolution = resolution_values{l};
             label = resolution_labels{l};
             
-            % Construct file paths
-            tensor_file_path = sprintf('%s/hic_methy_%s_tensor_singlecell/%s/%s_%s.h5', output_directory, label, chromosome, prefix, chromosome);
-            output_file_U = sprintf('%s/tensor_%s_AB_factors/%s/%s_weights.h5', output_directory, label, chromosome, prefix);
-            output_file_V = sprintf('%s/tensor_%s_AB_factors/%s/%s_compartments.h5', output_directory, label, chromosome, prefix);
+            % Construct file paths    
+            tensor_file_path = sprintf('%s/hic_methy_%s_all_cells_tensors/%s_all_cells_tensor.h5', output_directory, label, chromosome);
+            output_file_U = sprintf('%s/tensor_%s_cell_type_factors/%s_genomic_factors.h5', output_directory, label, chromosome);
+            output_file_V = sprintf('%s/tensor_%s_cell_type_factors/%s_sample_factors.h5', output_directory, label, chromosome);
+            output_file_W = sprintf('%s/tensor_%s_cell_type_factors/%s_modality_factors.h5', output_directory, label, chromosome);
 
             % Ensure output directories exist
-            [output_dir_U, ~, ~] = fileparts(output_file_U);
-            [output_dir_V, ~, ~] = fileparts(output_file_V);
+            [output_dir_U, ~] = fileparts(output_file_U);
+            [output_dir_V, ~] = fileparts(output_file_V);
+            [output_dir_W, ~] = fileparts(output_file_W);
+
             if ~exist(output_dir_U, 'dir')
                 mkdir(output_dir_U);
             end
+
             if ~exist(output_dir_V, 'dir')
                 mkdir(output_dir_V);
             end
 
+            if ~exist(output_dir_W, 'dir')
+                mkdir(output_dir_W);
+            end
+
             % Check if the output files already exist
-            if exist(output_file_U, 'file') == 2 && exist(output_file_V, 'file') == 2
-                fprintf('Files %s and %s already exist. Skipping computation.\n', output_file_U, output_file_V);
+            if exist(output_file_U, 'file') == 2 && exist(output_file_V, 'file') == 2 && exist(output_file_W, 'file') == 2
+                fprintf('Files %s and %s and %s already exist. Skipping computation.\n', output_file_U, output_file_V, output_file_W);
                 continue;
             end
             
@@ -87,18 +95,20 @@ for j = 1:numel(chromosomes)
 
             try
                 % Load the tensor from the HDF5 file
-                tensor = h5read(tensor_file_path, '/Tensor');
+                tensor = h5read(tensor_file_path, '/Combined_Tensor');
                 tensor_size = size(tensor);
                 fprintf('Processing tensor of size %s for %s.\n', mat2str(tensor_size), tensor_file_path);
 
                 % Perform the tensor computation
                 model = struct;
-                model.variables.u = randn(size(tensor, 1), 2);
-                model.variables.v = randn(size(tensor, 3), 2);
+                model.variables.u = randn(size(tensor, 2), 2);
+                model.variables.v = randn(size(tensor, 4), 2);
+                model.variables.w = randn(size(tensor, 1), 2);
                 model.factors.U = {'u', @struct_nonneg};
                 model.factors.V = {'v', @struct_nonneg};
+                model.factors.W = {'w', @struct_nonneg};
                 model.factorizations.myfac.data = tensor;
-                model.factorizations.myfac.cpd = {'U', 'V', 'V'};
+                model.factorizations.myfac.cpd = {'W', 'U', 'V', 'V'};
                 options.Display = 100;
                 options.MaxIter = iterations;
                 options.TolFun = 1e-12;  % Set the tolerance here
@@ -108,10 +118,12 @@ for j = 1:numel(chromosomes)
                 % Extract the required fields from the nested structure
                 U = sol.factors.U;
                 V = sol.factors.V;
-                
+                W = sol.factors.W;
+
                 % Create and write to the HDF5 files
-                output_dataset_U = '/weights';
-                output_dataset_V = '/compartment_factors';
+                output_dataset_U = '/genomic_weights';
+                output_dataset_V = '/sample_weights';
+                output_dataset_W = '/modality_weights';
                 
                 h5create(output_file_U, output_dataset_U, size(U));
                 h5write(output_file_U, output_dataset_U, U);
@@ -119,6 +131,9 @@ for j = 1:numel(chromosomes)
                 h5create(output_file_V, output_dataset_V, size(V));
                 h5write(output_file_V, output_dataset_V, V);
                 
+                h5create(output_file_W, output_dataset_W, size(W));
+                h5write(output_file_W, output_dataset_W, W);
+
                 fprintf('Computed and saved results to %s and %s.\n', output_file_U, output_file_V);
             catch ME
                 fprintf('Error processing tensor for %s: %s\n', tensor_file_path, ME.message);

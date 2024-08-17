@@ -323,7 +323,7 @@ def get_best_correlated_vector(V, eigenvector):
 
 # Directory setup
 filtered_bam_list = filtered_list 
-base_tensor_dir = os.path.join(output_directory, 'tensor_1Mb_AB_factors')
+base_tensor_dir = os.path.join(output_directory, f'tensor_{resolution_label}_AB_factors')
 
 # Extract prefixes from the file
 prefixes = extract_prefixes(filtered_bam_list)
@@ -353,7 +353,7 @@ for i in range(1, 23):
 
     for prefix in prefixes:
         input_file = os.path.join(base_tensor_dir, chromosome, f'{prefix}_compartments.h5')
-        output_dir = os.path.join(output_directory, 'tensor_1Mb_AB_calls', chromosome)
+        output_dir = os.path.join(output_directory, f'tensor_{resolution_label}_AB_calls', chromosome)
         sample_id = prefix 
         
         if not os.path.exists(output_dir):

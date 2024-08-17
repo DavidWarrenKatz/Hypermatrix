@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+eval "$(python3 config_and_print.py)"
+
+# Extract resolution and label from the resolutions string
+IFS=':' read -r resolution resolution_label <<< "$resolutions"
+ 
 # Load configuration using a Python script
 declare -A config
 while IFS='=' read -r key value; do
@@ -31,8 +37,8 @@ fi
 java_opts="-Xmx18G"
 java_classpath="${config[software_directory]}/dnaaseUtils-0.14-jar-with-dependencies.jar:${config[software_directory]}/java-genomics-io.jar:${config[software_directory]}/igv.jar"
 main_class="main.java.edu.mit.compbio.utils.AlignMultiWigInsideBed"
-bed_file="${config[software_directory]}/b37.common_chr.1Mb_interval.autosome.bed"
-output_bed_base="${config[output_directory]}/b37.autosome.1Mb_interval.add_value.methy.bed.gz"
+bed_file="${config[software_directory]}/b37.common_chr.${resolution_label}_interval.autosome.bed"
+output_bed_base="${config[output_directory]}/b37.autosome.${resolution_label}_interval.add_value.methy.bed.gz"
 
 # Check if the desired output file already exists
 if [[ -f "$output_bed_base" ]]; then
@@ -90,5 +96,5 @@ else
 fi
 
 # Clean up
-#rm -f java_error.log methy_summary.cmd.txt
+rm -f java_error.log methy_summary.cmd.txt
 

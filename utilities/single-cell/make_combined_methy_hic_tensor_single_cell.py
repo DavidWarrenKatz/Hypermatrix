@@ -128,7 +128,7 @@ def process_tensor(methy_file_path, hic_path, output_tensor_path):
             
             # Ensure both matrices are the same size before setting elements to zero
             methy_matrix, hic_matrix = ensure_same_size(methy_matrix, hic_matrix)
-            methy_matrix = enforce_neighborhood_zeroing(methy_matrix, hic_matrix, neighborhood_size=4)
+            methy_matrix = enforce_neighborhood_zeroing(methy_matrix, hic_matrix, neighborhood_size=2)
             #methy_matrix[hic_matrix == 0] = 0
         else:
             hic_matrix = identity(methy_matrix.shape[0]).toarray()  # Convert to dense format

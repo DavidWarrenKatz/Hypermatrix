@@ -33,6 +33,14 @@ resolution, resolution_label = parse_resolution(resolution_str)
 prefix_file_path = filtered_list
 
 def combine_tensors_for_chromosome(chromosome, prefix_file_path, resolution_label, output_directory):
+    # Define the output path for the combined tensor
+    combined_tensor_path = os.path.join(output_directory, f'hic_methy_{resolution_label}_all_cells_tensors/{chromosome}_all_cells_tensor.h5')
+    
+    # Check if the output file already exists
+    if os.path.exists(combined_tensor_path):
+        print(f"Skipping computation for {chromosome} as the combined tensor already exists at {combined_tensor_path}")
+        return
+    
     # Read prefixes from the file
     with open(prefix_file_path, 'r') as f:
         prefixes = [line.strip() for line in f]
@@ -41,21 +49,23 @@ def combine_tensors_for_chromosome(chromosome, prefix_file_path, resolution_labe
     tensors = []
 
     # Load each tensor in the order specified by the prefix list
+    missing_files = []
     for prefix in prefixes:
         tensor_file_path = os.path.join(output_directory, f'hic_methy_{resolution_label}_tensor_singlecell/{chromosome}/{prefix}_{chromosome}.h5')
         
         if not os.path.exists(tensor_file_path):
-            raise FileNotFoundError(f"Tensor file {tensor_file_path} not found.")
+            missing_files.append(tensor_file_path)
+            continue  # Skip to the next prefix
         
         with h5py.File(tensor_file_path, 'r') as hf:
             tensor = hf['Tensor'][:]
             tensors.append(tensor)
+    
+    if missing_files:
+        print(f"Warning: The following files were missing and skipped for {chromosome}: {missing_files}")
 
     # Stack the tensors along a new axis to create an n by n by 2 by m tensor
     combined_tensor = np.stack(tensors, axis=-1)
-
-    # Define the output path for the combined tensor
-    combined_tensor_path = os.path.join(output_directory, f'hic_methy_{resolution_label}_all_cells_tensors/{chromosome}_all_cells_tensor.h5')
 
     # Ensure the output directory exists
     os.makedirs(os.path.dirname(combined_tensor_path), exist_ok=True)
@@ -70,16 +80,5 @@ def combine_tensors_for_chromosome(chromosome, prefix_file_path, resolution_labe
 for i in range(1, 23):  # Loop through chromosomes 1 to 22
     chromosome = f'chr{i}'
     combine_tensors_for_chromosome(chromosome, filtered_list, resolution_label, output_directory)
-
-
-
-
-
-
-
-
-
-
-
 
 

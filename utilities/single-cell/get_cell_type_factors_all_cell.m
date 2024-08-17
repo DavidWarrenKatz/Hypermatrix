@@ -50,8 +50,6 @@ chromosomes = {'chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', '
 
 for j = 1:numel(chromosomes)
     chromosome = chromosomes{j};
-    for k = 1:numel(prefixes)
-        prefix = prefixes{k};
         
         % Iterate over all resolutions
         for l = 1:numel(resolution_values)
@@ -111,8 +109,8 @@ for j = 1:numel(chromosomes)
                 model.factorizations.myfac.cpd = {'W', 'U', 'V', 'V'};
                 options.Display = 100;
                 options.MaxIter = iterations;
-                options.TolFun = 1e-12;  % Set the tolerance here
-                options.TolX = 1e-12;
+                options.TolFun = 1e-15;  % Set the tolerance here
+                options.TolX = 1e-15;
                 sol = sdf_nls(model, options);
 
                 % Extract the required fields from the nested structure
@@ -140,4 +138,4 @@ for j = 1:numel(chromosomes)
             end
         end
     end
-end
+

@@ -39,12 +39,11 @@ def load_csr_matrix_from_hdf5(file_path):
         shape = file['Matrix'].attrs['shape']
     return csr_matrix((data, indices, indptr), shape=shape)
 
-
 def get_matrix(file_name):
     # Construct the file path
-    csr_matrix = load_csr_matrix_from_hdf5(file_name)
+    csr_mat = load_csr_matrix_from_hdf5(file_name)
     # Convert CSR matrix to a dense N-dimensional NumPy array
-    dense_matrix = csr_matrix.toarray()
+    dense_matrix = csr_mat.toarray()
     symmetric_matrix = dense_matrix + dense_matrix.T - np.diag(dense_matrix.diagonal())
     return symmetric_matrix
 
@@ -77,43 +76,56 @@ def csr_pearson_correlation(csr_mat):
 
     return csr_matrix(np.nan_to_num(correlation_matrix))
 
+
 def process_matrices(input_dir, output_emphasized_dir, max_distance):
     """Process each Hi-C data file, compute matrices, and save the results."""
     os.makedirs(output_emphasized_dir, exist_ok=True)
-    print(f"input directory{input_dir}")
+    print(f"Input directory: {input_dir}")
+    
     for file_path in glob.glob(os.path.join(input_dir, '*_pad1_std1_rp0.5_sqrtvc.hdf5')):
         print(f"Processing file: {file_path}")
         
-        file_name = os.path.splitext(os.path.basename(file_path))[0] + '.h5'
-        output_emphasized_path = os.path.join(output_emphasized_dir, file_name)
+        # Extract base name and modify it to desired format
+        base_name = os.path.basename(file_path)
         
-        # Skip computation if both output files already exist
+        # Split at the first occurrence of '_chr' to separate the prefix and the chromosome information
+        prefix, chromosome_info = base_name.split('_chr', 1)
+        
+        # Further split the chromosome information to get the chromosome part only
+        chromosome = 'chr' + chromosome_info.split('_')[0]  # Extracts chromosome like 'chr1'
+        
+        # Construct the desired output file name
+        output_file_name = f"{prefix}_{chromosome}.h5"
+        output_emphasized_path = os.path.join(output_emphasized_dir, output_file_name)
+        
+        # Skip computation if output file already exists
         if os.path.exists(output_emphasized_path):
-            print(f"Skipping {output_emphasized_path}, emphasized hic matrix already exist.")
+            print(f"Skipping {output_emphasized_path}, emphasized Hi-C matrix already exists.")
             continue
 
         data = get_matrix(file_path)
 
-        if not data.any()
+        if not data.any():
             print(f"No data loaded from {file_path}")
             continue
-        csr_mat = create_matrix(data)
+
+        csr_mat = csr_matrix(data)
         if csr_mat is None:
             print(f"Failed to create matrix from data in {file_path}")
             continue
         
-        emphasized_matrix = None
-        if not os.path.exists(output_emphasized_path):
-            emphasized_matrix = emphasize_interactions(csr_mat, max_distance)
+        emphasized_matrix = emphasize_interactions(csr_mat, max_distance)
 
-        if not os.path.exists(output_emphasized_path):
-            emphasized_matrix = emphasized_matrix
-            with h5py.File(output_emphasized_path, 'w') as output_file:
-                grp = output_file.create_group('Matrix')
-                grp.create_dataset('data', data=emphasized_matrix.data)
-                grp.create_dataset('indices', data=emphasized_matrix.indices)
-                grp.create_dataset('indptr', data=emphasized_matrix.indptr)
-                grp.attrs['shape'] = emphasized_matrix.shape
+        with h5py.File(output_emphasized_path, 'w') as output_file:
+            grp = output_file.create_group('Matrix')
+            grp.create_dataset('data', data=emphasized_matrix.data)
+            grp.create_dataset('indices', data=emphasized_matrix.indices)
+            grp.create_dataset('indptr', data=emphasized_matrix.indptr)
+            grp.attrs['shape'] = emphasized_matrix.shape
+
+
+
+
 
 max_genomic_distance = int(10_000_000 / resolution) + 1
 base_input_dir = f'{output_directory}/hicluster_{resolution_label}_impute_dir/'
@@ -123,6 +135,6 @@ for i in range(1, 23):
     chromosome = f'chr{i}'
     input_dir = base_input_dir + f'{chromosome}'
     output_emphasized_dir = base_output_emphasized_dir + f'{chromosome}'
-    print(f'processing chr{i}')
+    print(f'Processing {chromosome}')
     process_matrices(input_dir, output_emphasized_dir, max_genomic_distance)
 

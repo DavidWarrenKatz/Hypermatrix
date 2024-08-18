@@ -8,6 +8,7 @@
 # Variables and filepaths
 author="Author Name"
 file_description="Genomic Data Analysis"
+file="../../bin/name.order.HCG_methy.with_color.txt"
 date=$(date +%Y-%m-%d)
 project_directory="/jet/home/dnaase/startup/projects/hexa_seq/scNOMeHiC_RNA_IMR90_GM_20210701"
 bam_directory="$project_directory/bam/DNA/merged_cluster"
@@ -17,22 +18,53 @@ software_directory="/jet/home/dnaase/startup/software"
 bis_tools_directory="$software_directory/bistools/Bis-tools/Bis-SNP"
 genetic_map="$software_directory/Eagle/default/tables/genetic_map_hg19_withX.txt.gz"
 chunk_size=20000000  # chunk size for imputation
+output_directory="../../projects/single_cell_files"
+eval "$(conda shell.bash hook)"
+conda activate hypermatrix
 
 # Functions 
 # --------------------------------------------------------- 
-# Function to create bam list
+
+# Function to create bam list and retain only existing BAM files in the list
 function create_bam_list {
-    color=$1
-    grep "$color" name.order.HCG_methy.with_color.txt | cut -f2 | perl -ne 'chomp; $in=$_; $in.=".b37.calmd.bam"; print "$in\n";' > "${color}_cluster.bam_List.txt"
+    local color=$1
+    local file=$2
+    local output_directory=$3
+    local list_file="${output_directory}/${color}_cluster.bam_List.txt"
+    local temp_file="${output_directory}/${color}_temp.txt"
+
+    # Create list with predefined full paths
+    grep "$color" "$file" | cut -f2 | perl -ne 'chomp; $in=$_; $in.=".good_reads.bam"; print "/home/dwk681/workspace/hypermatrix_test/hypermatrix/projects/single_cell_files/$in\n";' > "$list_file"
+
+    # Check each file in the list for existence and write only existing files to temp file
+    while IFS= read -r bam_file; do
+        if [ -f "$bam_file" ]; then
+            echo "$bam_file" >> "$temp_file"  # Write existing file paths to temporary file
+        else
+            echo "$bam_file does not exist."
+        fi
+    done < "$list_file"
+
+    # Overwrite the original file with the temporary file if there are valid entries
+    if [ -s "$temp_file" ]; then
+        mv "$temp_file" "$list_file"
+    else
+        echo "No valid BAM files found. Original list file will be emptied."
+        > "$list_file"  # Clear the list file if no valid files were found
+    fi
 }
+
 
 # Function to merge_and_index_bam using bamtools and samtools
 # Consensus bam file 
 function merge_and_index_bam {
     color=$1
-    list_file="${color}_cluster.bam_List.txt"
-    output_bam="merge_${color}_cluster.b37.calmd.bam"
-    perl ~/ssubexc.pl "bamtools merge -list $list_file -out $output_bam && samtools index -@ 5 $output_bam" "${color}_cluster" 10 5
+    output_directory=$2
+    list_file="${output_directory}/${color}_cluster.bam_List.txt"
+    output_bam="${output_directory}/merge_${color}_cluster.bam"
+    #bamtools merge -list $list_file -out $output_bam && samtools index -@ 5 $output_bam "${color}_cluster"
+    bamtools merge -list $list_file -out $output_bam && samtools index -@ 5 $output_bam
+
 }
 
 # Function to call SNPs using Bis-SNP, designed for bisulfite sequencing data
@@ -62,11 +94,15 @@ function split_and_impute_vcf {
 
 # MAIN 
 # --------------------------------------------------------------
-create_bam_list "red"
-create_bam_list "blue"
-merge_and_index_bam "red"
-merge_and_index_bam "blue"
+create_bam_list "red" $file $output_directory
+create_bam_list "blue" $file $output_directory
 
+
+merge_and_index_bam "red" $output_directory
+merge_and_index_bam "blue" $output_directory
+
+
+<<comment
 ls merge_*.calmd.bam | while read bam_file; do 
     call_snps "$bam_files"
 done 
@@ -74,7 +110,7 @@ done
 # gatk 
 split_and_impute_vcf "red"
 split_and_impute_vcf "blue"
-
+comment
 
 # # OLD SCRIPT VERSION TO BE MOVED TO ARCHIVE 
 # #merge_red: 74340625 high quality reads (~3X), merge_blue: 95972988 high quality (~4X).

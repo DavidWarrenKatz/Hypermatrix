@@ -146,3 +146,78 @@ print("Shape of W:", W.shape)
 print("Shape of H:", H.shape)
 
 
+def get_bins_per_chromosome(chromosomes_info, resolution):
+    """
+    Calculate the number of bins for each chromosome based on the resolution.
+    
+    Parameters:
+    - chromosomes_info: Dictionary with chromosome names as keys and their lengths as values.
+    - resolution: The resolution of the bins.
+    
+    Returns:
+    - bins_per_chromosome: Dictionary with chromosome names as keys and number of bins as values.
+    """
+    bins_per_chromosome = {}
+    for chrom, size in chromosomes_info.items():
+        bins = size // resolution
+        bins_per_chromosome[chrom] = bins
+    return bins_per_chromosome
+
+def split_genomic_factors(W, bins_per_chromosome):
+    """
+    Split the genomic factors matrix W into individual chromosome vectors.
+    
+    Parameters:
+    - W: Genomic factors matrix (shape: total_bins x rank)
+    - bins_per_chromosome: Dictionary with chromosome names as keys and number of bins as values.
+    
+    Returns:
+    - chromosome_vectors: Dictionary with chromosome names as keys and their corresponding factor vectors as values.
+    """
+    chromosome_vectors = {}
+    start_idx = 0
+    
+    for chrom, bins in bins_per_chromosome.items():
+        end_idx = start_idx + bins
+        chromosome_vectors[chrom] = W[start_idx:end_idx, :]
+        start_idx = end_idx
+    
+    return chromosome_vectors
+
+# Calculate the number of bins per chromosome
+bins_per_chromosome = get_bins_per_chromosome(chromosomes_info, resolution)
+
+# Split the genomic factors into individual chromosome vectors
+chromosome_vectors = split_genomic_factors(W, bins_per_chromosome)
+
+# Print the shape of each chromosome vector to confirm
+for chrom, vector in chromosome_vectors.items():
+    print(f"Chromosome {chrom}: {vector.shape}")
+
+
+
+import os
+
+# Define the output directory
+output_dir = os.path.join(base_directory, "chromosome_vectors")
+os.makedirs(output_dir, exist_ok=True)
+
+# Function to save each vector to a file
+def save_vectors_to_files(chromosome_vectors, output_dir):
+    for chrom, vector in chromosome_vectors.items():
+        file_path = os.path.join(output_dir, f"chromosome_{chrom}_vectors.txt")
+        np.savetxt(file_path, vector, fmt='%.6f')
+        print(f"Saved {file_path}")
+
+# Function to save the genome-wide vectors
+def save_genome_wide_vectors(W, output_dir):
+    genome_wide_file = os.path.join(output_dir, "genome_wide_vectors.txt")
+    np.savetxt(genome_wide_file, W, fmt='%.6f')
+    print(f"Saved genome-wide vectors to {genome_wide_file}")
+
+# Save chromosome vectors
+save_vectors_to_files(chromosome_vectors, output_dir)
+
+# Save genome-wide vectors
+save_genome_wide_vectors(W, output_dir)
+

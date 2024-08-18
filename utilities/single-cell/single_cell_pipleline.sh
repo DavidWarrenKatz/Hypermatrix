@@ -15,7 +15,6 @@
 # each individual file still needs to import these variables as well
 eval "$(python3 config_and_print.py)"
 
-<<comment
 # Execute the filtering script
 chmod +x filter_bam.sh
 ./filter_bam.sh
@@ -86,6 +85,12 @@ python make_methy_matrices.py
 
 # Make the hic matrices
 python make_hic_matrices.py
+
+# Make the hic cumulants if cumulant is set to True
+#[TO DO: make this file]
+if [ "$impute" = "True" ]; then
+python make_hic_matrices_imputed.py
+fi
 
 # Make the hic cumulants if cumulant is set to True
 #[TO DO: make this file]
@@ -165,7 +170,6 @@ python make_AB_compartment_image.py
 
 python make_all_cells_tensor.py
 
-comment
 # Load the necessary modules
 module load matlab/r2022b
 # Execute the MATLAB script

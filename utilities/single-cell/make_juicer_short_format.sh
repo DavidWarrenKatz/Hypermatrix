@@ -150,7 +150,7 @@ if [ "$impute" = "True" ]; then
         echo "Imputing $prefix for chromosome $chrom at resolution $label"
 
         hicluster impute-cell \
-          --indir "$output_directory/hicluster_${label}_raw_dir/chr$chrom/" \
+          --indir "$output_directory/hic_${label}_raw_dir/chr$chrom/" \
           --outdir "$imputeDir/chr$chrom/" \
           --cell "$prefix" \
           --chrom "chr$chrom" \

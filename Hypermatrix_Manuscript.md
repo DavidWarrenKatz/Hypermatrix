@@ -73,9 +73,17 @@ Many tensor models, such as scHiCluster \[Zhou *et al.*, 2019\], reshape tensor 
 **The NTF model with Bulk Data**  
 Rank Two Decompositions of Bulk Hi-C and Bulk DNA Methylation Data Produces A/B Compartment Factors  
 One of the most striking characteristics of Hi-C heatmaps is their intrachromosomal checkerboard pattern. The checkerboard-like pattern suggests that each chromosome is clustered into two components, referred to as A/B compartments in Lieberman-Aiden *et al.* \[2009\]. For the NTF model to identify A/B compartments from bulk Hi-C data, the intrachromosomal contact matrices were processed as follows. First, the correlation matrix of each intrachromosomal contact matrix was computed, and then translated by one to make the matrix non-negative. Next, the square matrix was converted into a 3-fold tensor by downsampling to create additional slices. In this context, an 80% downsampled matrix is the matrix that results from modifying the original matrix by replacing 20% of its entries randomly with zeros. The model takes as input a non-negative real tensor tensor​ whose *ijk*\-th entry represents the interaction between genomic bin *i* and genomic bin *j* in the *k*\-th downsampled matrix of the translated correlation Hi-C matrix. The number of downsampled slices did not affect the outcome, suggesting the rank one components of the decomposition are meaningful. Denote the downsampled processed interaction tensor by C and its entries by c*ijk*.The NTF model produces non-negative real numbers *hti* and *wti* such that for some small natural number *r* and all *i*, *j*, and *k* in the appropriate range, the following relationship holds:  
-![][image4]  
+
+<div style="display: flex; justify-content: center;">
+    <img src="files/approx_sum.png" width="auto" height="auto">
+</div>
+
 The scalar *ht*i is naturally interpreted as the weight of factor *t* with respect to genomic region *i*, and *wtk* is naturally interpreted as the weight of factor *t* with respect to dataset *k*. Taking *r* to be 2, this factorization can be written in tensor notation as:  
-![][image5]  
+
+<div style="display: flex; justify-content: center;">
+    <img src="files/rank_two_decomposition.png" width="auto" height="auto">
+</div>
+
 which will also be denote as C ≈ h1 ⊗ h1 ⊗ w1 \+ h2 ⊗ h2 ⊗ w2 in this proposal. For rank two decompositions, the factors h1 and h2 were the A/B compartments, as demonstrated in Figure 6\. Since the factors are independent of the experiments, it should follow that wt \= wu for all *t, u* up to a multiplicative constant. This was confirmed in practice. Furthermore, wtk always equaled the number of reads of experiment *k*, further validating the model.   
 A/B compartments can also be derived from downsampled tensors of bulk methylation data. The process begins by converting the 1D methylation data into a non-negative symmetric matrix before downsampling and inputting the resulting tensor into the NTF model. Specifically, to derive A/B compartments with the NTF model, bulk DNA methylation data is processed in the following steps:
 

@@ -72,8 +72,8 @@ Many tensor models, such as scHiCluster \[Zhou *et al.*, 2019\], reshape tensor 
 <div style="text-align: center;">
   <table style="margin: 0 auto;">
     <tr>
-      <td><img src="files/tensor_matrix_striped_visualization.png" alt="Figure 1" width="450"></td>
-      <td><img src="files/Block_Tensor_Example.png" alt="Figure 2" width="500"></td>
+      <td><img src="files/tensor_matrix_visualization_new.png" alt="Figure 1" width="450"></td>
+      <td><img src="files/Block_Tensor_Example_new.png" alt="Figure 2" width="500"></td>
     </tr>
   </table>
 </div>

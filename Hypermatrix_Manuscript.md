@@ -2,7 +2,7 @@
 
 Advancements in single-cell multi-omics technologies have enabled the simultaneous measurement of various omics modalities within individual cells. Integrating multi-omics data while preserving the interaction information between different modalities remains an open challenge. Traditional methods lose critical interaction information by applying matrix methods. To address this, this research project proposes a Non-Negative Tensor Factorization (NTF) model for multi-omics integration. 
 
-***The NTF model with Single-Cell Data***  
+### The NTF Model with Single-Cell Data  
 
 **The 'ABcluster' command effectively distinguishes GM12878 and IMR90 cells based on their A/B compartment calls and their cell type factors.** The 'ABcluster' command is designed to robustly analyze single-cell Hi-C, methylation, and chromatin accessibility data, outputting cell-type factors and single-cell A/B compartment calls. Additionally, 'ABcluster' can flexibly process inputs from any two of the above modalities or even just a single modality.
 

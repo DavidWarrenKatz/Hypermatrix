@@ -36,19 +36,19 @@ def parse_resolution(resolution_str):
 resolution, resolution_label = parse_resolution(resolution_str)
 
 # Load original_bulk_data from the file
-bulk_data_input_file = '../../projects/single_cell_files/nan_removed_bulk_data.pkl'
+bulk_data_input_file = f'../../projects/single_cell_files/nan_removed_bulk_data_resolution_res{resolution}.pkl'
 with open(bulk_data_input_file, 'rb') as f:
     bulk_data = pickle.load(f)
 print(f"bulk_data loaded from {bulk_data_input_file}")
 
 # Load original_bulk_data from the file
-original_bulk_data_input_file = '../../projects/single_cell_files/original_bulk_data.pkl'
+original_bulk_data_input_file = f'../../projects/single_cell_files/original_bulk_data_res{resolution}.pkl'
 with open(original_bulk_data_input_file, 'rb') as f:
     original_bulk_data = pickle.load(f)
 print(f"original_bulk_data loaded from {bulk_data_input_file}")
 
 # Load chromosome_results from the file
-chromosome_results_input_file = '../../projects/single_cell_files/chromosome_results.pkl'
+chromosome_results_input_file = f'../../projects/single_cell_files/chromosome_results_res{resolution}.pkl'
 with open(chromosome_results_input_file, 'rb') as f:
     chromosome_results = pickle.load(f)
 print(f"chromosome_results loaded from {chromosome_results_input_file}")
@@ -87,6 +87,46 @@ gm12878_series = pd.Series(gm12878_values)
 genome_wide_correlation = imr90_series.corr(gm12878_series)
 
 print(f'Genome-wide correlation between IMR90 and GM12878: {genome_wide_correlation}')
+
+def calculate_average_correlations_from_precomputed(chromosome_results, chromosomes):
+    gm12878_avg_correlations = {}
+    imr90_avg_correlations = {}
+    gm12878_avg_correlations_withIMR90 = {}
+    imr90_avg_correlations_withGM12878 = {}
+    
+    for chr in chromosomes:
+        # Access the specific chromosome data
+        sc_dataframe = chromosome_results[f'chr{chr}']
+
+        # Extract correlations for GM12878
+        gm12878_corr_bulk = sc_dataframe[sc_dataframe['Cell Type'] == 'GM12878']['Correlation With Bulk']
+        gm12878_avg_correlations[chr] = gm12878_corr_bulk.mean()
+        gm12878_corr_withIMR90 = sc_dataframe[sc_dataframe['Cell Type'] == 'GM12878']['Correlation With Other Bulk']
+        gm12878_avg_correlations_withIMR90[chr] = gm12878_corr_withIMR90.mean()
+        
+        # Extract correlations for IMR90
+        imr90_corr_bulk = sc_dataframe[sc_dataframe['Cell Type'] == 'IMR90']['Correlation With Bulk']
+        imr90_avg_correlations[chr] = imr90_corr_bulk.mean()
+        imr90_corr_withGM12878 = sc_dataframe[sc_dataframe['Cell Type'] == 'IMR90']['Correlation With Other Bulk']
+        imr90_avg_correlations_withGM12878[chr] = imr90_corr_withGM12878.mean()
+
+    return gm12878_avg_correlations, imr90_avg_correlations, gm12878_avg_correlations_withIMR90, imr90_avg_correlations_withGM12878
+
+chromosomes = [str(i) for i in range(1, 23)] 
+gm12878_avg_corr, imr90_avg_corr, gm12878_avg_correlations_withIMR90, imr90_avg_correlations_withGM12878 = calculate_average_correlations_from_precomputed(chromosome_results, chromosomes)
+
+# Print the results
+print("Average correlations for GM12878 with bulk GM12878 and bulk IMR90 by chromosome:")
+for chr in chromosomes:
+    corr = gm12878_avg_corr[chr]
+    corr_other = gm12878_avg_correlations_withIMR90[chr]
+    print(f"Chromosome {chr}: {corr:.4f}, {corr_other:.4f}")
+
+print("\nAverage correlations for IMR90 with bulk IMR90 and bulk GM12878 by chromosome:")
+for chr in chromosomes:
+    corr = imr90_avg_corr[chr]
+    corr_other = imr90_avg_correlations_withGM12878[chr]
+    print(f"Chromosome {chr}: {corr:.4f}, {corr_other:.4f}")
 
 import numpy as np
 
@@ -140,18 +180,15 @@ chr = 10
 sc_dataframe = chromosome_results[f'chr{chr}']
 
 # Define the bulk eigenvectors
-bulk_eigenvector_gm12878 = original_bulk_data[f'res1000000_ch{chr}_oe_GM12878_{normalization}_eigenvector']['eigenvalue'].values
-bulk_eigenvector_imr90 = original_bulk_data[f'res1000000_ch{chr}_oe_IMR90_{normalization}_eigenvector']['eigenvalue'].values
+bulk_eigenvector_gm12878 = original_bulk_data[f'res{resolution}_ch{chr}_oe_GM12878_{normalization}_eigenvector']['eigenvalue'].values
+bulk_eigenvector_imr90 = original_bulk_data[f'res{resolution}_ch{chr}_oe_IMR90_{normalization}_eigenvector']['eigenvalue'].values
 
 # Sort and prepare the dataframe
 sc_dataframe['Cell Type Sort'] = sc_dataframe['Cell Type'].map({'GM12878': 0, 'IMR90': 1})
 sc_dataframe = sc_dataframe.sort_values(by=['Cell Type Sort', 'Correlation With Bulk'], ascending=[True, False])
 sc_dataframe.drop('Cell Type Sort', axis=1, inplace=True)
 
-plt.rcParams['text.usetex'] = False
-plt.rcParams['font.family'] = 'serif'
-plt.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
-
+plt.rcParams['text.usetex'] = True
 
 def plot_eigenvectors_with_heatmap(bulk_eigenvector1, bulk_eigenvector2, sc_dataframe, title1, title2, title, chr, save_path=None, separation_rows=5):
     fig = plt.figure(figsize=(15, 20))  # Adjusted the figure size for better proportions
@@ -204,13 +241,14 @@ def plot_eigenvectors_with_heatmap(bulk_eigenvector1, bulk_eigenvector2, sc_data
     plt.suptitle(title, fontsize=45, fontweight='bold')  
 
     # Construct the caption
-    caption = (r"$\textbf{Figure 1:}$ The single cell A/B compartment calls from the NTF model visually separate the " 
+    caption = (f"Figure 1: The single cell A/B compartment calls from the NTF model visually separate the " 
                f"{num_gm12878} GM12878 cells from the {num_imr90} IMR90 cells on chromosome {chr}. "
                f"The GM12878 cells have a more pronounced A compartment on the long arm of chromosome {chr}, which is detected by the "
                f"NTF single-cell compartment calls. The IMR90 cells, on the other hand, have a more pronounced A compartment on the "
                f"short arm of chromosome {chr}. "
                f"The bulk GM12878 and bulk IMR90 Eigenvector values were computed by the Juicer software. "
                f"The genome-wide correlation between bulk GM12878 and bulk IMR90 is {genome_wide_correlation:.2f}. "
+               f"The data was binned at a resolution of {resolution_label}. "
                f"There is no normalization of the Hi-C data. Low rank approximations were computed with {iterations} iterations. "
                f"Correlation of GM12878 cells with bulk GM12878: {overall_gm12878_avg_corr:.4f}. "
                f"Correlation of GM12878 cells with bulk IMR90: {overall_gm12878_avg_corr_withIMR90:.4f}. "
@@ -234,17 +272,17 @@ def plot_eigenvectors_with_heatmap(bulk_eigenvector1, bulk_eigenvector2, sc_data
 
     plt.show()
 
+# Example invocation with the genome-wide correlation value and chromosome number
 plot_eigenvectors_with_heatmap(
     bulk_eigenvector_gm12878,
     bulk_eigenvector_imr90,
     sc_dataframe,
     f"Bulk GM12878 for chr{chr}",
     f"Bulk IMR90 for chr{chr}",
-    "NTF Single Cell Compartment Calls",
-    chr=chr,  
-    save_path=f"../../files/AB_compartment_heatmap_ch{chr}_example.png"
+    f"NTF Single Cell Compartment Calls\n Resolution {resolution_label}",
+    chr=chr,  # Use the chromosome number variable
+    save_path=f"../../files/AB_compartment_heatmap_ch{chr}_example_iter{iterations}.png"
 )
-
 
 chr = 4
 sc_dataframe = chromosome_results[f'chr{chr}']
@@ -308,16 +346,18 @@ def plot_eigenvectors_with_heatmap(bulk_eigenvector1, bulk_eigenvector2, sc_data
 
     plt.suptitle(title, fontsize=45, fontweight='bold')  
 
-    caption = (r"$\textbf{Figure 2:}$ The single cell A/B compartment calls from the NTF model agree with bulk data. " 
+    caption = (f"Figure 2: The single cell A/B compartment calls from the NTF model agree with bulk data. " 
            f"Both GM12878 and IMR90 cell lines have a pronounced A compartment on the short arm of chromosome {chr}, "
            f"which is detected by the compartment calls from the NTM model."
+           f"The data was binned at a resolution of {resolution_label}. "
+           f"There is no normalization of the Hi-C data. Low rank approximations were computed with {iterations} iterations. "
           )
 
     # Use textwrap to wrap the caption text within a specific width
     wrapped_caption = textwrap.fill(caption, width=100)
 
     # Add the caption at the bottom with automatic wrapping
-    plt.figtext(0.01, -0.01, wrapped_caption, wrap=True, horizontalalignment='left', fontsize=25)
+    plt.figtext(0.01, -0.04, wrapped_caption, wrap=True, horizontalalignment='left', fontsize=25)
 
     if save_path:
         # Ensure the save directory exists
@@ -329,14 +369,18 @@ def plot_eigenvectors_with_heatmap(bulk_eigenvector1, bulk_eigenvector2, sc_data
 
     plt.show()    
     
+# Example invocation with the genome-wide correlation value and chromosome number
 plot_eigenvectors_with_heatmap(
     bulk_eigenvector_gm12878,
     bulk_eigenvector_imr90,
     sc_dataframe,
     f"Bulk GM12878 for chr{chr}",
     f"Bulk IMR90 for chr{chr}",
-    "NTF Single Cell Compartment Calls",
-    chr=chr,  
-    save_path=f"../../files/AB_compartment_heatmap_ch{chr}_example.png"
+    "NTF Single Cell Compartment Calls\nResolution {resolution_label}",
+    chr=chr,  # Use the chromosome number variable
+    save_path=f"../../files/AB_compartment_heatmap_ch{chr}_example_iter{iterations}.png"
 )
+
+
+
 

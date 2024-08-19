@@ -175,6 +175,7 @@ module load matlab/r2022b
 # Execute the MATLAB script
 matlab -nodisplay -r "run('get_cell_type_factors_all_cell.m'); exit;"
 
+python make_cell_type_factors.py
 
 module load matlab/r2022b
 matlab -nodisplay -r "run('cell_type_factors_seperate_modalities.m'); exit;"

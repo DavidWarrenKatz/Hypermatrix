@@ -84,7 +84,7 @@ def calculate_matrix(file_path):
 
     return data_matrix
 
-file_path = base_directory + f'b37.autosome.{resolution_label}_interval.add_value.methy.bed.gz'
+file_path = base_directory + f'/b37.autosome.{resolution_label}_interval.add_value.methy.bed.gz'
 methylation_matrix = normalize_matrix_columns(calculate_matrix(file_path))
 print(methylation_matrix.shape)
 
@@ -138,13 +138,29 @@ rank = 2
 
 # Perform Non-negative Matrix Factorization (NMF)
 model = NMF(n_components=rank, init='random', random_state=0)
-W = model.fit_transform(methylation_matrix_1Mb)
+W = model.fit_transform(methylation_matrix)
 H = model.components_
 
 # Check the shapes of W and H to confirm the decomposition
 print("Shape of W:", W.shape)
 print("Shape of H:", H.shape)
 
+# Ensure directories exist
+os.makedirs(os.path.join(output_directory, f'{resolution_label}_cell_type_sample_weights'), exist_ok=True)
+os.makedirs(os.path.join(output_directory, f'{resolution_label}_cell_type_genomic_weights'), exist_ok=True)
+
+for idx in range(rank):        
+    # Save sample factors
+    h5_file_path = os.path.join(output_directory, f'{resolution_label}_cell_type_sample_weights', f"factor_{idx}.h5")
+    with h5py.File(h5_file_path, 'w') as h5f:
+        h5f.create_dataset(f'sample_factor_{idx}', data=H[idx,:])
+    print(f"Saved {h5_file_path}")
+    
+    # Save genomic factors
+    h5_file_path = os.path.join(output_directory, f'{resolution_label}_cell_type_genomic_weights', f"factor_{idx}.h5")
+    with h5py.File(h5_file_path, 'w') as h5f:
+        h5f.create_dataset(f'genomic_factor_{idx}', data=W[:, idx])
+    print(f"Saved {h5_file_path}")
 
 def get_bins_per_chromosome(chromosomes_info, resolution):
     """
@@ -163,12 +179,12 @@ def get_bins_per_chromosome(chromosomes_info, resolution):
         bins_per_chromosome[chrom] = bins
     return bins_per_chromosome
 
-def split_genomic_factors(W, bins_per_chromosome):
+def split_genomic_factors(vector, bins_per_chromosome):
     """
-    Split the genomic factors matrix W into individual chromosome vectors.
+    Split a single genomic factor vector into individual chromosome vectors.
     
     Parameters:
-    - W: Genomic factors matrix (shape: total_bins x rank)
+    - vector: A single column vector from the genomic factors matrix (shape: total_bins,)
     - bins_per_chromosome: Dictionary with chromosome names as keys and number of bins as values.
     
     Returns:
@@ -177,9 +193,18 @@ def split_genomic_factors(W, bins_per_chromosome):
     chromosome_vectors = {}
     start_idx = 0
     
-    for chrom, bins in bins_per_chromosome.items():
-        end_idx = start_idx + bins
-        chromosome_vectors[chrom] = W[start_idx:end_idx, :]
+    chromosomes = list(bins_per_chromosome.keys())
+    
+    for i, chrom in enumerate(chromosomes):
+        bins = bins_per_chromosome[chrom]
+        
+        # For the last chromosome, include all remaining bins
+        if i == len(chromosomes) - 1:
+            end_idx = vector.shape[0]
+        else:
+            end_idx = start_idx + bins
+        
+        chromosome_vectors[chrom] = vector[start_idx:end_idx]
         start_idx = end_idx
     
     return chromosome_vectors
@@ -187,37 +212,21 @@ def split_genomic_factors(W, bins_per_chromosome):
 # Calculate the number of bins per chromosome
 bins_per_chromosome = get_bins_per_chromosome(chromosomes_info, resolution)
 
-# Split the genomic factors into individual chromosome vectors
-chromosome_vectors = split_genomic_factors(W, bins_per_chromosome)
-
-# Print the shape of each chromosome vector to confirm
-for chrom, vector in chromosome_vectors.items():
-    print(f"Chromosome {chrom}: {vector.shape}")
-
-
-
-import os
-
-# Define the output directory
-output_dir = os.path.join(base_directory, "chromosome_vectors")
-os.makedirs(output_dir, exist_ok=True)
-
-# Function to save each vector to a file
-def save_vectors_to_files(chromosome_vectors, output_dir):
-    for chrom, vector in chromosome_vectors.items():
-        file_path = os.path.join(output_dir, f"chromosome_{chrom}_vectors.txt")
-        np.savetxt(file_path, vector, fmt='%.6f')
-        print(f"Saved {file_path}")
-
-# Function to save the genome-wide vectors
-def save_genome_wide_vectors(W, output_dir):
-    genome_wide_file = os.path.join(output_dir, "genome_wide_vectors.txt")
-    np.savetxt(genome_wide_file, W, fmt='%.6f')
-    print(f"Saved genome-wide vectors to {genome_wide_file}")
-
-# Save chromosome vectors
-save_vectors_to_files(chromosome_vectors, output_dir)
-
-# Save genome-wide vectors
-save_genome_wide_vectors(W, output_dir)
+# Iterate over each column of W and split it into chromosome-specific vectors
+for col_idx in range(W.shape[1]):
+    vector = W[:, col_idx]
+    chromosome_vectors = split_genomic_factors(vector, bins_per_chromosome)
+    
+    # Save chromosome-specific vectors to both .txt and .h5 files
+    for chrom, chrom_vector in chromosome_vectors.items():
+        # Save as .txt file
+        txt_file_path = os.path.join(output_directory, f'{resolution_label}_cell_type_genomic_weights', f"chromosome_{chrom}_factor_{col_idx}.txt")
+        np.savetxt(txt_file_path, chrom_vector, fmt='%.6f')
+        print(f"Saved {txt_file_path}")
+        
+        # Save as .h5 file
+        h5_file_path = os.path.join(output_directory, f'{resolution_label}_cell_type_genomic_weights', f"chromosome_{chrom}_factor_{col_idx}.h5")
+        with h5py.File(h5_file_path, 'w') as h5f:
+            h5f.create_dataset(f'chromosome_{chrom}_vector_{col_idx}', data=chrom_vector)
+        print(f"Saved {h5_file_path}")
 

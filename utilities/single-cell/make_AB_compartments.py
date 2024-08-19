@@ -453,19 +453,19 @@ for i in range(1, 23):
 
                                                    
 # Save original_bulk_data to a file
-original_bulk_data_output_file = '../../projects/single_cell_files/original_bulk_data.pkl'
+original_bulk_data_output_file = f'../../projects/single_cell_files/original_bulk_data_res{resolution}.pkl'
 with open(original_bulk_data_output_file, 'wb') as f:
     pickle.dump(original_bulk_data, f)
 print(f"original_bulk_data saved to {original_bulk_data_output_file}")
 
 # Save original_bulk_data to a file
-bulk_data_output_file = '../../projects/single_cell_files/nan_removed_bulk_data.pkl'
+bulk_data_output_file = f'../../projects/single_cell_files/nan_removed_bulk_data_res{resolution}.pkl'
 with open(bulk_data_output_file, 'wb') as f:
     pickle.dump(bulk_data, f)
 print(f"bulk_data saved to {bulk_data_output_file}")
 
 # Save chromosome_results to a file
-chromosome_results_output_file = '../../projects/single_cell_files/chromosome_results.pkl'
+chromosome_results_output_file = f'../../projects/single_cell_files/chromosome_results_res{resolution}.pkl'
 with open(chromosome_results_output_file, 'wb') as f:
     pickle.dump(chromosome_results, f)
 print(f"chromosome_results saved to {chromosome_results_output_file}")                                                                                                                             

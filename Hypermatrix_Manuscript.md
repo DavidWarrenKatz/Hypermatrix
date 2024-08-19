@@ -103,7 +103,9 @@ Dixon and colleagues developed a statistic termed the ‘directionality index’
 **Potential Pitfalls and Alternative Approaches**  
  The above methods store the data from each modality and each cell as a correlation matrix. This results in a 4-fold tensor. Just as matrices only capture linear relationships in datasets, 4-fold tensors only encode the  degree four relationships in the data. If the above methods are not successful in producing cell type factors or single-cell A/B compartment values, I will enhance the method by considering cumulant tensors rather than correlation matrices. Whereas correlation coefficients capture degree one correlation information, the second cumulant tensor encodes degree two information. Cumulant tensors and hypercorrelation coefficients are defined in Figure 10\. Thus, if the strategy outlined above is not successful, I will improvedon the strategy by using cumulant tensors to capture higher-degree relationships in the data.  
    
-![][image7]
+<div style="display: flex; justify-content: center;">
+    <img src="files/cumulant_figure.png" width="600" height="auto">
+</div>
 
 **References**
 

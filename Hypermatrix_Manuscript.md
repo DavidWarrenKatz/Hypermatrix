@@ -81,7 +81,7 @@ One of the most striking characteristics of Hi-C heatmaps is their intrachromoso
 The scalar *ht*i is naturally interpreted as the weight of factor *t* with respect to genomic region *i*, and *wtk* is naturally interpreted as the weight of factor *t* with respect to dataset *k*. Taking *r* to be 2, this factorization can be written in tensor notation as:  
 
 <div style="display: flex; justify-content: center;">
-    <img src="files/rank_two_decomposition.png" width="200" height="auto">
+    <img src="files/rank_two_decomposition.png" width="400" height="auto">
 </div>
 
 which will also be denote as C ≈ h1 ⊗ h1 ⊗ w1 \+ h2 ⊗ h2 ⊗ w2 in this proposal. For rank two decompositions, the factors h1 and h2 were the A/B compartments, as demonstrated in Figure 6\. Since the factors are independent of the experiments, it should follow that wt \= wu for all *t, u* up to a multiplicative constant. This was confirmed in practice. Furthermore, wtk always equaled the number of reads of experiment *k*, further validating the model.   

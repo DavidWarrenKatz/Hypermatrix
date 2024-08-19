@@ -16,7 +16,7 @@ Below is a comparison of A/B compartment calls derived from single-cell methylat
   <table style="margin: 0 auto;">
     <tr>
       <td><img src="files/AB_compartment_heatmap_ch10_example_iter900.png" alt="Figure 1" width="400"></td>
-      <td><img src="files/AB_compartment_heatmap_ch10_example_scHIcluster.png" alt="Figure 2" width="400"></td>
+      <td><img src="files/AB_compartment_heatmap_ch10_example_scHIcluster.png" alt="Figure 2" width="450"></td>
     </tr>
   </table>
 </div>

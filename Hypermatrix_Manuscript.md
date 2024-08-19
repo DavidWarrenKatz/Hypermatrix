@@ -12,7 +12,16 @@ If successful, this model will provide a powerful alternative to existing method
  
 The scNOMe-HiC technique produces simultaneous single-cell methylation and chromatin conformation data. The 'ABcluster' command processes both of these modalities to produce single-cell A/B compartment calls. Below is the heatmap comparing the bulk eigenvectors of GM12878 and IMR90 with single-cell compartment calls. The first 38 cells are GM12878.
 
-<img src="files/AB_compartment_heatmap.png" width="400" height="600" /> 
+<div style="text-align: center;">
+  <table style="margin: 0 auto;">
+    <tr>
+      <td><img src="files/AB_compartment_heatmap_ch10_example_iter900.png" alt="Figure 1" width="400"></td>
+      <td><img src="files/AB_compartment_heatmap_ch11_example_scHIcluster.png" alt="Figure 2" width="400"></td>
+    </tr>
+  </table>
+</div>
+
+
 
 A/B compartments can be reliably called from both bulk Hi-C and bulk CpG methylation data. However, the methods used in bulk do not work well in the sparse single-cell setting. The 'ABcluster' command overcomes this difficulty by combining both the single cell data from both modalities. The resulting A/B compartments derived approximately half of their information from each modality, providing a balanced and integrated view of the chromatin architecture. This approach effectively addresses the challenges posed by sparse single-cell data, offering a novel and robust method for calling A/B compartments in single-cell experiments.
 

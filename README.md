@@ -66,11 +66,11 @@ hypermatrix ABcluster --methylation_file <path_to_methylation_file> --conformati
 ```
 #### Arguments
 
-- `--methylation_file: (Required) Path to the single-cell CpG methylation file. This file should contain the methylation data for each cell, which will be used for clustering and compartment calling.
+- `--methylation_file': (Required) Path to the single-cell CpG methylation file. This file should contain the methylation data for each cell, which will be used for clustering and compartment calling.
 
-- `--conformation_file: (Required) Path to the chromosome conformation file. This file should include data on chromatin interactions, necessary for TAD boundary identification and A/B compartment analysis.
+- `--conformation_file': (Required) Path to the chromosome conformation file. This file should include data on chromatin interactions, necessary for TAD boundary identification and A/B compartment analysis.
 
-- `--output_dir: (Optional) Directory where the output files will be saved. If not specified, the output will be saved in the projects/single_cell directory by default.
+- `--output_dir': (Optional) Directory where the output files will be saved. If not specified, the output will be saved in the projects/single_cell directory by default.
 
 #### Output
 

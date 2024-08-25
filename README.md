@@ -63,17 +63,18 @@ After setting up the environment and downloading the necessary data, you can sta
 
 ### ABcluster Command
 
-To perform cell-type clustering, A/B compartment calls, and TAD boundary calls:
+The ABcluster commans performs cell-type clustering, A/B compartment calls, and TAD boundary calls. The general syntax for using the ABcluster command is:
 
 ```bash
-python ABcluster.py --methylation_file <path_to_methylation_file> --conformation_file <path_to_conformation_file> --output_dir <output_directory>
+hypermatrix ABcluster --methylation_file <path_to_methylation_file> --conformation_file <path_to_conformation_file> --output_dir <output_directory>
 ```
-
 #### Arguments
 
-- `--methylation_file`: Path to the single-cell CpG methylation file.
-- `--conformation_file`: Path to the chromosome conformation file.
-- `--output_dir`: Directory where the output files will be saved.
+- `--methylation_file: (Required) Path to the single-cell CpG methylation file. This file should contain the methylation data for each cell, which will be used for clustering and compartment calling.
+
+- `--conformation_file: (Required) Path to the chromosome conformation file. This file should include data on chromatin interactions, necessary for TAD boundary identification and A/B compartment analysis.
+
+- `--output_dir: (Optional) Directory where the output files will be saved. If not specified, the output will be saved in the projects/single_cell directory by default.
 
 #### Output
 

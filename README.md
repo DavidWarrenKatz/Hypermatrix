@@ -47,6 +47,17 @@ Ensure you have `conda` installed. If not, you can install it from [here](https:
     conda activate hypermatrix
     ```
 
+4. Install the Package
+
+Install the hypermatrix tool using pip:
+
+  ```bash
+  pip install .
+  ```
+Note: You might need to use pip3 instead of pip depending on your environment.
+
+This command installs the hypermatrix tool and registers the hypermatrix command in your system's PATH, making it accessible from the terminal.
+
 4. As a first demonstration, derive A/B compartments from integrated bulk epigenetic data and synthetic data to illustrate the non-negative tensor decomposition method. Navigate to the utilities directory:
 
     ```bash

@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.py
+hypermatrix/__init__.py
+hypermatrix/main.py
+hypermatrix.egg-info/PKG-INFO
+hypermatrix.egg-info/SOURCES.txt
+hypermatrix.egg-info/dependency_links.txt
+hypermatrix.egg-info/entry_points.txt
+hypermatrix.egg-info/top_level.txt

@@ -41,40 +41,21 @@ Ensure you have `conda` installed. If not, you can install it from [here](https:
     conda env create -f hypermatrix/bin/hypermatrix.yml
     ```
 
-3. Activate the environment:
+3. Activate the conda environment:
 
     ```bash
     conda activate hypermatrix
     ```
 
-4. Install the Package
-
-Install the hypermatrix tool using pip:
+4. Install the hypermatrix tool using pip:
 
   ```bash
+  cd hypermatrix
   pip install .
   ```
 Note: You might need to use pip3 instead of pip depending on your environment.
 
 This command installs the hypermatrix tool and registers the hypermatrix command in your system's PATH, making it accessible from the terminal.
-
-4. As a first demonstration, derive A/B compartments from integrated bulk epigenetic data and synthetic data to illustrate the non-negative tensor decomposition method. Navigate to the utilities directory:
-
-    ```bash
-    cd hypermatrix/utilities
-    ```
-
-5. Make the `runPipeline_bulkdata.sh` script executable:
-
-    ```bash
-    chmod +x runPipeline_bulkdata.sh
-    ```
-
-6. Run the `runPipeline_bulkdata.sh` script to get the necessary data:
-
-    ```bash
-    ./runPipeline_bulkdata.sh
-    ```
 
 ## Usage
 
@@ -107,6 +88,27 @@ The output directory will contain:
 ```bash
 python ABcluster.py --methylation_file data/methylation.csv --conformation_file data/conformation.csv --output_dir results/
 ```
+
+
+### Bulk Command
+
+1. As a first demonstration, derive A/B compartments from integrated bulk epigenetic data and synthetic data to illustrate the non-negative tensor decomposition method. Navigate to the utilities directory:
+
+    ```bash
+    cd hypermatrix/utilities
+    ```
+
+2. Make the `runPipeline_bulkdata.sh` script executable:
+
+    ```bash
+    chmod +x runPipeline_bulkdata.sh
+    ```
+
+3. Run the `runPipeline_bulkdata.sh` script to get the necessary data:
+
+    ```bash
+    ./runPipeline_bulkdata.sh
+    ```
 
 ### differentiate_chromosomes Command
 

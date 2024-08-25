@@ -57,10 +57,6 @@ Note: You might need to use pip3 instead of pip depending on your environment.
 
 This command installs the hypermatrix tool and registers the hypermatrix command in your system's PATH, making it accessible from the terminal.
 
-## Usage
-
-After setting up the environment and downloading the necessary data, you can start using the HYPERMATRIX tool. Below are detailed usage instructions, including example commands or scripts that users can run.
-
 ### ABcluster Command
 
 The ABcluster commans performs cell-type clustering, A/B compartment calls, and TAD boundary calls. The general syntax for using the ABcluster command is:

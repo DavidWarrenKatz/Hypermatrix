@@ -1,15 +1,5 @@
 #!/bin/bash
-# Description: The following script converts bam files into hic matrices 
-# and methylation matrices organized in folders for each chromosome.
-# This pipeline also computes comparts and clustering and outputs
-# images for comparison.
-# [TO DO: everything runs in sequence, rewrite to make it run in parallel]
-# [TO DO: need to replicate the KR normalization from bulk]
-# [TO DO: add sex chromosomes and contigs and mitochondrial DNA analysis]
-# sex chromosomes will be important for differentiat chromosomes command.
-# Right now, o/e is only done in bulk data, no single cell pipeline
-# re-write so that the code does not use hicluster to make bin 0-indexed short format from .hic files
-# the matrices produced by scHIcluster do not seem quite right. They are missing the diagonal for example
+# Description: Run the pipeline for deg three cumulants 
 
 # Run the Python script and source the output to import the variables
 # each individual file still needs to import these variables as well
@@ -66,13 +56,6 @@ else
     echo "Normalization is set to NONE. Skipping normalization step."
 fi
 
-# Execute the compartment calling scripts from scHICluster
-# [TO DO: need to get this working]
-if [ "$cluster_compartments" = "True" ]; then
-chmod +x compartment_calling.sh
-./compartment_calling.sh
-fi
-
 # Source the conda environment setup script
 source /software/miniconda3/4.12.0/etc/profile.d/conda.sh
 # Define environment names
@@ -92,8 +75,16 @@ if [ "$impute" = "True" ]; then
 python make_hic_matrices_imputed.py
 fi
 
+python make_hic_cumulant.py
+
+# Make the hic cumulants if cumulant is set to True
+#[TO DO: make this file]
+if [ "$cumulant" = "True" ]; then
+python make_methy_cumulant.py
+fi
+
 #Make the combined tensor for each cell
-#[TO DO: need to decide if imputation and emphasis and merging will happen]
+#[TO DO: need to decide if imputation and emphasis and merging will happen]i
 #Right now, emphasis, correlation, shift
 python make_combined_methy_hic_tensor_single_cell.py
 

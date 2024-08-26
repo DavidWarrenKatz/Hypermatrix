@@ -12,7 +12,8 @@ setup(
         ],
     },
     install_requires=[
-        # List any dependencies your script needs
+        # List any dependencies
+
     ],
 )
 

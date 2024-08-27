@@ -74,6 +74,14 @@ def process_methylation_files_for_cumulant(input_dir, output_cumulant_dir):
         return
     
     for file_path in h5_files:
+        file_name = os.path.splitext(os.path.basename(file_path))[0] + '_cumulant.h5'
+        output_path = os.path.join(output_cumulant_dir, file_name)
+        
+        # Check if the cumulant tensor file already exists
+        if os.path.exists(output_path):
+            print(f"Skipping computation for {file_path}. Cumulant tensor already exists at {output_path}.")
+            continue
+        
         print(f"Processing methylation matrix from file: {file_path}")
         
         matrix = load_matrix_from_hdf5(file_path)
@@ -86,9 +94,6 @@ def process_methylation_files_for_cumulant(input_dir, output_cumulant_dir):
         
         cumulant_tensor = third_order_cumulant_matrix(matrix)
         print(f"Cumulant tensor for {file_path} calculated.")
-        
-        file_name = os.path.splitext(os.path.basename(file_path))[0] + '_cumulant.h5'
-        output_path = os.path.join(output_cumulant_dir, file_name)
         
         with h5py.File(output_path, 'w') as h5file:
             h5file.create_dataset('cumulant_tensor', data=cumulant_tensor)

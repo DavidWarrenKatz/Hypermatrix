@@ -86,7 +86,7 @@ def normalize_tensor(tensor):
 
 def process_and_combine_tensors(chromosome, prefix_hic, prefix_methy, positive_threshold, negative_threshold, neighborhood_size, output_directory):
     hic_file_path = os.path.join(output_directory, f'hic_{resolution_label}_cumulant_dir', chromosome, f'{prefix_hic}_{chromosome}_cumulant.h5')
-    methy_file_path = os.path.join(output_directory, f'methy_{resolution_label}_cumulant_dir', chromosome, f'{prefix_methy}_outer_product_cumulant.h5')
+    methy_file_path = os.path.join(output_directory, f'methy_{resolution_label}_cumulant_dir', chromosome, f'{prefix_methy}_cumulant.h5')
 
     # Load tensors
     hic_tensor = load_cumulant_tensor(hic_file_path)

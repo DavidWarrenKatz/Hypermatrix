@@ -64,17 +64,18 @@ def third_order_cumulant_matrix(data):
     
     return cumulants
 
-def process_methylation_files_for_cumulant(input_dir, output_cumulant_dir):
+def process_methylation_files_for_cumulant(input_dir, output_cumulant_dir, prefixes):
     """Process each methylation matrix file and calculate the third-order cumulant tensor."""
     os.makedirs(output_cumulant_dir, exist_ok=True)
     
-    h5_files = glob.glob(os.path.join(input_dir, '*.h5'))
-    if not h5_files:
-        print(f"No HDF5 files found in directory: {input_dir}")
-        return
-    
-    for file_path in h5_files:
-        file_name = os.path.splitext(os.path.basename(file_path))[0] + '_cumulant.h5'
+    for prefix in prefixes:
+        file_path = os.path.join(input_dir, f'{prefix}_outer_product.h5')
+        
+        if not os.path.exists(file_path):
+            print(f"File {file_path} does not exist. Skipping.")
+            continue
+        
+        file_name = f'{prefix}_cumulant.h5'
         output_path = os.path.join(output_cumulant_dir, file_name)
         
         # Check if the cumulant tensor file already exists
@@ -99,6 +100,10 @@ def process_methylation_files_for_cumulant(input_dir, output_cumulant_dir):
             h5file.create_dataset('cumulant_tensor', data=cumulant_tensor)
         print(f"Cumulant tensor saved to {output_path}")
 
+# Read prefixes from the filtered list file
+with open(filtered_list, 'r') as f:
+    prefixes = [line.strip() for line in f]
+
 base_output_methy_cumulant_dir = f'{output_directory}/methy_{resolution_label}_cumulant_dir/'
 
 for i in range(1, 23):  
@@ -107,5 +112,18 @@ for i in range(1, 23):
     output_cumulant_dir = os.path.join(base_output_methy_cumulant_dir, chromosome)
     
     print(f'Processing cumulant tensors for methylation data on {chromosome}')
-    process_methylation_files_for_cumulant(input_dir, output_cumulant_dir)
+    process_methylation_files_for_cumulant(input_dir, output_cumulant_dir, prefixes)
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -88,6 +88,16 @@ def process_and_combine_tensors(chromosome, prefix_hic, prefix_methy, positive_t
     hic_file_path = os.path.join(output_directory, f'hic_{resolution_label}_cumulant_dir', chromosome, f'{prefix_hic}_{chromosome}_cumulant.h5')
     methy_file_path = os.path.join(output_directory, f'methy_{resolution_label}_cumulant_dir', chromosome, f'{prefix_methy}_cumulant.h5')
 
+    # Check if Hi-C cumulant file exists
+    if not os.path.exists(hic_file_path):
+        print(f"Hi-C cumulant file does not exist for {prefix_hic} on {chromosome}. Skipping.")
+        return
+
+    # Check if methylation cumulant file exists
+    if not os.path.exists(methy_file_path):
+        print(f"Methylation cumulant file does not exist for {prefix_methy} on {chromosome}. Skipping.")
+        return
+
     # Load tensors
     hic_tensor = load_cumulant_tensor(hic_file_path)
     methy_tensor = load_cumulant_tensor(methy_file_path)
@@ -112,8 +122,12 @@ def process_and_combine_tensors(chromosome, prefix_hic, prefix_methy, positive_t
     # Combine the tensors into a single tensor
     combined_tensor = np.stack((hic_tensor, methy_tensor), axis=-1)
 
+    # Prepare the output directory
+    combined_output_dir = os.path.join(output_directory, f'{resolution_label}_combined_cumulant', chromosome)
+    os.makedirs(combined_output_dir, exist_ok=True)
+
     # Save the combined tensor
-    combined_file_path = os.path.join(output_directory, f'combined_cumulant_{chromosome}_{prefix_hic}.h5')
+    combined_file_path = os.path.join(combined_output_dir, f'{prefix_hic}_{chromosome}_combined_cumulant.h5')
     with h5py.File(combined_file_path, 'w') as h5file:
         h5file.create_dataset('combined_cumulant_tensor', data=combined_tensor)
     print(f"Combined cumulant tensor saved to {combined_file_path}")

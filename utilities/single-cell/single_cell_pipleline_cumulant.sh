@@ -5,6 +5,8 @@
 # each individual file still needs to import these variables as well
 eval "$(python3 config_and_print.py)"
 
+
+<<comment
 # Execute the filtering script
 chmod +x filter_bam.sh
 ./filter_bam.sh
@@ -86,7 +88,11 @@ fi
 #Make the combined tensor for each cell
 #[TO DO: need to decide if imputation and emphasis and merging will happen]i
 #Right now, emphasis, correlation, shift
-python make_combined_methy_hic_tensor_single_cell.py
+python make_combined_cumulant_tensor.py
+
+
+
+comment
 
 #Check to make sure tensorlab is available
 # Define the paths
@@ -126,7 +132,7 @@ fi
 module load matlab/r2022b
 
 # Execute the MATLAB script
-matlab -nodisplay -r "run('get_AB_single_cell_structured_data.m'); exit;"
+matlab -nodisplay -r "run('get_AB_single_cell_structured_data_cumulant.m'); exit;"
 
 # Download the dark regions file if it doesn't already exist
 dark_regions_file="../../bin/softwarefiles/dark_regions_hg19.bigWig"

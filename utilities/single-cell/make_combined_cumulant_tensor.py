@@ -7,14 +7,8 @@ from config_and_print import filtered_list, chrom_file, resolutions, output_dire
 if isinstance(resolutions, str):
     resolutions = (resolutions,)
 
-# Print resolutions for debugging
-print(f"Resolutions from config: {resolutions}")
-
 # Extract resolution value and label from the resolutions string
 resolution_str = resolutions[0]
-
-# Debug print to check the value of resolution_str
-print(f"Extracted resolution string: {resolution_str}")
 
 def parse_resolution(resolution_str):
     if ':' in resolution_str:
@@ -35,6 +29,13 @@ def load_cumulant_tensor(file_path):
     with h5py.File(file_path, 'r') as h5file:
         cumulant_tensor = h5file['cumulant_tensor'][:]
     return cumulant_tensor
+
+def make_tensor_non_negative(tensor):
+    """Ensure that the tensor is non-negative by adding the smallest value if it's negative."""
+    min_value = tensor.min()
+    if min_value < 0:
+        tensor += np.abs(min_value)
+    return tensor
 
 def normalize_cumulant_tensor(tensor, positive_threshold, negative_threshold):
     """Normalize the cumulant tensor based on the specified thresholds."""
@@ -118,6 +119,10 @@ def process_and_combine_tensors(chromosome, prefix_hic, prefix_methy, positive_t
     # Normalize both tensors to have a norm of one
     hic_tensor = normalize_tensor(hic_tensor)
     methy_tensor = normalize_tensor(methy_tensor)
+
+    # Ensure both tensors are non-negative
+    hic_tensor = make_tensor_non_negative(hic_tensor)
+    methy_tensor = make_tensor_non_negative(methy_tensor)
 
     # Combine the tensors into a single tensor
     combined_tensor = np.stack((hic_tensor, methy_tensor), axis=-1)

@@ -34,6 +34,7 @@ def main():
         abcluster(args)
     else:
         print(f"Unknown command: {args.command}")
+        parser.print_help()
 
 def abcluster(args):
     # Override with provided arguments

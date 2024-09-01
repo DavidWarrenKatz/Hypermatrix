@@ -5,7 +5,7 @@ import sys
 
 # Determine the script's directory and add the path relative to it
 script_dir = os.path.dirname(os.path.realpath(__file__))
-config_path = os.path.join(script_dir, '..', 'utilities', 'single-cell')
+config_path = os.path.join(script_dir)
 sys.path.append(config_path)
 
 

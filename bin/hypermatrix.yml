@@ -5,7 +5,7 @@ channels:
 dependencies:
   - python=3.8
   - libcurl
-  - gcc            
+  - gcc=4.8.5           
   - cxx-compiler 
   - numpy
   - matplotlib
@@ -15,7 +15,4 @@ dependencies:
   - scipy
   - pip
   - wheel
-  - pip:
-    - hic-straw
-    - pyBigWig
-    - fanc
+

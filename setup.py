@@ -8,7 +8,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'hypermatrix = hypermatrix.main:main',
+            'hypermatrix = hypermatrix.main:main'
         ],
     },
     install_requires=[

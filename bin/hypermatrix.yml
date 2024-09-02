@@ -5,14 +5,5 @@ channels:
 dependencies:
   - python=3.8
   - libcurl
-  - gcc=4.8.5           
-  - cxx-compiler 
-  - numpy
-  - matplotlib
-  - seaborn
-  - requests
-  - h5py
-  - scipy
-  - pip
-  - wheel
-
+  - gcc_linux-64=7.5.0
+  - gxx_linux-64=7.5.0

@@ -1,9 +1,11 @@
 name: hypermatrix
+version: 0.1
+date: 2024-09-01
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.8
+  - python=3.9
   - libcurl
   - gcc_linux-64=7.5.0
   - gxx_linux-64=7.5.0

@@ -1,0 +1,2 @@
+[console_scripts]
+hypermatrix = hypermatrix.main:main

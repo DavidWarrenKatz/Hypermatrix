@@ -1,0 +1,27 @@
+Skin 
+    Het Y
+        4 files
+    Het O
+        8 files
+    Iso Y
+        8 files
+    Iso O
+        8 files
+        
+28 files in total
+
+Liver
+
+    4
+    
+Brain
+ 
+     4
+
+Muscle
+
+     4
+     
+     
+40 total files
+turning these into 40 expression matrices 

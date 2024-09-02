@@ -35,31 +35,31 @@ Ensure you have `conda` installed. If not, you can install it from [here](https:
     git clone https://github.com/DavidWarrenKatz/hypermatrix.git
     ```
 
-2. Create the conda environment:
+2. Install the Hypermatrix tool using Make:
 
     ```bash
-    conda env create -f hypermatrix/bin/hypermatrix.yml
+    cd hypermatrix
+    make
     ```
-
-3. Activate the conda environment:
+3. Activate the Conda environment:
 
     ```bash
     conda activate hypermatrix
     ```
 
-4. Install the hypermatrix tool using pip:
+4. Check installation:
 
-  ```bash
-  cd hypermatrix
-  pip install .
-  ```
-Note: You might need to use pip3 instead of pip depending on your environment.
+    ```bash
+    hypermatrix --version
+    ```
 
-This command installs the hypermatrix tool and registers the hypermatrix command in your system's PATH, making it accessible from the terminal.
+This command installs the Hypermatrix tool and registers the `hypermatrix` command in your system's PATH, making it accessible from the terminal.
+
+**Note:** You might need to use `pip3` instead of `pip` depending on your environment.
 
 ### ABcluster Command
 
-The ABcluster commans performs cell-type clustering, A/B compartment calls, and TAD boundary calls. The general syntax for using the ABcluster command is:
+The ABcluster commands performs cell-type clustering, A/B compartment calls, and TAD boundary calls. The general syntax for using the ABcluster command is:
 
 ```bash
 hypermatrix ABcluster --methylation_file <path_to_methylation_file> --conformation_file <path_to_conformation_file> --output_dir <output_directory>

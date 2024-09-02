@@ -54,8 +54,19 @@ Ensure you have `conda` installed. If not, you can install it from [here](https:
     ```
 
 This command installs the Hypermatrix tool and registers the `hypermatrix` command in your system's PATH, making it accessible from the terminal.
-
 **Note:** You might need to use `pip3` instead of `pip` depending on your environment.
+
+5. Update packages:
+
+    ```bash
+    make install
+    ```
+    
+6. Remove environment and all packages:
+
+    ```bash
+    make clean
+    ```
 
 ### ABcluster Command
 

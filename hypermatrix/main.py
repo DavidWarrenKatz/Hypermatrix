@@ -1,22 +1,28 @@
-# hypermatrix/main.py
+#!/usr/bin/env python3
+# file: hypermatrix/main.py
 
+import argparse
+import subprocess
 import os
 import sys
 
-# Determine the script's directory and add the path relative to it
 script_dir = os.path.dirname(os.path.realpath(__file__))
 config_path = os.path.join(script_dir)
 sys.path.append(config_path)
 
-
-import argparse
-import subprocess
-
 # Import config from config_and_print
 from config_and_print import config
 
+VERSION = """
+Hypermatrix version 0.1 - A tool for integrating
+multi-omics data and epigenetic analysis using
+advanced tensor techniques.
+"""
+
 def main():
     parser = argparse.ArgumentParser(description='Hypermatrix command-line tool')
+    parser.add_argument('-v','--version', action='version', version=VERSION)
+
     subparsers = parser.add_subparsers(dest='command')
 
     # Create the ABcluster subcommand
@@ -27,17 +33,24 @@ def main():
     abcluster_parser.add_argument('-cumulant', action='store_true', help='Run cumulant shell script')
     abcluster_parser.add_argument('-impute', action='store_true', help='Run impute shell script')
 
+    # Create the differentiate_chromosomes subcommand
+    diffchrom_parser = subparsers.add_parser('differentiate_chromosomes', help='Analyze distinct A/B compartments for homologous chromosomes')
+    diffchrom_parser.add_argument('--hic_file', type=str, help='Path to the Hi-C data file')
+    diffchrom_parser.add_argument('--epigenetic_file', type=str, help='Path to the epigenetic data file (optional)')
+    diffchrom_parser.add_argument('--output_dir', type=str, help='Directory where the output files will be saved')
+
     args = parser.parse_args()
 
     # Dispatch the command
     if args.command == 'ABcluster':
         abcluster(args)
+    elif args.command == 'differentiate_chromosomes':
+        diffchrom(args)
     else:
         print(f"Unknown command: {args.command}")
         parser.print_help()
 
 def abcluster(args):
-    # Override with provided arguments
     methylation_file = args.methylation_file if args.methylation_file else config['methy_directory']
     conformation_file = args.conformation_file if args.conformation_file else config['bam_directory']
     output_dir = args.output_dir if args.output_dir else config['output_directory']
@@ -49,6 +62,15 @@ def abcluster(args):
     else:
         print("No action specified. Use -cumulant or -impute to run a specific analysis.")
 
+def diffchrom(args):
+    hic_file = args.hic_file if args.hic_file else config['hic_directory']
+    epigenetic_file = args.epigenetic_file if args.epigenetic_file else None
+    output_dir = args.output_dir if args.output_dir else config['output_directory']
+
+    # Placeholder for analysis code
+    print(f"Running differentiate_chromosomes with Hi-C file: {hic_file}, Epigenetic file: {epigenetic_file}, Output directory: {output_dir}")
+    # Add your analysis code here
+
 def run_shell_script(script_name, methylation_file, conformation_file, output_dir):
     # Replace placeholders in shell script with actual file paths
     command = f"./{script_name} {methylation_file} {conformation_file} {output_dir}"
@@ -56,4 +78,3 @@ def run_shell_script(script_name, methylation_file, conformation_file, output_di
 
 if __name__ == "__main__":
     main()
-

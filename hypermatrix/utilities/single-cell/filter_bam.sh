@@ -1,14 +1,21 @@
-######################################################################################                   #This shell script iterates through the bam_directory and makes a filtered
-#list of bam files that have a sufficient number of high quality reads. 
-#Only these files will be used for downstream processing.
-#The parameters for filtering are located in the config file.
-#Symbolic links of all the bam files that pass filtering are made into the output directory. 
-#If the filtered list is already present in the output directory, this step is skipped.  
-#Author: David Katz (davidkatz02@gmail.com)                                                              #####################################################################################
-
 #!/bin/bash
 
-eval "$(python3 config_and_print.py)"
+######################################################################################
+# This shell script iterates through the BAM directory and creates a filtered list
+# of BAM files that have a sufficient number of high-quality reads. Only these files 
+# will be used for downstream processing. The parameters for filtering are located 
+# in the config file. Symbolic links of all the BAM files that pass filtering are 
+# created in the output directory. If the filtered list already exists in the output 
+# directory, this step is skipped.
+# File: filter_bams.sh
+# Author: David Katz (davidkatz02@gmail.com)
+######################################################################################
+
+# SAMPLE DATA FOR TEST MODE, WILL UPDATE DEFAULT CONFIGURATON 
+# using sample data from https://www.nature.com/articles/s41592-019-0547-z
+
+CONFIG_AND_PRINT_PATH=$(python3 -c "import pkg_resources; print(pkg_resources.resource_filename('hypermatrix', 'config_and_print.py'))")
+eval "$(python3 $CONFIG_AND_PRINT_PATH)"
 
 # Create output directory if it doesn't exist
 mkdir -p "$output_directory"
@@ -47,4 +54,3 @@ if [ ! -f "$filtered_list" ]; then
 else
   echo "Filtered list already exists. Skipping filtering step."
 fi
-

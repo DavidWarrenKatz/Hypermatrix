@@ -3,23 +3,52 @@
 # File: single_cell_pipeline_cumulant.sh
 # Plan: The package should be entirely self-contained 
 
-set -x
+#set -x
 
 echo -e "\n [DEBUG-6]: Entering the Cumulant Script HERE!!!! CUMULANT ARGUMENT SUPPLIED \n"
 
 # Get the correct path to config_and_print.py using Python and pkg_resources
 CONFIG_AND_PRINT_PATH=$(python3 -c "import pkg_resources; print(pkg_resources.resource_filename('hypermatrix', 'config_and_print.py'))")
 
+# Check if the path was correctly retrieved
+if [ -z "$CONFIG_AND_PRINT_PATH" ]; then
+    echo "[ERROR]: Failed to retrieve the path to config_and_print.py"
+    exit 1
+fi
+
 # Run the Python script and source the output to import the variables
 echo "[DEBUG 7]: Using config_and_print.py at $CONFIG_AND_PRINT_PATH"
 eval "$(python3 $CONFIG_AND_PRINT_PATH)"
+if [ $? -ne 0 ]; then
+    echo "[ERROR]: Failed to run config_and_print.py"
+    exit 1
+fi
 
 
+# Resolve the path to filter_bam.sh using pkg_resources
+FILTER_BAM_PATH=$(python3 -c "import pkg_resources; print(pkg_resources.resource_filename('hypermatrix', 'utilities/single-cell/filter_bam.sh'))")
 
-# <<comment
+# Check if the filter_bam.sh script exists and is executable
+if [ ! -x "$FILTER_BAM_PATH" ]; then
+    echo "[ERROR]: filter_bam.sh does not exist or is not executable at $FILTER_BAM_PATH"
+    exit 1
+fi
+
+# Execute the filtering script
+chmod +x "$FILTER_BAM_PATH"
+"$FILTER_BAM_PATH"
+if [ $? -ne 0 ]; then
+    echo "[ERROR]: filter_bam.sh failed to execute"
+    exit 1
+fi
+
 # # Execute the filtering script
 # chmod +x filter_bam.sh
 # ./filter_bam.sh
+# if [ $? -ne 0 ]; then
+#     echo "[ERROR]: filter_bam.sh failed to execute"
+#     exit 1
+# fi
 
 # # Generate the interval bed file
 # python generate_interval_bed.py

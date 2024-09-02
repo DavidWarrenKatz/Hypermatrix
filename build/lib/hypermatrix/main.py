@@ -64,9 +64,6 @@ def abcluster(args):
 
     cumulant_script = r"single_cell_pipleline_cumulant.sh"
     if args.cumulant:
-        # debug where does this command enter 
-
-        print("\n [DEBUG-1]: Debugging Cumulant Script HERE!!!! CUMULANT ARGUMENT SUPPLIED \n")
         run_shell_script(cumulant_script, methylation_file, conformation_file, output_dir)
     elif args.impute:
         run_shell_script('impute_script.sh', methylation_file, conformation_file, output_dir)
@@ -103,10 +100,8 @@ def run_shell_script(script_name, methylation_file, conformation_file, output_di
         print(f"[INFO]: Command executed successfully. Output:\n{result.stdout}")
     except subprocess.CalledProcessError as e:
         print(f"[ERROR]: Command failed with return code {e.returncode}. Error message:\n{e.stderr}")
+        pass
 
 if __name__ == "__main__":
     main()
-    # next after debug 4, the script cannot find config_and_print.py
-    # i am keeping a copy in the requested directory to step through and see error source
-    # debug 6 error disappears but it looks for a zip file next
-    # the error was due to a permissions issue.. script required be make executable 
+

@@ -64,9 +64,6 @@ def abcluster(args):
 
     cumulant_script = r"single_cell_pipleline_cumulant.sh"
     if args.cumulant:
-        # debug where does this command enter 
-
-        print("\n [DEBUG-1]: Debugging Cumulant Script HERE!!!! CUMULANT ARGUMENT SUPPLIED \n")
         run_shell_script(cumulant_script, methylation_file, conformation_file, output_dir)
     elif args.impute:
         run_shell_script('impute_script.sh', methylation_file, conformation_file, output_dir)
@@ -86,23 +83,23 @@ def diffchrom(args):
 def run_shell_script(script_name, methylation_file, conformation_file, output_dir):
     # Resolve the full path of the script using pkg_resources
     full_script_path = pkg_resources.resource_filename('hypermatrix', os.path.join('utilities', 'single-cell', script_name))
-    #print(f"[INFO]: Script path resolved to: {full_script_path}")
+    print(f"[INFO]: Script path resolved to: {full_script_path}")
 
     # Ensure the script is executable
     if not os.access(full_script_path, os.X_OK):
-        #print(f"[INFO]: Adding executable permissions to {full_script_path}.")
+        print(f"[INFO]: Adding executable permissions to {full_script_path}.")
         os.chmod(full_script_path, 0o755)
 
     # Display the command to be executed
     command = f"{full_script_path} {methylation_file} {conformation_file} {output_dir}"
-    #print(f"[INFO]: Executing command: {command}")
+    print(f"[INFO]: Executing command: {command}")
 
     # Run the command and capture output
     try:
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
-        # print(f"[INFO]: Command executed successfully. Output:\n{result.stdout}")
+        print(f"[INFO]: Command executed successfully. Output:\n{result.stdout}")
     except subprocess.CalledProcessError as e:
-        # print(f"[ERROR]: Command failed with return code {e.returncode}. Error message:\n{e.stderr}")
+        print(f"[ERROR]: Command failed with return code {e.returncode}. Error message:\n{e.stderr}")
         pass
 
 if __name__ == "__main__":

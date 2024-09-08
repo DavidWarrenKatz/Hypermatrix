@@ -63,7 +63,10 @@ def abcluster(args):
     # local to this function only 
     # clean later in final version 
     cumulant_script = "/utilities/single-cell/single_cell_pipleline_cumulant.sh"
+<<<<<<< HEAD
     impute_script = "path/to/script.sh" #update later
+=======
+>>>>>>> bcf72d47f032262054c245d809b52c2e746a8b53
     if args.cumulant:
         run_shell_script(cumulant_script, methylation_file, conformation_file, output_dir)
     elif args.impute:

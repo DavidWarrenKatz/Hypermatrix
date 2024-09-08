@@ -8,7 +8,7 @@ setup(
     packages=find_packages(include=['hypermatrix', 'hypermatrix.*']),
     package_data={
         'hypermatrix': [
-            '/utilities/**/*',  # update to correctly include hypermatrix 
+            '/utilities/**/*', 
         ],
     },
     include_package_data=True,

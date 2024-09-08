@@ -67,7 +67,7 @@ def abcluster(args):
     print("[DEBUG-12]: Resolving path to first script   ")
     # local to this function only 
     # clean later in final version 
-    cumulant_script = "/utilities/hypermatrix/utilities/single-cell/single_cell_pipleline_cumulant.sh"
+    cumulant_script = "/utilities/single-cell/single_cell_pipleline_cumulant.sh"
     if args.cumulant:
         run_shell_script(cumulant_script, methylation_file, conformation_file, output_dir)
     elif args.impute:

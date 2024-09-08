@@ -26,6 +26,7 @@ fi
 
 
 
+
 # Resolve the path to filter_bam.sh using pkg_resources
 FILTER_BAM_PATH=$(python3 -c "import pkg_resources; print(pkg_resources.resource_filename('hypermatrix', 'utilities/single-cell/filter_bam.sh'))")
 

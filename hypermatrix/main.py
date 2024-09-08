@@ -59,12 +59,6 @@ def abcluster(args):
     conformation_file = args.conformation_file if args.conformation_file else config['bam_directory']
     output_dir = args.output_dir if args.output_dir else config['output_directory']
 
-    # edit the following to point to the correct scripts
-    # this update will ensure that the script is called from site-packages 
-    # all packages will be called relative to room code directory 
-
-    cumulant_script = r"single_cell_pipleline_cumulant.sh"
-
     print("[DEBUG-12]: Resolving path to first script   ")
     # local to this function only 
     # clean later in final version 

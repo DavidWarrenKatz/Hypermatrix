@@ -18,7 +18,8 @@ env:
 # Install Python dependencies using pip
 install:
 	@echo "Activating environment and installing Python dependencies..."
-	$(CONDA_ACTIVATE) && pip install .
+	$(CONDA_ACTIVATE) && pip install . && pip install --use-pep517 fanc && pip install --use-pep517 hic-straw  
+	
 
 # Clean up the environment
 clean:

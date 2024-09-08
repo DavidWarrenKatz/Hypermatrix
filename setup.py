@@ -8,7 +8,7 @@ setup(
     packages=find_packages(include=['hypermatrix', 'hypermatrix.*']),
     package_data={
         'hypermatrix': [
-            'utilities/**/*',  # Include all files in the utilities directory
+            'hypermatrix/utilities/**/*',  # Include all files in the utilities directory
         ],
     },
     include_package_data=True,
@@ -35,8 +35,6 @@ setup(
         'requests>=2.25.0',
         'h5py>=3.3.0',
         'scipy>=1.7.0',
-        'hic-straw==1.3.1',
         'pyBigWig==0.3.22',  
-        'fanc==0.9.28',
     ],
 )

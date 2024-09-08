@@ -74,6 +74,7 @@ hypermatrix/utilities/single-cell/get_AB_single_cell_structured_data.m
 hypermatrix/utilities/single-cell/get_AB_single_cell_structured_data_cumulant.m
 hypermatrix/utilities/single-cell/get_cell_type_factors_all_cell.m
 hypermatrix/utilities/single-cell/get_eigenvectors_bulk.sh
+hypermatrix/utilities/single-cell/hic_processing.log
 hypermatrix/utilities/single-cell/java_error.log
 hypermatrix/utilities/single-cell/make_AB_compartment_image.py
 hypermatrix/utilities/single-cell/make_AB_compartments.ipynb

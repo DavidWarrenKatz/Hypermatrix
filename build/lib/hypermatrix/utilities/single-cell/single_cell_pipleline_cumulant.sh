@@ -36,6 +36,7 @@ fi
 
 # Execute the filtering script
 chmod +x "$FILTER_BAM_PATH"
+echo "[DEBUG 7]: Using filter_bam.sh at $FILTER_BAM_PATH"
 "$FILTER_BAM_PATH"
 if [ $? -ne 0 ]; then
     echo "[ERROR]: filter_bam.sh failed to execute"

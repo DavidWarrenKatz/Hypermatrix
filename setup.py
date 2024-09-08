@@ -35,6 +35,10 @@ setup(
         'requests',
         'h5py',
         'scipy',
-        'pyBigWig',  
+        'pyBigWig',
+        'fanc',
+        'hic-straw',
     ],
 )
+
+# 	$(CONDA_ACTIVATE) && pip install . && pip install --use-pep517 fanc hic-straw

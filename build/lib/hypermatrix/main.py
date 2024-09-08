@@ -28,6 +28,7 @@ def main():
     subparsers = parser.add_subparsers(dest='command')
 
     # Create the ABcluster subcommand
+    # add second shorter options
     abcluster_parser = subparsers.add_parser('ABcluster', help='Run the ABcluster analysis')
     abcluster_parser.add_argument('--methylation_file', type=str, help='Path to the single-cell CpG methylation file')
     abcluster_parser.add_argument('--conformation_file', type=str, help='Path to the chromosome conformation file')
@@ -67,11 +68,12 @@ def abcluster(args):
     print("[DEBUG-12]: Resolving path to first script   ")
     # local to this function only 
     # clean later in final version 
-    cumulant_script = "/utilities/hypermatrix/utilities/single-cell/single_cell_pipleline_cumulant.sh"
+    cumulant_script = "/utilities/single-cell/single_cell_pipleline_cumulant.sh"
+    impute_script = ...
     if args.cumulant:
         run_shell_script(cumulant_script, methylation_file, conformation_file, output_dir)
     elif args.impute:
-        run_shell_script('impute_script.sh', methylation_file, conformation_file, output_dir)
+        run_shell_script(impute_script , methylation_file, conformation_file, output_dir)
     else:
         print("No action specified. Use -cumulant or -impute to run a specific analysis.")
 

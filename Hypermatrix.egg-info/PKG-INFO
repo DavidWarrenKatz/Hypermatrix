@@ -6,10 +6,10 @@ Home-page: https://github.com/DavidWarrenKatz/Hypermatrix
 Author: David Warren Katz
 Author-email: davidkatz02@gmail.com
 License-File: LICENSE
-Requires-Dist: numpy>=1.21.0
-Requires-Dist: matplotlib>=3.4.0
-Requires-Dist: seaborn>=0.11.0
-Requires-Dist: requests>=2.25.0
-Requires-Dist: h5py>=3.3.0
-Requires-Dist: scipy>=1.7.0
-Requires-Dist: pyBigWig==0.3.22
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Requires-Dist: seaborn
+Requires-Dist: requests
+Requires-Dist: h5py
+Requires-Dist: scipy
+Requires-Dist: pyBigWig

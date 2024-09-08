@@ -16,13 +16,15 @@ if [ -z "$CONFIG_AND_PRINT_PATH" ]; then
     exit 1
 fi
 
-# Run the Python script and source the output to import the variables
+# Pass the command-line arguments to the Python script
 echo "[DEBUG 7]: Using config_and_print.py at $CONFIG_AND_PRINT_PATH"
-eval "$(python3 $CONFIG_AND_PRINT_PATH)"
+python3 "$CONFIG_AND_PRINT_PATH" "$@"
 if [ $? -ne 0 ]; then
-    echo "[ERROR]: Failed to run config_and_print.py"
+    echo "[ERROR]: Failed to run config_and_print.py with arguments: $@"
     exit 1
 fi
+
+
 
 
 # Resolve the path to filter_bam.sh using pkg_resources

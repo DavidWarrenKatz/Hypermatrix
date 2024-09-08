@@ -1,0 +1,26 @@
+name: hypermatrix2
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - libcurl
+  - gcc
+  - cxx-compiler
+  - numpy
+  - matplotlib
+  - seaborn
+  - requests
+  - h5py
+  - scipy
+  - scikit-learn
+  - pip:
+    - pyBigWig
+    - fanc
+    - hic-straw
+
+
+
+
+
+

@@ -8,7 +8,7 @@ setup(
     packages=find_packages(include=['hypermatrix', 'hypermatrix.*']),
     package_data={
         'hypermatrix': [
-            'hypermatrix/utilities/**/*',  # Include all files in the utilities directory
+            '/utilities/**/*',  # update to correctly include hypermatrix 
         ],
     },
     include_package_data=True,
@@ -29,12 +29,12 @@ setup(
         ],
     },
     install_requires=[
-        'numpy>=1.21.0',
-        'matplotlib>=3.4.0',
-        'seaborn>=0.11.0',
-        'requests>=2.25.0',
-        'h5py>=3.3.0',
-        'scipy>=1.7.0',
-        'pyBigWig==0.3.22',  
+        'numpy',
+        'matplotlib',
+        'seaborn',
+        'requests',
+        'h5py',
+        'scipy',
+        'pyBigWig',  
     ],
 )

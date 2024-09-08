@@ -13,12 +13,12 @@ all: env install
 # Create Conda environment
 env:
 	@echo "Creating Conda environment..."
-	conda env create -f $(YML_FILE) --yes
+	conda env create -f $(YML_FILE)
 
 # Install Python dependencies using pip
 install:
 	@echo "Activating environment and installing Python dependencies..."
-	$(CONDA_ACTIVATE) && pip install . && pip install --use-pep517 fanc && pip install --use-pep517 hic-straw  
+	$(CONDA_ACTIVATE) && pip install . && pip install --use-pep517 fanc && pip install --use-pep517 hic-straw
 	
 
 # Clean up the environment

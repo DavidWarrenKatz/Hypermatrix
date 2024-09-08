@@ -21,7 +21,7 @@ advanced tensor techniques.
 """
 
 def main():
-    print("[DEBUG]: entering main function")
+    print("[DEBUG-1]: entering main function")
     parser = argparse.ArgumentParser(description='Hypermatrix command-line tool')
     parser.add_argument('-v','--version', action='version', version=VERSION)
 
@@ -59,10 +59,15 @@ def abcluster(args):
     output_dir = args.output_dir if args.output_dir else config['output_directory']
 
     # edit the following to point to the correct scripts
-    # this update will ensure that the script is called from cite packages 
+    # this update will ensure that the script is called from site-packages 
     # all packages will be called relative to room code directory 
 
     cumulant_script = r"single_cell_pipleline_cumulant.sh"
+
+    print("[DEBUG-12]: Resolving path to first script   ")
+    # local to this function only 
+    # clean later in final version 
+    cumulant_script = "/utilities/hypermatrix/utilities/single-cell/single_cell_pipleline_cumulant.sh"
     if args.cumulant:
         run_shell_script(cumulant_script, methylation_file, conformation_file, output_dir)
     elif args.impute:
@@ -79,6 +84,9 @@ def diffchrom(args):
     print(f"Running differentiate_chromosomes with Hi-C file: {hic_file}, Epigenetic file: {epigenetic_file}, Output directory: {output_dir}")
     # Add your analysis code here
 
+def next_fnction():
+    pass
+
 
 def run_shell_script(script_name, methylation_file, conformation_file, output_dir):
     # Resolve the full path of the script using pkg_resources
@@ -94,7 +102,10 @@ def run_shell_script(script_name, methylation_file, conformation_file, output_di
     command = f"{full_script_path} {methylation_file} {conformation_file} {output_dir}"
     print(f"[INFO]: Executing command: {command}")
 
+
     # Run the command and capture output
+    # fails to execute bash command, clams file not found 
+    # redudant
     try:
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
         print(f"[INFO]: Command executed successfully. Output:\n{result.stdout}")

@@ -60,11 +60,11 @@ scipy.io.savemat('config.mat', config)
 
 
 
-for key, value in config.items():
-    if isinstance(value, list):
-        print(f"{key}={','.join(value)}")
-    else:
-        print(f"{key}='{value}'")
+# for key, value in config.items():
+#     if isinstance(value, list):
+#         print(f"{key}={','.join(value)}")
+#     else:
+#         print(f"{key}='{value}'")
 
 
 # To-do 

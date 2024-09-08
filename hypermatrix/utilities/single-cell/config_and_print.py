@@ -14,7 +14,9 @@ import scipy.io
 #<prefix>.bam.bai
 #bam_directory = '/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam'
 #bam_directory = '/ocean/projects/mcb190124p/dnaase/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/bam'
-bam_directory = '/ocean/projects/mcb190124p/dnaase/startup/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/raw'
+#bam_directory = '/ocean/projects/mcb190124p/dnaase/startup/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/raw'
+#This directory has symbolic liknks to files that I have no permisiion to read, which is why I am not using it
+bam_directory = '/jet/home/dkatz/tmp_ondemand_ocean_mcb190124p_symlink/dkatz/files_from_quest/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam'
 ##########################################################################################################
 
 ##########################################################################################################
@@ -25,7 +27,12 @@ bam_directory = '/ocean/projects/mcb190124p/dnaase/startup/projects/hexa_seq/scN
 #such as
 #batch5.scD_9.ATCACG.methy.bw
 #Note, the prefixes might be a subset of the prefixes in the bam files
-methy_directory = '/ocean/projects/mcb190124p/dnaase/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/bam/methy'
+#methy_directory = 'methy_directory = '/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam/methylation/filter_low_qual'
+#The above directroy corresponds to the file which I have no access to yet
+#methy_directory = '/ocean/projects/mcb190124p/dnaase/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/bam/methy'
+
+methy_directory = '/jet/home/dkatz/tmp_ondemand_ocean_mcb190124p_symlink/dkatz/files_from_quest/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/methylation/filter_low_qual'
+
 ##########################################################################################################
 
 software_directory = '../../bin/softwarefiles'
@@ -54,7 +61,7 @@ hic_IMR90_url = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63525/suppl
 ##########################################################################################################
 #reference genome specific parameters
 # Define paths based on the reference genome
-reference_genome = "hg38" #needs to be either hg19 (aka GRCh37 or b37 [2009]) or hg38 (aka GRCh38 or b38 or hg20 [2013])
+reference_genome = "hg19" #needs to be either hg19 (aka GRCh37 or b37 [2009]) or hg38 (aka GRCh38 or b38 or hg20 [2013])
 
 #The following code asusmes the DpnII restriction enzyme was used in the hic experiment. 
 #For other restriction enzymes, you will need to download the restriction site file, for

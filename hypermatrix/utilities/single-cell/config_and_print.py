@@ -13,7 +13,8 @@ import scipy.io
 #The index file should be in the same directory and should be named
 #<prefix>.bam.bai
 #bam_directory = '/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam'
-bam_directory = '/ocean/projects/mcb190124p/dnaase/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/bam'
+#bam_directory = '/ocean/projects/mcb190124p/dnaase/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/bam'
+bam_directory = '/ocean/projects/mcb190124p/dnaase/startup/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/raw'
 ##########################################################################################################
 
 ##########################################################################################################
@@ -84,8 +85,6 @@ config = {
     "output_directory": output_directory,
     "hg_fa_url": hg_fa_url,
     "filtered_list": filtered_list,
-    "schicluster_env": schicluster_env,
-    "bisulfite_env": bisulfite_env,
     "min_high_quality_reads": min_high_quality_reads,
     "resolutions": resolutions,
     "impute": impute,

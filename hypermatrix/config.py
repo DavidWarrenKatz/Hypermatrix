@@ -35,8 +35,8 @@ methy_directory = '/jet/home/dkatz/tmp_ondemand_ocean_mcb190124p_symlink/dkatz/f
 
 ##########################################################################################################
 
-software_directory = '../../bin/softwarefiles'
-output_directory = '../../projects/single_cell_files'
+software_directory = '../src/softwarefiles'
+output_directory = '../projects/single_cell_files'
 filtered_list = f"{output_directory}/filtered_bam_list.txt"
 min_high_quality_reads=250000
 #resolutions = ("250000:250kb")  # Add resolutions here as a list of strings, resolution: label
@@ -112,11 +112,12 @@ config = {
 scipy.io.savemat('config.mat', config)
 
 #Print out the values of the dictionary
-#I beleive my bash script needs the values printed out
-for key, value in config.items():
-    if isinstance(value, list):
-        print(f"{key}={','.join(value)}")
-    else:
-        print(f"{key}='{value}'")
+#The old bash scripts used to need the dictionary to be printed out
+#This can be deleted now
+#for key, value in config.items():
+#    if isinstance(value, list):
+#        print(f"{key}={','.join(value)}")
+#    else:
+#        print(f"{key}='{value}'")
 
 

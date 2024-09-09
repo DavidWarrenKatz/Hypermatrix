@@ -11,9 +11,8 @@
 # re-write so that the code does not use hicluster to make bin 0-indexed short format from .hic files
 # the matrices produced by scHIcluster do not seem quite right. They are missing the diagonal for example
 
-# Run the Python script and source the output to import the variables
-# each individual file still needs to import these variables as well
-eval "$(python3 config_and_print.py)"
+# Import the parameters from config.py
+eval "$(python3 ../../../export_config.py)"
 
 # Execute the filtering script
 chmod +x filter_bam.sh
@@ -45,52 +44,11 @@ chmod +x preprocess_for_hic_cluster.sh
 chmod +x make_juicer_short_format.sh
 ./make_juicer_short_format.sh
 
-# Make single cells KR normalized if normalization is not NONE
-if [ "$normalization" != "NONE" ]; then
-    echo "Normalization is set to $normalization. Running make_hic_for_normalization.py..."
-    #python make_hic_for_normalization.py
-    chmod +x make_hic_for_normalization.sh
-    ./make_hic_for_normalization.sh
-else
-    echo "Normalization is set to NONE. Skipping normalization step."
-fi
-
-#Some matrices will be too sparse for KR processing
-#This addiitional step will try to regularize them
-if [ "$normalization" != "NONE" ]; then
-    echo "Normalization is set to $normalization. Running process_sparse_matrices.py ..."
-    python process_sparse_matrices.py
-    chmod +x make_hic_for_normalization_afterprocessing.sh
-    ./make_hic_for_normalization_afterprocessing.sh
-else
-    echo "Normalization is set to NONE. Skipping normalization step."
-fi
-
-# Execute the compartment calling scripts from scHICluster
-# [TO DO: need to get this working]
-if [ "$cluster_compartments" = "True" ]; then
-chmod +x compartment_calling.sh
-./compartment_calling.sh
-fi
-
-# Source the conda environment setup script
-source /software/miniconda3/4.12.0/etc/profile.d/conda.sh
-# Define environment names
-hypermatrix_env=hypermatrix
-# Activate the desired conda environment
-conda activate $hypermatrix_env
-
 # Make the methylation matrices
 python make_methy_matrices.py
 
 # Make the hic matrices
 python make_hic_matrices.py
-
-# Make the hic cumulants if cumulant is set to True
-#[TO DO: make this file]
-if [ "$impute" = "True" ]; then
-python make_hic_matrices_imputed.py
-fi
 
 #Make the combined tensor for each cell
 #[TO DO: need to decide if imputation and emphasis and merging will happen]
@@ -156,6 +114,7 @@ python make_AB_compartments.py
 #This part is specfic to IMR90 GM12878 experiment
 python make_AB_compartment_image.py
 
+<<comment
 python make_all_cells_tensor.py
 
 # Load the necessary modules
@@ -180,6 +139,4 @@ matlab -nodisplay -r "run('cell_type_factors_seperate_modalities.m'); exit;"
 #display clustered cells colored by their AB compartment 
 #value for highly variable region
 
-#if cumulnat flag is TRUE, need to repeat the clustering and calls 
-#with 3rd degree cumulants
-
+comment

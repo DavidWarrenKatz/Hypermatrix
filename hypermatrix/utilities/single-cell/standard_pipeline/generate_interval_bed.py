@@ -2,8 +2,24 @@
 # generate the interval bed file used in the methylation processing for scNome-Seq
 ##################################################################################
 
+import sys
 import os
-from config_and_print import chrom_file, resolutions, output_directory, software_directory
+
+# Add the directory where config.py is located to the Python path
+config_dir = '../../../'
+config_dir = os.path.abspath(config_dir)  # Get absolute path
+
+config_file = os.path.join(config_dir, 'config.py')  # Full path to config.py
+
+# Check if the directory and config.py exist
+if os.path.isdir(config_dir) and os.path.isfile(config_file):
+    sys.path.append(config_dir)
+    print(f"Config directory added to sys.path: {config_dir}")
+    print(f"Found config.py at: {config_file}")
+else:
+    raise FileNotFoundError(f"config.py not found in directory: {config_dir}")
+
+from config import chrom_file, resolutions, output_directory, software_directory
 
 # Ensure resolutions is treated as a tuple or list of strings
 if isinstance(resolutions, str):
@@ -24,7 +40,6 @@ def parse_resolution(resolution_str):
         raise ValueError(f"Invalid resolution format: '{resolution_str}'. Expected format 'value:label', e.g., '1000000:1Mb'.")
 
 resolution, resolution_label = parse_resolution(resolution_str)
-
 
 def generate_interval_bed(chrom_size_file, resolution, output_bed_file):
     with open(chrom_size_file, 'r') as f:

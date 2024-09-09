@@ -8,5 +8,5 @@ Hypermatrix.egg-info/entry_points.txt
 Hypermatrix.egg-info/requires.txt
 Hypermatrix.egg-info/top_level.txt
 hypermatrix/__init__.py
-hypermatrix/config_and_print.py
+hypermatrix/config.py
 hypermatrix/main.py

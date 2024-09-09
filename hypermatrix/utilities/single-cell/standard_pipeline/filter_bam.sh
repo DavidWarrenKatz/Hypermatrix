@@ -14,7 +14,7 @@
 ######################################################################################
 
 # Load configuration and print variables
-eval "$(python3 config_and_print.py)"
+eval "$(python3 ../../../export_config.py)"
 
 # Create output directory if it doesn't exist
 mkdir -p "$output_directory"

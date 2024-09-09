@@ -12,9 +12,11 @@ import scipy.io
 #batch1.sc15.CGATGT.hg38.calmd.bam
 #The index file should be in the same directory and should be named
 #<prefix>.bam.bai
+#Some default directories to try are: 
 #bam_directory = '/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam'
 #bam_directory = '/ocean/projects/mcb190124p/dnaase/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/bam'
 #bam_directory = '/ocean/projects/mcb190124p/dnaase/startup/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/raw'
+#bam_directory = '/jet/home/dkatz/tmp_ondemand_ocean_mcb190124p_symlink/dkatz/files_from_quest/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam'
 #This directory has symbolic liknks to files that I have no permisiion to read, which is why I am not using it
 bam_directory = '/jet/home/dkatz/tmp_ondemand_ocean_mcb190124p_symlink/dkatz/files_from_quest/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam'
 ##########################################################################################################
@@ -30,6 +32,7 @@ bam_directory = '/jet/home/dkatz/tmp_ondemand_ocean_mcb190124p_symlink/dkatz/fil
 #methy_directory = 'methy_directory = '/home/dwk681/workspace/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/bam/methylation/filter_low_qual'
 #The above directroy corresponds to the file which I have no access to yet
 #methy_directory = '/ocean/projects/mcb190124p/dnaase/projects/hexa_seq/scNOMe_DNA_IMR90_GM_all/bam/methy'
+#methy_directory = '/jet/home/dkatz/tmp_ondemand_ocean_mcb190124p_symlink/dkatz/files_from_quest/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/methylation/filter_low_qual'
 
 methy_directory = '/jet/home/dkatz/tmp_ondemand_ocean_mcb190124p_symlink/dkatz/files_from_quest/cluster_cells_from_GSE189158_NOMe_HiC/filesFromCluster/methylation/filter_low_qual'
 
@@ -43,7 +46,7 @@ min_high_quality_reads=250000
 resolutions = ("1000000:1Mb")
 impute = False
 cluster_compartments = False
-cumulant = True
+cumulant = False
 iterations = 400
 chromosomes = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22']
 mappability_threshold = 0.5
@@ -110,14 +113,4 @@ config = {
 
 #Save the dictionary for later use in MATLAB
 scipy.io.savemat('config.mat', config)
-
-#Print out the values of the dictionary
-#The old bash scripts used to need the dictionary to be printed out
-#This can be deleted now
-#for key, value in config.items():
-#    if isinstance(value, list):
-#        print(f"{key}={','.join(value)}")
-#    else:
-#        print(f"{key}='{value}'")
-
 

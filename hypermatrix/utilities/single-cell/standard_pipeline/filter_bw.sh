@@ -1,7 +1,7 @@
 #!/bin/bash
 
-
-eval "$(python3 config_and_print.py)"
+# Load configuration and print variables
+eval "$(python3 ../../../export_config.py)"
 
 # Extract resolution and label from the resolutions string
 IFS=':' read -r resolution resolution_label <<< "$resolutions"

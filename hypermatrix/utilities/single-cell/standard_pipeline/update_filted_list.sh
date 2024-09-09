@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Load configuration using a Python script and eval to export variables
-eval "$(python3 config_and_print.py)"
+# Import the parameters from config.py
+eval "$(python3 ../../../export_config.py)"
 
 # Define the file paths
 filtered_bam_list="$filtered_list"

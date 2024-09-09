@@ -5,13 +5,7 @@ from setuptools import setup, find_packages
 setup(
     name="Hypermatrix",
     version="0.1.0",
-    packages=find_packages(include=['hypermatrix', 'hypermatrix.*']),
-    package_data={
-        'hypermatrix': [
-            '/utilities/**/*', 
-        ],
-    },
-    include_package_data=True,
+    packages=find_packages(where='hypermatrix', include=['hypermatrix', 'hypermatrix.*']),
     author="David Warren Katz",
     author_email="davidkatz02@gmail.com",
     description=(
@@ -36,9 +30,15 @@ setup(
         'h5py',
         'scipy',
         'pyBigWig',
-        'fanc',
-        'hic-straw',
+        'cooler',
+        'cytoolz',
+        'future',
+        'intervaltree',
+        'msgpack',
+        'pytest',
+        'scikit-image',
+        'scikit-learn',
+        'tables',
     ],
 )
 
-# 	$(CONDA_ACTIVATE) && pip install . && pip install --use-pep517 fanc hic-straw

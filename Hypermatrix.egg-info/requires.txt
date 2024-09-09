@@ -5,3 +5,12 @@ requests
 h5py
 scipy
 pyBigWig
+cooler
+cytoolz
+future
+intervaltree
+msgpack
+pytest
+scikit-image
+scikit-learn
+tables

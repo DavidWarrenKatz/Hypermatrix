@@ -13,3 +13,12 @@ Requires-Dist: requests
 Requires-Dist: h5py
 Requires-Dist: scipy
 Requires-Dist: pyBigWig
+Requires-Dist: cooler
+Requires-Dist: cytoolz
+Requires-Dist: future
+Requires-Dist: intervaltree
+Requires-Dist: msgpack
+Requires-Dist: pytest
+Requires-Dist: scikit-image
+Requires-Dist: scikit-learn
+Requires-Dist: tables

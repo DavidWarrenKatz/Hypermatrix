@@ -15,8 +15,9 @@ env:
 
 install:
 	@echo "Activating environment and installing Python dependencies..."
-	$(CONDA_ACTIVATE) && pip install . 
+	$(CONDA_ACTIVATE) && pip install . && pip install --use-pep517 fanc hic-straw
 
 clean:
 	@echo "Removing Conda environment..."
 	conda remove --name $(ENV_NAME) --all --yes
+

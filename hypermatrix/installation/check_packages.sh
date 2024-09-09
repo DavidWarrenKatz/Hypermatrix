@@ -1,3 +1,6 @@
+#If you are having problems installing the enviroment on your computers, 
+#try running this file.
+
 #!/bin/bash
 
 # Check if hic-straw and fanc are installed

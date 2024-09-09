@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 setup(
     name="Hypermatrix",
     version="0.1.0",
-    packages=find_packages(where='hypermatrix', include=['hypermatrix', 'hypermatrix.*']),
+    packages=find_packages(),
     author="David Warren Katz",
     author_email="davidkatz02@gmail.com",
     description=(

@@ -1,7 +1,7 @@
 .ONESHELL:
 SHELL = /bin/bash
 ENV_NAME = hypermatrix
-YML_FILE = hypermatrix.yml
+YML_FILE = hypermatrix/installation/hypermatrix.yml
 CONDA_BASE = $(shell conda info --base)
 CONDA_ACTIVATE = source $(CONDA_BASE)/etc/profile.d/conda.sh && conda activate $(ENV_NAME)
 
@@ -16,6 +16,10 @@ env:
 install:
 	@echo "Activating environment and installing Python dependencies..."
 	$(CONDA_ACTIVATE) && pip install . && pip install --use-pep517 fanc hic-straw
+
+shell:
+	@echo "Launching shell with activated environment..."
+	$(CONDA_ACTIVATE) && /bin/bash
 
 clean:
 	@echo "Removing Conda environment..."

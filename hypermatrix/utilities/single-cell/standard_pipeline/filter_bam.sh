@@ -13,8 +13,11 @@
 # Author: David Katz (davidkatz02@gmail.com)
 ######################################################################################
 
-# Load configuration and print variables
-eval "$(python3 ../../../export_config.py)"
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+# Import the parameters from config.py (relative to the script's directory)
+eval "$(python3 "$SCRIPT_DIR/../../../export_config.py")"
 
 # Create output directory if it doesn't exist
 mkdir -p "$output_directory"

@@ -11,12 +11,15 @@
 # re-write so that the code does not use hicluster to make bin 0-indexed short format from .hic files
 # the matrices produced by scHIcluster do not seem quite right. They are missing the diagonal for example
 
-# Import the parameters from config.py
-eval "$(python3 ../../../export_config.py)"
+# Get the directory where this script (single_cell_pipeline.sh) is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# Execute the filtering script
-chmod +x filter_bam.sh
-./filter_bam.sh
+# Import the parameters from config.py (relative to the script's directory)
+eval "$(python3 "$SCRIPT_DIR/../../../export_config.py")"
+
+# Execute the filtering script (relative to the script's directory)
+chmod +x "$SCRIPT_DIR/filter_bam.sh"
+"$SCRIPT_DIR/filter_bam.sh"
 
 # Generate the interval bed file
 python generate_interval_bed.py

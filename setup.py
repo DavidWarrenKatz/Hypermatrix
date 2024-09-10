@@ -5,7 +5,12 @@ from setuptools import setup, find_packages
 setup(
     name="Hypermatrix",
     version="0.1.0",
-    packages=find_packages(),
+    packages=find_packages(include=['hypermatrix', 'hypermatrix.*']),
+    package_data={
+        'hypermatrix': [
+            'utilities/**/*',  # file i want to include
+        ],
+    },
     author="David Warren Katz",
     author_email="davidkatz02@gmail.com",
     description=(
@@ -40,5 +45,6 @@ setup(
         'scikit-learn',
         'tables',
     ],
+    python_requires='>=3.8',
 )
 

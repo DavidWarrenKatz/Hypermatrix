@@ -93,7 +93,7 @@ def abcluster(args):
         update_config_file(config_path, updates)
 
     # Now run the appropriate script based on the flags provided
-    standard_script = "/utilities/single-cell/single_cell_pipeline.sh"
+    standard_script = "/utilities/single-cell/single_cell_pipeline.sh" # created empty version
     cumulant_script = "/utilities/single-cell/single_cell_pipeline_cumulant.sh"
     impute_script = "/utilities/single-cell/single_cell_pipeline_impute.sh"
 

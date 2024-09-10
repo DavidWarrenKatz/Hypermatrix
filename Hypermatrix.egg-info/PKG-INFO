@@ -5,6 +5,7 @@ Summary: Hypermatrix is a command-line tool for integrating multi-omics data and
 Home-page: https://github.com/DavidWarrenKatz/Hypermatrix
 Author: David Warren Katz
 Author-email: davidkatz02@gmail.com
+Requires-Python: >=3.8
 License-File: LICENSE
 Requires-Dist: numpy
 Requires-Dist: matplotlib

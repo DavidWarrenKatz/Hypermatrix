@@ -109,7 +109,7 @@ hypermatrix preprocess --nomehic --input_dir <path_to_bam_directory> --output_di
 
 - **`--input_dir <path_to_bam_directory>`**: Specifies the directory containing the indexed BAM files for processing. It is assumed that all BAM files are indexed (i.e., corresponding `.bai` files are present).
 
-- - **`--output_dir <path_to_output_directory>`**: Specifies the output directory. A subfolder for Hi-C, methylation, and accessibility will be created.
+- **`--output_dir <path_to_output_directory>`**: Specifies the output directory. A subfolder for Hi-C, methylation, and accessibility will be created.
   
 - **`--ref_genome <path_to_reference_genome>`**: Specifies the reference genome. Only options right now are hg19 and hg38. 
 

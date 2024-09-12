@@ -31,6 +31,7 @@ def main():
     # preprocess subcommand
     preprocess_parser = subparsers.add_parser('preprocess', help='Preprocess BAM files for analysis')
     preprocess_parser.add_argument('--nomehic', action='store_true', help='Process BAM files from the scNOMe-HiC technique')
+    preprocess_parser.add_argument('--m3C', action='store_true', help='Process BAM files from the m3C-seq technique')
     preprocess_parser.add_argument('--input_dir', type=str, required=True, help='Directory containing BAM files')
     preprocess_parser.add_argument('--output_dir', type=str, required=True, help='Directory where the output files will be saved')
     preprocess_parser.add_argument('--ref_genome', type=str, required=True, help='Reference genome (e.g., hg19 or hg38)')
@@ -126,14 +127,18 @@ def diffchrom(args):
     # Add the actual analysis code for differentiating chromosomes here
 
 def preprocess(args):
-    # Preprocess BAM files for NOMe-HiC analysis
+    # Check that either --nomehic or --m3C flag is provided
+    if not args.nomehic and not args.m3C:
+        print("[ERROR]: Either the --nomehic flag or the --m3C flag is required.")
+        sys.exit(1)
+
+    # Preprocess BAM files for analysis
     input_dir = args.input_dir
     output_dir = args.output_dir
     ref_genome = args.ref_genome
-    nomehic_flag = args.nomehic
 
     # Set appropriate scripts based on the flags provided
-    preprocess_script = "nomehic_preprocess.sh" if nomehic_flag else "standard_preprocess.sh"
+    preprocess_script = "nomehic_preprocess.sh" if args.nomehic else "m3C_preprocess.sh"
     preprocess_script_path = os.path.join(script_dir, 'utilities', 'single-cell', preprocess_script)
 
     # Make sure the script is executable

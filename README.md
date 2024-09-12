@@ -21,11 +21,15 @@ Below is the heatmap comparing the bulk eigenvectors of GM12878 and IMR90 with s
   </table>
 </div>
 
+Here’s an updated version of the installation section in your README, simplifying it to use only `make install`:
+
+---
+
 ## Installation
 
 ### Prerequisites
 
-Ensure you have `conda` installed. If not, you can install it from [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). The packages pyBigWig, h5py, hic-straw, scHiCluster are required and are installed with the make command below. If any of the required packages are not properly installed by the make command, install those packages seperately.
+Ensure you have `conda` installed. If not, you can install it from [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). The packages `pyBigWig`, `h5py`, `hic-straw`, and `scHiCluster` are required and will be installed during the process below. If any of the required packages are not properly installed, you may need to install them separately.
 
 ### Steps
 
@@ -35,38 +39,34 @@ Ensure you have `conda` installed. If not, you can install it from [here](https:
     git clone https://github.com/DavidWarrenKatz/hypermatrix.git
     ```
 
-2. Install the Hypermatrix tool using Make:
+2. Navigate into the cloned directory:
 
     ```bash
     cd hypermatrix
-    make
     ```
-   
+
+3. Install the Hypermatrix tool and its dependencies:
+
+    ```bash
+    make install
+    ```
+
 4. Activate the Conda environment:
 
     ```bash
     conda activate hypermatrix
     ```
 
-5. Check installation:
+5. Verify the installation:
 
     ```bash
     hypermatrix --version
     ```
 
-This command installs the Hypermatrix tool and registers the `hypermatrix` command in your system's PATH, making it accessible from the terminal.
-**Note:** You might need to use `pip3` instead of `pip` depending on your environment.
-
-5. Update packages:
-
-    ```bash
-    make install
-    ```
+    This command should display something like:
     
-6. Remove environment and all packages:
-
-    ```bash
-    make clean
+    ```
+    Hypermatrix version 0.1 - A tool for integrating multi-omics data and epigenetic analysis using advanced tensor techniques.
     ```
 
 ### ABcluster Command

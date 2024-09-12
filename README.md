@@ -117,7 +117,7 @@ hypermatrix preprocess --nomehic --input_dir <path_to_bam_directory> --output_di
 
 ```bash
 hypermatrix preprocess --nomehic --input_dir /path/to/bam_files ---output_dir /path/to/output -ref hg19
-hypermatrix ABcluster --methy /path/to/output/methy --hic /path/to/output/hic --output_dir <output_directory>
+hypermatrix ABcluster --methy /path/to/output/methy --hic /path/to/output/hic --output_dir <output_directory> --res 1000000
 ```
 
 ## Contact

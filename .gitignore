@@ -3,7 +3,7 @@
 /hypermatrix/config.mat
 /hypermatrix/__pycache__/
 /src/softwarefiles/
-/Hypermatrix.egg-info/
+#/Hypermatrix.egg-info/
 /build/
 /java_error.log
 /methy_summary.cmd.txt

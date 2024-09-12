@@ -69,20 +69,45 @@ Ensure you have `conda` installed. If not, you can install it from [here](https:
     Hypermatrix version 0.1 - A tool for integrating multi-omics data and epigenetic analysis using advanced tensor techniques.
     ```
 
+
+
+Here’s the updated version of the ABcluster command description with the mention of the `config.py` file for parameter adjustments:
+
+---
+
 ### ABcluster Command
 
-The ABcluster commands performs cell-type clustering, A/B compartment calls, and TAD boundary calls. The general syntax for using the ABcluster command is:
+The `ABcluster` command is used to perform single-cell A/B compartment analysis and identify cell-type clusters by integrating single-cell CpG methylation data and Hi-C data. This command allows for flexible analysis by utilizing one or both data modalities depending on the user's input.
+
+#### General Syntax
 
 ```bash
-hypermatrix ABcluster --methylation_file <path_to_methylation_file> --conformation_file <path_to_conformation_file> --output_dir <output_directory>
+hypermatrix ABcluster --methy <path_to_methylation_directory> --hic <path_to_hic_directory> --output_dir <output_directory>
 ```
-#### Arguments
 
-- `--methylation_file`: **(Required)** Path to the single-cell CpG methylation file. This file should contain the methylation data for each cell, which will be used for clustering and compartment calling.
+#### Input Parameters
 
-- `--conformation_file`: **(Required)** Path to the chromosome conformation file. This file should include data on chromatin interactions, necessary for TAD boundary identification and A/B compartment analysis.
+- **`--methy <path_to_methylation_directory>`**: This specifies the directory containing the single-cell CpG methylation files. These files must be named following the pattern `<prefix>.bw`, where `<prefix>` is a unique identifier for each sample.
+  
+- **`--hic <path_to_hic_directory>`**: This specifies the directory containing the single-cell Hi-C files. These files must follow the naming pattern `<prefix>.hic`, where `<prefix>` matches the one used in the methylation files for proper integration.
 
-- `--output_dir`: **(Optional)** Directory where the output files will be saved. If not specified, the output will be saved in the projects/single_cell directory by default.
+- **`--output_dir <output_directory>`**: This specifies the directory where the output results will be stored. Ensure this directory exists or is created before running the command.
+
+#### Configurable Parameters
+
+The parameters for the `ABcluster` command are listed in the file `config.py`, where they can be adjusted to meet specific needs or to fine-tune the analysis. You can edit this file directly to modify default behaviors, such as thresholds, file paths, or other settings used by the software.
+
+#### Usage Recommendations
+
+It is strongly recommended to use both the `--methy` and `--hic` flags together for a more comprehensive analysis. When both modalities are provided, the software integrates the methylation and Hi-C data to generate A/B compartment calls and identify cell-type clusters based on the combined data.
+
+- **Using both `--methy` and `--hic`**: The integration of both data types (methylation and Hi-C) enables more accurate and biologically meaningful compartment calling and cell-type clustering.
+  
+- **Using only the `--methy` flag**: If only the methylation data is available, the software will generate A/B compartment calls and cell-type clusters based solely on the single-cell CpG methylation data.
+
+- **Using only the `--hic` flag**: Similarly, if only Hi-C data is available, the software will generate A/B compartment calls and cell-type clusters based solely on the single-cell Hi-C data.
+
+This flexibility allows users to adapt the analysis based on the availability of data while maintaining the ability to produce valuable insights into the cell-type structure and compartmentalization.
 
 #### Output
 
@@ -90,60 +115,6 @@ The output directory will contain:
 
 - `cell_type_clusters.txt`: Clustering results for each cell.
 - `ab_compartments.txt`: A/B compartment calls for each cell.
-- `tad_boundaries.txt`: TAD boundary calls for each cell.
-
-#### Example Command
-
-```bash
-python ABcluster.py --methylation_file data/methylation.csv --conformation_file data/conformation.csv --output_dir results/
-```
-
-
-### Bulk Command
-
-1. As a first demonstration, derive A/B compartments from integrated bulk epigenetic data and synthetic data to illustrate the non-negative tensor decomposition method. Navigate to the utilities directory:
-
-    ```bash
-    cd hypermatrix/utilities
-    ```
-
-2. Make the `runPipeline_bulkdata.sh` script executable:
-
-    ```bash
-    chmod +x runPipeline_bulkdata.sh
-    ```
-
-3. Run the `runPipeline_bulkdata.sh` script to get the necessary data:
-
-    ```bash
-    ./runPipeline_bulkdata.sh
-    ```
-
-### differentiate_chromosomes Command
-
-To differentiate between the homologous chromosomes and determine if B compartments are lamina-associated:
-
-```bash
-python differentiate_chromosomes.py --input <path_to_input_file> --output <output_directory>
-```
-
-#### Arguments
-
-- `--input`: Path to the input file containing chromosome data.
-- `--output`: Directory where the output files will be saved.
-
-#### Output
-
-The output directory will contain:
-
-- `homologous_chromosomes.txt`: Differentiated homologous chromosomes.
-- `lamina_associated_B_compartments.txt`: B compartments that are lamina-associated.
-
-#### Example Command
-
-```bash
-python differentiate_chromosomes.py --input data/chromosome_data.csv --output results/
-```
 
 ## Contact
 

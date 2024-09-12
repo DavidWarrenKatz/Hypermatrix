@@ -81,7 +81,7 @@ hypermatrix ABcluster --methy <path_to_methylation_directory> --hic <path_to_hic
   
 - **`--hic <path_to_hic_directory>`**: This specifies the directory containing the single-cell Hi-C files. These files must follow the naming pattern `<prefix>.hic`, where `<prefix>` matches the one used in the methylation files for proper integration.
 
-- **`--output_dir <output_directory>`**: This specifies the directory where the output results will be stored. Ensure this directory exists or is created before running the command.
+- **`--output_dir <output_directory>`**: This specifies the directory where the output results will be stored. 
 
 #### Configurable Parameters
 

@@ -85,7 +85,7 @@ hypermatrix ABcluster --methy <path_to_methylation_directory> --hic <path_to_hic
 
 #### Configurable Parameters
 
-The parameters for the `ABcluster` command are listed in the file `hypermatrix\config.py`, where they can be adjusted.
+The parameters for the `ABcluster` command are listed in the file `hypermatrix/config.py`, where they can be adjusted.
 
 #### Usage Recommendations
 

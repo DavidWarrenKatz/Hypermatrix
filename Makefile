@@ -15,7 +15,10 @@ env:
 
 install:
 	@echo "Activating environment and installing Python dependencies..."
-	$(CONDA_ACTIVATE) && pip install . && pip install --use-pep517 fanc hic-straw && pip install git+https://github.com/zhoujt1994/scHiCluster.git
+	$(CONDA_ACTIVATE) && pip install . && \
+	# --use-pep517 is required for fanc and hic-straw to avoid issues with PEP 517 compatibility
+	pip install --use-pep517 fanc hic-straw && \
+	pip install git+https://github.com/zhoujt1994/scHiCluster.git
 
 shell:
 	@echo "Launching shell with activated environment..."
@@ -24,4 +27,3 @@ shell:
 clean:
 	@echo "Removing Conda environment..."
 	conda remove --name $(ENV_NAME) --all --yes
-

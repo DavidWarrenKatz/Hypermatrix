@@ -103,3 +103,55 @@
 
 - **Kind, J., Pagie, L., Ortabozkoyun, H., et al. (2013).**  
   Single-cell dynamics of genome-nuclear lamina interactions. *Cell, 153(1), 178-192.*
+
+
+
+
+
+  Incorporate the other commands in readme
+
+  ### Bulk Command
+
+1. As a first demonstration, derive A/B compartments from integrated bulk epigenetic data and synthetic data to illustrate the non-negative tensor decomposition method. Navigate to the utilities directory:
+
+    ```bash
+    cd hypermatrix/utilities
+    ```
+
+2. Make the `runPipeline_bulkdata.sh` script executable:
+
+    ```bash
+    chmod +x runPipeline_bulkdata.sh
+    ```
+
+3. Run the `runPipeline_bulkdata.sh` script to get the necessary data:
+
+    ```bash
+    ./runPipeline_bulkdata.sh
+    ```
+
+### differentiate_chromosomes Command
+
+To differentiate between the homologous chromosomes and determine if B compartments are lamina-associated:
+
+```bash
+python differentiate_chromosomes.py --input <path_to_input_file> --output <output_directory>
+```
+
+#### Arguments
+
+- `--input`: Path to the input file containing chromosome data.
+- `--output`: Directory where the output files will be saved.
+
+#### Output
+
+The output directory will contain:
+
+- `homologous_chromosomes.txt`: Differentiated homologous chromosomes.
+- `lamina_associated_B_compartments.txt`: B compartments that are lamina-associated.
+
+#### Example Command
+
+```bash
+python differentiate_chromosomes.py --input data/chromosome_data.csv --output results/
+```

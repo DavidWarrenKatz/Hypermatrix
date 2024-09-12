@@ -113,7 +113,7 @@ hypermatrix preprocess --nomehic --input_dir <path_to_bam_directory> --output_di
   
 - **`--ref_genome <path_to_reference_genome>`**: Specifies the reference genome. Only options right now are hg19 and hg38. 
 
-#### Example Usage of Hypermatrix Software
+## Example Usage of Hypermatrix Software
 
 ```bash
 hypermatrix preprocess --nomehic --input_dir /path/to/bam_files ---output_dir /path/to/output -ref hg19

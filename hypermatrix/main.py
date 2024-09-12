@@ -28,6 +28,13 @@ def main():
     # Subcommands
     subparsers = parser.add_subparsers(dest='command')
 
+    # preprocess subcommand
+    preprocess_parser = subparsers.add_parser('preprocess', help='Preprocess BAM files for analysis')
+    preprocess_parser.add_argument('--nomehic', action='store_true', help='Process BAM files from the scNOMe-HiC technique')
+    preprocess_parser.add_argument('--input_dir', type=str, required=True, help='Directory containing BAM files')
+    preprocess_parser.add_argument('--output_dir', type=str, required=True, help='Directory where the output files will be saved')
+    preprocess_parser.add_argument('--ref_genome', type=str, required=True, help='Reference genome (e.g., hg19 or hg38)')
+
     # ABcluster subcommand
     abcluster_parser = subparsers.add_parser('ABcluster', help='Run the ABcluster analysis')
     abcluster_parser.add_argument('--methy', type=str, help='Path to the single-cell CpG methylation directory')
@@ -46,13 +53,16 @@ def main():
 
     args = parser.parse_args()
 
+
     # Dispatch the command
     if args.command == 'ABcluster':
         abcluster(args)
     elif args.command == 'differentiate_chromosomes':
         diffchrom(args)
+    elif args.command == 'preprocess':
+        preprocess(args)
     else:
-        print(f"Unknown command: {args.command}. Try the ABcluster or differentiate_chromosomes command")
+        print(f"Unknown command: {args.command}. Try the ABcluster, differentiate_chromosomes, or preprocess command")
         parser.print_help()
 
 def update_config_file(config_file_path, updates):
@@ -114,6 +124,32 @@ def diffchrom(args):
     # Placeholder for actual analysis code
     print(f"Running differentiate_chromosomes with Hi-C file: {hic_file}, Epigenetic file: {epigenetic_file}, Output directory: {output_dir}")
     # Add the actual analysis code for differentiating chromosomes here
+
+def preprocess(args):
+    # Preprocess BAM files for NOMe-HiC analysis
+    input_dir = args.input_dir
+    output_dir = args.output_dir
+    ref_genome = args.ref_genome
+    nomehic_flag = args.nomehic
+
+    # Set appropriate scripts based on the flags provided
+    preprocess_script = "nomehic_preprocess.sh" if nomehic_flag else "standard_preprocess.sh"
+    preprocess_script_path = os.path.join(script_dir, 'utilities', 'single-cell', preprocess_script)
+
+    # Make sure the script is executable
+    if not os.access(preprocess_script_path, os.X_OK):
+        print(f"[INFO]: Adding executable permissions to {preprocess_script_path}.")
+        os.chmod(preprocess_script_path, 0o755)
+
+    # Construct and run the shell command
+    command = f"{preprocess_script_path} --input {input_dir} --output {output_dir} --ref_genome {ref_genome}"
+    print(f"[INFO]: Executing preprocess command: {command}")
+
+    try:
+        result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+        print(f"[INFO]: Preprocessing completed successfully. Output:\n{result.stdout}")
+    except subprocess.CalledProcessError as e:
+        print(f"[ERROR]: Preprocessing failed with return code {e.returncode}. Error message:\n{e.stderr}")
 
 def run_shell_script(script_name):
     # Resolve the full path of the script using pkg_resources

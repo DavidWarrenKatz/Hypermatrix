@@ -81,7 +81,7 @@ hypermatrix ABcluster --methy <path_to_methylation_directory> --hic <path_to_hic
   
 - **`--hic <path_to_hic_directory>`**: This specifies the directory containing the single-cell Hi-C files. These files must follow the naming pattern `<prefix>.hic`, where `<prefix>` matches the one used in the methylation files for proper integration.
 
-- **`--output_dir <output_directory>`**: This specifies the directory where the output results will be stored. 
+- **`--output_dir <output_directory>`**: This specifies the directory where the output results will be stored. The output directory will contain a file `cell_type_clusters.txt` for each cell-type, and a file `prefix_ab_compartments.txt` for the A/B compartment call for each cell.
 
 #### Configurable Parameters
 
@@ -89,22 +89,11 @@ The parameters for the `ABcluster` command are listed in the file `config.py`, w
 
 #### Usage Recommendations
 
-It is strongly recommended to use both the `--methy` and `--hic` flags together for a more comprehensive analysis. When both modalities are provided, the software integrates the methylation and Hi-C data to generate A/B compartment calls and identify cell-type clusters based on the combined data.
-
-- **Using both `--methy` and `--hic`**: The integration of both data types (methylation and Hi-C) enables more accurate and biologically meaningful compartment calling and cell-type clustering.
+It is recommended to use both the `--methy` and `--hic` flags together when both types of data are available. When both modalities are provided, the software integrates the methylation and Hi-C data to generate A/B compartment calls and identify cell-type clusters based on the combined data.
   
 - **Using only the `--methy` flag**: If only the methylation data is available, the software will generate A/B compartment calls and cell-type clusters based solely on the single-cell CpG methylation data.
 
 - **Using only the `--hic` flag**: Similarly, if only Hi-C data is available, the software will generate A/B compartment calls and cell-type clusters based solely on the single-cell Hi-C data.
-
-This flexibility allows users to adapt the analysis based on the availability of data while maintaining the ability to produce valuable insights into the cell-type structure and compartmentalization.
-
-#### Output
-
-The output directory will contain:
-
-- `cell_type_clusters.txt`: Clustering results for each cell.
-- `ab_compartments.txt`: A/B compartment calls for each cell.
 
 ## Contact
 

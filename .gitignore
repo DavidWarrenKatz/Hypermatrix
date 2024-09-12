@@ -1,7 +1,10 @@
 /projects/
 /hypermatrix/projects/
-/bin/softwarefiles/
+/hypermatrix/config.mat
+/hypermatrix/__pycache__/
+/src/softwarefiles/
 /Hypermatrix.egg-info/
 /build/
-
+/java_error.log
+/methy_summary.cmd.txt
 /utilities/single-cell/b37.autosome.500bp_interval.add_value.methy.GM_IMR90_153_samples.bed.gz

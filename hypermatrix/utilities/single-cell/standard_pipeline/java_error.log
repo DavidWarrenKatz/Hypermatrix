@@ -1,1 +1,4 @@
-Error: Could not find or load main class main.java.edu.mit.compbio.utils.AlignMultiWigInsideBed
+Exception in thread "main" java.lang.NullPointerException
+	at main.java.edu.mit.compbio.utils.AlignMultiWigInsideBed.initiate(AlignMultiWigInsideBed.java:386)
+	at main.java.edu.mit.compbio.utils.AlignMultiWigInsideBed.doMain(AlignMultiWigInsideBed.java:203)
+	at main.java.edu.mit.compbio.utils.AlignMultiWigInsideBed.main(AlignMultiWigInsideBed.java:139)

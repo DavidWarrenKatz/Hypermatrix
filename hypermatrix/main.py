@@ -93,9 +93,9 @@ def abcluster(args):
         update_config_file(config_path, updates)
 
     # Now run the appropriate script based on the flags provided
-    standard_script = "/utilities/single-cell/single_cell_pipeline.sh"
-    cumulant_script = "/utilities/single-cell/single_cell_pipeline_cumulant.sh"
-    impute_script = "/utilities/single-cell/single_cell_pipeline_impute.sh"
+    standard_script = "/utilities/single-cell/standard_pipeline/single_cell_pipeline.sh"
+    cumulant_script = "/utilities/single-cell/cumulant_pipeline/single_cell_pipeline_cumulant.sh"
+    impute_script = "/utilities/single-cell/impute_pipeline/single_cell_pipeline_impute.sh"
 
     # Decide which script to run
     if args.cumulant:

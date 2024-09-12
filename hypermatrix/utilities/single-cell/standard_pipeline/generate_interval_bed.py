@@ -19,7 +19,7 @@ if os.path.isdir(config_dir) and os.path.isfile(config_file):
 else:
     raise FileNotFoundError(f"config.py not found in directory: {config_dir}")
 
-from config import chrom_file, resolutions, output_directory, software_directory
+from config import chrom_file, resolutions, output_directory, software_directory, reference_genome
 
 # Ensure resolutions is treated as a tuple or list of strings
 if isinstance(resolutions, str):
@@ -55,7 +55,7 @@ def generate_interval_bed(chrom_size_file, resolution, output_bed_file):
                 f_out.write(f"{chrom}\t{start}\t{end}\n")
 
 # Define the output BED file path
-output_bed_file = os.path.join(software_directory, f'b37.common_chr.{resolution_label}_interval.autosome.bed')
+output_bed_file = os.path.join(software_directory, f'{reference_genome}.common_chr.{resolution_label}_interval.autosome.bed')
 
 # Check if the file already exists
 if os.path.exists(output_bed_file):

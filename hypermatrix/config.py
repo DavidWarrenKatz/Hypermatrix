@@ -2,6 +2,7 @@
 #This file sets the default parameters for the scNomeHic pipeline
 
 import scipy.io
+import os
 
 #########################################################################################################
 #Define the bam directory
@@ -38,8 +39,13 @@ methy_directory = '/jet/home/dkatz/tmp_ondemand_ocean_mcb190124p_symlink/dkatz/f
 
 ##########################################################################################################
 
-software_directory = '../src/softwarefiles'
-output_directory = '../projects/single_cell_files'
+# Determine the directory where config.py is located
+config_dir = os.path.dirname(os.path.realpath(__file__))
+
+# Construct paths relative to config.py's location
+software_directory = os.path.join(config_dir, '../src/softwarefiles')
+output_directory = os.path.join(config_dir, '../projects/single_cell_files')
+
 filtered_list = f"{output_directory}/filtered_bam_list.txt"
 min_high_quality_reads=250000
 #resolutions = ("250000:250kb")  # Add resolutions here as a list of strings, resolution: label
@@ -111,6 +117,8 @@ config = {
     "hic_IMR90_url": hic_IMR90_url
 }
 
-#Save the dictionary for later use in MATLAB
-scipy.io.savemat('config.mat', config)
+# Save the dictionary for later use in MATLAB, ensuring it's saved in the same directory as config.py
+config_mat_path = os.path.join(config_dir, 'config.mat')
+scipy.io.savemat(config_mat_path, config)
+
 

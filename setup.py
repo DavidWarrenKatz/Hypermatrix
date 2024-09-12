@@ -39,6 +39,6 @@ setup(
         'scikit-image',
         'scikit-learn',
         'tables',
-    ],
+        ],
 )
 

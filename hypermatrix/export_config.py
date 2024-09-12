@@ -14,4 +14,3 @@ def print_bash_exports(config):
 # Output the bash export statements
 if __name__ == "__main__":
     print_bash_exports(config)
-

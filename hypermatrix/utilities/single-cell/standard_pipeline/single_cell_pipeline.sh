@@ -18,50 +18,50 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 eval "$(python3 "$SCRIPT_DIR/../../../export_config.py")"
 
 # Execute the filtering script (relative to the script's directory)
-chmod +x "$SCRIPT_DIR/filter_bam.sh"
-"$SCRIPT_DIR/filter_bam.sh"
+chmod +x $SCRIPT_DIR/filter_bam.sh
+$SCRIPT_DIR/filter_bam.sh
 
 # Generate the interval bed file
-python generate_interval_bed.py
+python $SCRIPT_DIR/generate_interval_bed.py
 
 # Execute the filter bigwig files script
-chmod +x filter_bw.sh
-./filter_bw.sh
+chmod +x $SCRIPT_DIR/filter_bw.sh
+$SCRIPT_DIR/filter_bw.sh
 
 # Execute the script that filters the filtered hic to contian high quality methy
 #[TO DO: need to update this, right now hard-coded]
-chmod +x update_filted_list.sh
-./update_filted_list.sh
+chmod +x $SCRIPT_DIR/update_filted_list.sh
+$SCRIPT_DIR/update_filted_list.sh
 
 # Execute the make pairwise contact script
-chmod +x make_pairwise_contact_format_from_bam.sh
-./make_pairwise_contact_format_from_bam.sh
+chmod +x $SCRIPT_DIR/make_pairwise_contact_format_from_bam.sh
+$SCRIPT_DIR/make_pairwise_contact_format_from_bam.sh
 
 # Execute the preprocessing for hicluster script
-chmod +x preprocess_for_hic_cluster.sh
-./preprocess_for_hic_cluster.sh
+chmod +x $SCRIPT_DIR/preprocess_for_hic_cluster.sh
+$SCRIPT_DIR/preprocess_for_hic_cluster.sh
 
 # Execute the make juicer format script
 # This script forms the raw directory and the 
 #imputed directories
-chmod +x make_juicer_short_format.sh
-./make_juicer_short_format.sh
+chmod +x $SCRIPT_DIR/make_juicer_short_format.sh
+$SCRIPT_DIR/make_juicer_short_format.sh
 
 # Make the methylation matrices
-python make_methy_matrices.py
+python $SCRIPT_DIR/make_methy_matrices.py
 
 # Make the hic matrices
-python make_hic_matrices.py
+python $SCRIPT_DIR/make_hic_matrices.py
 
 #Make the combined tensor for each cell
 #[TO DO: need to decide if imputation and emphasis and merging will happen]
 #Right now, emphasis, correlation, shift
-python make_combined_methy_hic_tensor_single_cell.py
+python $SCRIPT_DIR/make_combined_methy_hic_tensor_single_cell.py
 
 #Check to make sure tensorlab is available
 # Define the paths
-zip_file="../../bin/softwarefiles/tensorlab/tensorlab_2016-03-28.zip"
-unzip_dir="../../bin/softwarefiles/tensorlab/"
+zip_file="$SCRIPT_DIR/../../../../src/softwarefiles/tensorlab/tensorlab_2016-03-28.zip"
+unzip_dir="$SCRIPT_DIR/../../../../src/softwarefiles/tensorlab/"
 
 # Check if the zip file exists
 if [ ! -f "$zip_file" ]; then
@@ -96,26 +96,26 @@ fi
 module load matlab/r2022b
 
 # Execute the MATLAB script
-matlab -nodisplay -r "run('get_AB_single_cell_structured_data.m'); exit;"
+matlab -nodisplay -r "run('$SCRIPT_DIR/get_AB_single_cell_structured_data.m'); exit;"
 
 # Download the dark regions file if it doesn't already exist
-dark_regions_file="../../bin/softwarefiles/dark_regions_hg19.bigWig"
+dark_regions_file="$SCRIPT_DIR/../../../src/softwarefiles/dark_regions_$reference_genome.bigWig"
 if [ ! -f "$dark_regions_file" ]; then
-    wget $dark_regions_hg19_url -O "$dark_regions_file"
+    wget $dark_regions_hg_url -O "$dark_regions_file"
 fi
 
 #Create dark bins file if it does not already exist
-python create_dark_bins.py
+python $SCRIPT_DIR/create_dark_bins.py
 
-chmod +x get_eigenvectors_bulk.sh 
-./get_eigenvectors_bulk.sh
+chmod +x $SCRIPT_DIR/get_eigenvectors_bulk.sh 
+$SCRIPT_DIR/get_eigenvectors_bulk.sh
 
 #Execute script for making AB calls
-python make_AB_compartments.py
+python $SCRIPT_DIR/make_AB_compartments.py
 
 #Make image of AB calls
 #This part is specfic to IMR90 GM12878 experiment
-python make_AB_compartment_image.py
+python $SCRIPT_DIR/make_AB_compartment_image.py
 
 <<comment
 python make_all_cells_tensor.py

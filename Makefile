@@ -15,7 +15,7 @@ env:
 
 install:
 	@echo "Activating environment and installing Python dependencies..."
-	$(CONDA_ACTIVATE) && pip install . && pip install --use-pep517 fanc hic-straw
+	$(CONDA_ACTIVATE) && pip install . && pip install --use-pep517 fanc hic-straw && pip install git+https://github.com/zhoujt1994/scHiCluster.git
 
 shell:
 	@echo "Launching shell with activated environment..."

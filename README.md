@@ -65,12 +65,6 @@ Ensure you have `conda` installed. If not, you can install it from [here](https:
     Hypermatrix version 0.1 - A tool for integrating multi-omics data and epigenetic analysis using advanced tensor techniques.
     ```
 
-
-
-Here’s the updated version of the ABcluster command description with the mention of the `config.py` file for parameter adjustments:
-
----
-
 ### ABcluster Command
 
 The `ABcluster` command is used to perform single-cell A/B compartment analysis and identify cell-type clusters by integrating single-cell CpG methylation data and Hi-C data. This command allows for flexible analysis by utilizing one or both data modalities depending on the user's input.

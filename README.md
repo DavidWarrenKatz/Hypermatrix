@@ -25,7 +25,7 @@ Below is the heatmap comparing the bulk eigenvectors of GM12878 and IMR90 with s
 
 ### Prerequisites
 
-Ensure you have `conda` installed. If not, you can install it from [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html).
+Ensure you have `conda` installed. If not, you can install it from [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). The packages pyBigWig, h5py, hic-straw, scHiCluster are required and are installed with the make command below. If any of the required packages are not properly installed by the make command, install those packages seperately.
 
 ### Steps
 
@@ -41,13 +41,14 @@ Ensure you have `conda` installed. If not, you can install it from [here](https:
     cd hypermatrix
     make
     ```
-3. Activate the Conda environment:
+   
+4. Activate the Conda environment:
 
     ```bash
     conda activate hypermatrix
     ```
 
-4. Check installation:
+5. Check installation:
 
     ```bash
     hypermatrix --version

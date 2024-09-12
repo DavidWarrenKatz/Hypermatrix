@@ -15,8 +15,8 @@ Below is the heatmap comparing the bulk eigenvectors of GM12878 and IMR90 with s
 <div style="text-align: center;">
   <table style="margin: 0 auto;">
     <tr>
-      <td><img src="files/AB_compartment_heatmap_ch10_example.png" alt="Figure 1" width="500"></td>
-      <td><img src="files/AB_compartment_heatmap_ch4_example.png" alt="Figure 2" width="550"></td>
+      <td><img src="output_files/AB_compartment_heatmap_ch10_example.png" alt="Figure 1" width="500"></td>
+      <td><img src="output_files/AB_compartment_heatmap_ch4_example.png" alt="Figure 2" width="550"></td>
     </tr>
   </table>
 </div>

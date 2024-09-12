@@ -21,10 +21,6 @@ Below is the heatmap comparing the bulk eigenvectors of GM12878 and IMR90 with s
   </table>
 </div>
 
-Here’s an updated version of the installation section in your README, simplifying it to use only `make install`:
-
----
-
 ## Installation
 
 ### Prerequisites

@@ -88,7 +88,7 @@ The parameters for the `ABcluster` command are listed in the file `hypermatrix/c
 
 #### Usage Recommendations
 
-It is recommended to use both the `--methy` and `--hic` flags together when both types of data are available. When both modalities are provided, the software integrates the methylation and Hi-C data to generate A/B compartment calls and identify cell-type clusters based on the combined data.
+It is recommended to use both the `--methy` and `--hic` flags together when both types of data are available. 
   
 - **Using only the `--methy` flag**: If only the methylation data is available, the software will generate A/B compartment calls and cell-type clusters based solely on the single-cell CpG methylation data.
 

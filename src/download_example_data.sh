@@ -1,4 +1,4 @@
-#!/bin/bash
+#/bin/bash
 
 # Load SRA Toolkit module
 module load sra-toolkit/2.10.9

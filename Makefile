@@ -7,7 +7,7 @@ CONDA_ACTIVATE = source $(CONDA_BASE)/etc/profile.d/conda.sh && conda activate $
 
 # Uncomment the following line to specify a custom environment directory (e.g., /path/to/custom_envs)
 # CUSTOM_ENV_PATH = /home/dkatz/conda_envs
-
+#
 # Use default environment path unless a custom one is provided
 CONDA_ENV_PATH = $(if $(CUSTOM_ENV_PATH),$(CUSTOM_ENV_PATH),$(CONDA_BASE)/envs)
 
@@ -27,9 +27,18 @@ env:
 install: env
 	@echo "Activating environment and installing Python dependencies..."
 	$(CONDA_ACTIVATE) && pip install . && \
-	# --use-pep517 is required for fanc and hic-straw to avoid issues with PEP 517 compatibility
 	pip install --use-pep517 fanc hic-straw && \
-	pip install git+https://github.com/zhoujt1994/scHiCluster.git
+	pip install git+https://github.com/zhoujt1994/scHiCluster.git || \
+	( \
+		echo "Initial install failed, falling back to loading modules and setting flags..." && \
+		module load gcc/9.3.0 R && \
+		echo "Activating environment and retrying installation..." && \
+		$(CONDA_ACTIVATE) && \
+		export CFLAGS="-std=c99" && \
+		pip install . && \
+		pip install --use-pep517 fanc hic-straw && \
+		pip install git+https://github.com/zhoujt1994/scHiCluster.git \
+	)
 
 shell:
 	@echo "Launching shell with activated environment..."
@@ -38,4 +47,9 @@ shell:
 clean:
 	@echo "Removing Conda environment..."
 	conda remove --name $(ENV_NAME) --all --yes
+
+
+
+
+
 

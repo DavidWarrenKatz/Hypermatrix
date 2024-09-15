@@ -5,15 +5,26 @@ YML_FILE = hypermatrix/installation/hypermatrix.yml
 CONDA_BASE = $(shell conda info --base)
 CONDA_ACTIVATE = source $(CONDA_BASE)/etc/profile.d/conda.sh && conda activate $(ENV_NAME)
 
+# Uncomment the following line to specify a custom environment directory (e.g., /path/to/custom_envs)
+# CUSTOM_ENV_PATH = /home/dkatz/conda_envs
+
+# Use default environment path unless a custom one is provided
+CONDA_ENV_PATH = $(if $(CUSTOM_ENV_PATH),$(CUSTOM_ENV_PATH),$(CONDA_BASE)/envs)
+
 .PHONY: all env install clean
 
 all: env install
 
 env:
-	@echo "Creating Conda environment..."
-	conda env create -f $(YML_FILE)
+	@echo "Checking if Conda environment exists..."
+	@if conda env list | grep -q "^$(ENV_NAME)\s"; then \
+		echo "Environment '$(ENV_NAME)' already exists at $(CONDA_ENV_PATH)/$(ENV_NAME)"; \
+	else \
+		echo "Creating Conda environment '$(ENV_NAME)'..."; \
+		conda env create -f $(YML_FILE) -n $(ENV_NAME); \
+	fi
 
-install:
+install: env
 	@echo "Activating environment and installing Python dependencies..."
 	$(CONDA_ACTIVATE) && pip install . && \
 	# --use-pep517 is required for fanc and hic-straw to avoid issues with PEP 517 compatibility
@@ -27,3 +38,4 @@ shell:
 clean:
 	@echo "Removing Conda environment..."
 	conda remove --name $(ENV_NAME) --all --yes
+

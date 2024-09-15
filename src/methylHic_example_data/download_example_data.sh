@@ -23,8 +23,34 @@ else
     echo "Files already extracted. Skipping extraction."
 fi
 
-#create a file SRR_Acc_List.txt
-'''
+
+
+#!/bin/bash
+
+# Load SRA Toolkit module
+module load sra-toolkit/2.10.9
+
+# Create directory if it doesn't exist
+mkdir -p ../projects/methyHic
+
+# Check if the main tar file is already downloaded
+if [ ! -f ../projects/methyHic/GSE119171_RAW.tar ]; then
+    echo "Downloading GSE119171_RAW.tar..."
+    wget -O ../projects/methyHic/GSE119171_RAW.tar "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE119nnn/GSE119171/suppl/GSE119171_RAW.tar"
+else
+    echo "GSE119171_RAW.tar already exists. Skipping download."
+fi
+
+# Check if the files from the tar archive are already extracted
+if [ ! -f "../projects/methyHic/GSM3359999_JL_457_1.CGATGT.mm9.calmd.cpg.filtered.sort.CG.strand.6plus2.bed.gz" ]; then
+    echo "Extracting GSE119171_RAW.tar..."
+    tar -xvf ../projects/methyHic/GSE119171_RAW.tar -C ../projects/methyHic/
+else
+    echo "Files already extracted. Skipping extraction."
+fi
+
+# Create SRR list manually in a file called SRR_Acc_List.txt
+cat > ../projects/methyHic/SRR_Acc_List.txt <<EOL
 SRR7770795
 SRR7770796
 SRR7770797
@@ -111,21 +137,9 @@ SRR7770877
 SRR7770878
 SRR7770879
 SRR7770880
-'''
+EOL
 
-
-
-# Download PRJNA488313 data from SRA
-# Fetch all the SRR numbers associated with PRJNA488313 using the SRA Toolkit
-
-if [ ! -f ../projects/methyHic/PRJNA488313_sra_list.txt ]; then
-    echo "Fetching SRR list for PRJNA488313..."
-    esearch -db sra -query PRJNA488313 | efetch -format runinfo | cut -d ',' -f1 | grep SRR > ../projects/methyHic/PRJNA488313_sra_list.txt
-else
-    echo "SRR list already exists. Skipping fetching."
-fi
-
-# Loop through each SRR in the list and download if not already present
+# Use the manually created SRR_Acc_List.txt for downloading SRA data
 while read SRR; do
     if [ ! -f "../projects/methyHic/${SRR}.sra" ]; then
         echo "Downloading ${SRR}..."
@@ -133,7 +147,7 @@ while read SRR; do
     else
         echo "${SRR}.sra already exists. Skipping download."
     fi
-done < ../projects/methyHic/PRJNA488313_sra_list.txt
+done < ../projects/methyHic/SRR_Acc_List.txt
 
 # Optionally, convert the downloaded SRA files to FASTQ
 # Uncomment the following lines if you need FASTQ conversion

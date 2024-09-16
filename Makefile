@@ -9,6 +9,9 @@ CONDA_ACTIVATE = source $(CONDA_BASE)/etc/profile.d/conda.sh && conda activate $
 # CUSTOM_ENV_PATH = /home/dkatz/conda_envs
 #
 # Use default environment path unless a custom one is provided
+# Include r-base 
+# Include gcc (this is an important requirement)
+# Add env test to backup installations	
 CONDA_ENV_PATH = $(if $(CUSTOM_ENV_PATH),$(CUSTOM_ENV_PATH),$(CONDA_BASE)/envs)
 
 .PHONY: all env install clean

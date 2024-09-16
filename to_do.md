@@ -1,7 +1,7 @@
 # To-Do List
 
 ## Task 1: ABcluster
-- [ ] include utilities/**/* in setup.py 
+- [ x ] include utilities/**/* in setup.py 
 - [ ] Incorporate KR normalization and ICE normalization functions into the single-cell pipeline.
 - [ ] Make command-line callable.
 - [ ] Create a function to find differentially expressed regions for KR normalized runs.

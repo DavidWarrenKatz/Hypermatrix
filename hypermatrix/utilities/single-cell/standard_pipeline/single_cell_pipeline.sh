@@ -11,15 +11,24 @@
 # re-write so that the code does not use hicluster to make bin 0-indexed short format from .hic files
 # the matrices produced by scHIcluster do not seem quite right. They are missing the diagonal for example
 
+# alternative method is to resolve path using pkg_resources
+# all packages should be resolved relative to python3.9/site-packages/hypermatrix 
+
+
 # Get the directory where this script (single_cell_pipeline.sh) is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+echo -e "[LOG] -- Script directory: $SCRIPT_DIR"
 
 # Import the parameters from config.py (relative to the script's directory)
 eval "$(python3 "$SCRIPT_DIR/../../../export_config.py")"
 
 # Make the methylation matrices
+# FIX with AB2
 python $SCRIPT_DIR/make_methy_matrices.py
 
+
+# Fix with AB3
 # Make the hic matrices
 python $SCRIPT_DIR/make_hic_matrices.py
 

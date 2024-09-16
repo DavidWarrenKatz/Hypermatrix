@@ -18,7 +18,11 @@ config_file = os.path.join(config_dir, 'config.py')  # Full path to config.py
 if os.path.isdir(config_dir) and os.path.isfile(config_file):
     sys.path.append(config_dir)
     print(f"Config directory added to sys.path: {config_dir}")
-    print(f"Found config.py at: {config_file}")                                                 else:                                                                                               raise FileNotFoundError(f"config.py not found in directory: {config_dir}")                                                                                              
+    print(f"Found config.py at: {config_file}")                                                 
+
+else:                                                                                               
+    raise FileNotFoundError(f"config.py not found in directory: {config_dir}")   
+                                                                                           
 from config import methy_directory, filtered_list, chrom_file, resolutions, output_directory, reference_genome  
 
 # Ensure resolutions is treated as a tuple or list of strings

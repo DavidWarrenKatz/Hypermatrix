@@ -5,21 +5,26 @@ import numpy as np
 import sys
 import os
 
-# Add the directory where config.py is located to the Python path
-config_dir = '../../../'
-config_dir = os.path.abspath(config_dir)  # Get absolute path
+# # Add the directory where config.py is located to the Python path
+# config_dir = '../../../'
+# config_dir = os.path.abspath(config_dir)  # Get absolute path
 
-config_file = os.path.join(config_dir, 'config.py')  # Full path to config.py
+# Temp absolute path to config.py
+# AB3
+# config_file = os.path.join(config_dir, 'config.py')  # Full path to config.py
+config_file = "/home/kasonde/projects/Hypermatrix/hypermatrix/utilities/single-cell/standard_pipeline/config.py"
 
-# Check if the directory and config.py exist
-if os.path.isdir(config_dir) and os.path.isfile(config_file):
-    sys.path.append(config_dir)
-    print(f"Config directory added to sys.path: {config_dir}")
-    print(f"Found config.py at: {config_file}")
-else:
-    raise FileNotFoundError(f"config.py not found in directory: {config_dir}")
+# # Check if the directory and config.py exist
+# if os.path.isdir(config_dir) and os.path.isfile(config_file):
+#     sys.path.append(config_dir)
+#     print(f"Config directory added to sys.path: {config_dir}")
+#     print(f"Found config.py at: {config_file}")
+# else:
+#     raise FileNotFoundError(f"config.py not found in directory: {config_dir}")
 
-from config import methy_directory, filtered_list, chrom_file, resolutions, output_directory, reference_genome
+
+
+from config_file import methy_directory, filtered_list, chrom_file, resolutions, output_directory, reference_genome
 
 # Ensure resolutions is treated as a tuple or list of strings
 if isinstance(resolutions, str):

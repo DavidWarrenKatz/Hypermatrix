@@ -7,10 +7,12 @@ from sklearn.decomposition import NMF
 import sys
 import os
 
-# Add the directory where config.py is located to the Python path
-config_dir = '../../../'
-config_dir = os.path.abspath(config_dir)  # Get absolute path
-config_file = os.path.join(config_dir, 'config.py')  # Full path to config.py
+# # Add the directory where config.py is located to the Python path
+# config_dir = '../../../'
+# config_dir = os.path.abspath(config_dir)  # Get absolute path
+# config_file = os.path.join(config_dir, 'config.py')  # Full path to config.py
+
+config_file = "/home/kasonde/projects/Hypermatrix/hypermatrix/utilities/single-cell/standard_pipeline/config.py" 
 
 from scipy.ndimage import binary_dilation
 

@@ -99,6 +99,18 @@ def abcluster(args):
     ABCluster module: uses scripts in utilities/single-cell/ pipeline 
 
     """
+
+    # Ensure the script is executable
+    # Note: Script breaks at line 182 
+    # Problem AB-1 --- Identified bug here .. the utilities directory is not being included in the package files
+    # Fix -- including utilities in the setup.py 
+    # Result -- sucessfully locates all scripts and runs as expected
+
+    # Problem AB-2 -- Bug - script requires config.py to be found relative to make_methylation_matrix module 
+    # Fix -- temporary hard code path to config.py 
+    # Result -- successfully finds configuration 
+    # To-do use pkg_resources pass args in pattern main.py ->single_cell.sh -> make_methyl_matrices.py
+
     log_message("Running ABcluster module")
     # Collect updates for the config file
     updates = {}
@@ -125,10 +137,12 @@ def abcluster(args):
 
     # Decide which script to run
     if args.cumulant:
+        
         run_shell_script(cumulant_script)
     elif args.impute:
         run_shell_script(impute_script)
     else:
+        log_message("Running standard single-cell pipeline")
         run_shell_script(standard_script)
 
 def diffchrom(args):

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-# file: hypermatrix/main.py
+# File: hypermatrix/main.py
 
 import pkg_resources
 import argparse
+import datetime
 import subprocess
 import os
 import sys
@@ -85,7 +86,20 @@ def update_config_file(config_file_path, updates):
 
     print(f"[INFO]: Updated config values in {config_file_path}")
 
+def log_message(string=None):
+    if string != None:
+        print(f" -- [ DEBUG {datetime.datetime.now()}] {string}")
+    else:
+        print(f" -- [ LOG {datetime.datetime.now()}] ")
+
+
+
 def abcluster(args):
+    """
+    ABCluster module: uses scripts in utilities/single-cell/ pipeline 
+
+    """
+    log_message("Running ABcluster module")
     # Collect updates for the config file
     updates = {}
     if args.methy:
@@ -102,6 +116,7 @@ def abcluster(args):
     # Apply the updates to the config.py file if any
     if updates:
         update_config_file(config_path, updates)
+
 
     # Now run the appropriate script based on the flags provided
     standard_script = "/utilities/single-cell/standard_pipeline/single_cell_pipeline.sh"

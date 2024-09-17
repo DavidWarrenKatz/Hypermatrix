@@ -7,4 +7,5 @@
 /build/
 /java_error.log
 /methy_summary.cmd.txt
+/src/methylHic_example_data/bisulfitehic/
 /utilities/single-cell/b37.autosome.500bp_interval.add_value.methy.GM_IMR90_153_samples.bed.gz

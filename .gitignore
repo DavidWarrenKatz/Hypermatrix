@@ -8,4 +8,7 @@
 /java_error.log
 /methy_summary.cmd.txt
 /src/methylHic_example_data/bisulfitehic/
+/src/methylHic_example_data/old_files/
+/src/methylHic_example_data/parallel-20240822/
+/src/methylHic_example_data/parallel-latest.tar.bz2
 /utilities/single-cell/b37.autosome.500bp_interval.add_value.methy.GM_IMR90_153_samples.bed.gz

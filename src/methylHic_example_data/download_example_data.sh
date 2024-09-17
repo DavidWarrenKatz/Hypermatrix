@@ -1,10 +1,21 @@
 #!/bin/bash
 
-# Load SRA Toolkit module
+#Do this if parallel not available
+# Download and install GNU Parallel locally
+#wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2
+#tar -xjf parallel-latest.tar.bz2
+#cd parallel-*
+#./configure --prefix=$HOME/.local
+#make
+#make install
+
+# Load necessary modules
 module load sra-toolkit/2.10.9
+module load FastQC/0.11.9
 
 # Create directory if it doesn't exist
 mkdir -p ../../projects/methyHic
+mkdir -p ../../projects/methyHic/fastqc_reports
 
 # Check if the main tar file is already downloaded
 if [ ! -f ../../projects/methyHic/GSE119171_RAW.tar ]; then
@@ -22,47 +33,51 @@ else
     echo "Files already extracted. Skipping extraction."
 fi
 
-# Use the manually created SRR_Acc_List.txt for downloading SRA data
-while read SRR; do
+# Function to download, convert, and verify each SRR
+process_srr() {
+    SRR=$1
+    echo "[$(date)] Processing ${SRR} with PID $$"
+    
     # Check if the directory for the SRR ID exists and skip download if it does
     if [ ! -d "../../projects/methyHic/${SRR}" ]; then
         echo "Downloading ${SRR}..."
         prefetch -O ../../projects/methyHic/ ${SRR}
+        if [ $? -ne 0 ]; then
+            echo "Error: Download of ${SRR} failed."
+            return 1
+        fi
     else
         echo "${SRR}.sra already exists in ${SRR} directory. Skipping download."
     fi
-done < SRR_Acc_List.txt
 
-# Convert all SRA files in each SRR directory to FASTQ format
-for sra_dir in ../../projects/methyHic/SRR*/; do
-    # Count the number of .sra files in the directory
-    file_count=$(ls -1 "$sra_dir"/*.sra 2>/dev/null | wc -l)
-
-    # Print the number of .sra files
-    echo "Found $file_count SRA file(s) in $sra_dir"
-
-    # Proceed with conversion if .sra files are found
-    if [ $file_count -gt 0 ]; then
-        for sra_file in "$sra_dir"/*.sra; do
-            if [ -f "$sra_file" ]; then
-                # Get the base name of the SRA file (without extension)
-                base_name=$(basename "$sra_file" .sra)
-
-                # Check if FASTQ files already exist
-                if [ -f "../../projects/methyHic/${base_name}_1.fastq.gz" ] && [ -f "../../projects/methyHic/${base_name}_2.fastq.gz" ]; then
-                    echo "FASTQ files for $sra_file already exist. Skipping conversion."
-                else
-                    echo "Converting $sra_file to FASTQ format..."
-                    fastq-dump --split-files --gzip "$sra_file" -O ../../projects/methyHic/
-                fi
-            fi
-        done
+    # Convert SRA to FASTQ if not already converted
+    if [ ! -f "../../projects/methyHic/${SRR}_1.fastq.gz" ] && [ ! -f "../../projects/methyHic/${SRR}_2.fastq.gz" ]; then
+        echo "Converting ${SRR}.sra to FASTQ format..."
+        fastq-dump --split-files --gzip "../../projects/methyHic/${SRR}/${SRR}.sra" -O ../../projects/methyHic/
+        if [ $? -ne 0 ]; then
+            echo "Error: FASTQ conversion for ${SRR}.sra failed."
+            return 1
+        fi
     else
-        echo "No SRA files found in $sra_dir."
+        echo "FASTQ files for ${SRR} already exist. Skipping conversion."
     fi
-done
 
-echo "All downloads and conversions completed."
+    # Run FastQC to check the integrity of the FASTQ files
+    echo "Running FastQC on ${SRR} FASTQ files..."
+    fastqc ../../projects/methyHic/${SRR}_*.fastq.gz -o ../../projects/methyHic/fastqc_reports/
+    if [ $? -ne 0 ]; then
+        echo "Error: FastQC failed for ${SRR}."
+        return 1
+    fi
 
+    echo "[$(date)] Finished processing ${SRR} with PID $$"
+}
 
+export -f process_srr
+
+# Use GNU Parallel to download, convert, and verify SRA files in parallel
+# Logging the start and end of each job
+cat SRR_Acc_List.txt | parallel -j 8 process_srr
+
+echo "All downloads, conversions, and verifications completed."
 

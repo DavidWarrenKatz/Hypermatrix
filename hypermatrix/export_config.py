@@ -19,6 +19,9 @@ import logging, logging.handlers # add robust logging to all files
 # print x[0:2]
 # print cfg.logging.handlers.file[1].filename
 
+
+
+print("source: export_config.py")
 def print_bash_exports(config):
     """Prints the configuration dictionary as bash export statements."""
     for key, value in config.items():
@@ -29,5 +32,4 @@ def print_bash_exports(config):
 
 # Output the bash export statements
 if __name__ == "__main__":
-    print("debug exporting configuration as config from export_config")
     print_bash_exports(config)

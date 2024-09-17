@@ -2,90 +2,106 @@
 # File: single_cell_pipeline.sh
 
 ##########################################################################
-# Description: The following script converts bam files into hic matrices #
-# and methylation matrices organized in folders for each chromosome.     #
-# This pipeline also computes comparts and clustering and outputs        #
-# images for comparison.                                                 #
+# Description: The following script converts BAM files into Hi-C matrices #
+# and methylation matrices organized in folders for each chromosome.      #
+# This pipeline also computes compartments and clustering and outputs     #
+# images for comparison.                                                  #
 ##########################################################################
 
+# Enable robust debugging
+set -x  # Prints commands and their arguments before execution
+
+# Function to check if a file path is resolved correctly
+check_path() {
+    local script_name=$1
+    local path=$2
+
+    echo "[DEBUG]: Checking if the path for $script_name is valid..."
+    if [ ! -f "$path" ]; then
+        echo "[ERROR]: Failed to retrieve the path to $script_name (Path: $path)"
+        exit 1
+    else
+        echo "[LOG]: Successfully resolved path for $script_name"
+        echo " PATH: $path"
+    fi
+}
+
+# Function to execute a Python script and check its exit status
+run_script() {
+    local script_path=$1
+    local script_desc=$2
+
+    echo "[LOG]: Running $script_desc (Path: $script_path)"
+    python "$script_path"
+    
+    local exit_code=$?
+    echo "[DEBUG]: Exit code for $script_desc is $exit_code"
+    
+    if [ $exit_code -eq 0 ]; then
+        echo "[LOG]: $script_desc completed successfully"
+    else
+        echo "[ERROR]: $script_desc failed to execute with exit code $exit_code"
+        exit 1
+    fi
+}
+
+# Debug: Start of script
+echo "[DEBUG]: Starting single-cell pipeline script"
+
+# 1. Resolve script paths by constructing them relative to the hypermatrix package
+echo "[DEBUG]: Resolving script paths using known directory structure"
+
+# Get the directory of the hypermatrix package
+HYPERMATRIX_DIR=$(python3 -c "
+import os
+import hypermatrix
+print(os.path.dirname(hypermatrix.__file__))
+")
+
+# Construct paths to the scripts
+EXPORT_CONFIG_PATH="$HYPERMATRIX_DIR/export_config.py"
+MAKE_METHY_MATRICES_PATH="$HYPERMATRIX_DIR/utilities/single-cell/standard_pipeline/make_methy_matrices.py"
+MAKE_HIC_MATRICES_PATH="$HYPERMATRIX_DIR/utilities/single-cell/standard_pipeline/make_hic_matrices.py"
+MAKE_COMBINED_METHY_HIC_MATRICES_PATH="$HYPERMATRIX_DIR/utilities/single-cell/standard_pipeline/make_combined_methy_hic_tensor_single_cell.py"
+
+# Debug: Print resolved paths
+echo "[DEBUG]: Resolved paths:"
+echo "EXPORT_CONFIG_PATH: $EXPORT_CONFIG_PATH"
+echo "MAKE_METHY_MATRICES_PATH: $MAKE_METHY_MATRICES_PATH"
+echo "MAKE_HIC_MATRICES_PATH: $MAKE_HIC_MATRICES_PATH"
+echo "MAKE_COMBINED_METHY_HIC_MATRICES_PATH: $MAKE_COMBINED_METHY_HIC_MATRICES_PATH"
+
+# Check paths using the check_path function
+check_path "export_config.py" "$EXPORT_CONFIG_PATH"
+check_path "make_methy_matrices.py" "$MAKE_METHY_MATRICES_PATH"
+check_path "make_hic_matrices.py" "$MAKE_HIC_MATRICES_PATH"
+check_path "make_combined_methy_hic_tensor_single_cell.py" "$MAKE_COMBINED_METHY_HIC_MATRICES_PATH"
+
+# 3. Run the scripts and check exit status
+run_script "$EXPORT_CONFIG_PATH" "Export configuration"
+run_script "$MAKE_METHY_MATRICES_PATH" "Make methylation matrices"
+run_script "$MAKE_HIC_MATRICES_PATH" "Make Hi-C matrices"
+run_script "$MAKE_COMBINED_METHY_HIC_MATRICES_PATH" "Make combined methylation and Hi-C tensor"
 
 
-# 1. load export_config.py 
-EXPORT_CONFIG_PATH=$(python3 -c "import pkg_resources; print(pkg_resources.resource_filename('hypermatrix', 'export_config.py'))")
-MAKE_METHY_MATRICES_PATH=$(python3 -c "import pkg_resources; print(pkg_resources.resource_filename('hypermatrix', 'make_methy_matrices.py'))")
-MAKE_HIC_MATRICES_PATH=$(python3 -c "import pkg_resources; print(pkg_resources.resource_filename('hypermatrix', 'make_hic_matrices.py'))")
-MAKE_COMBINED_METHY_HIC_MATRICES_PATH=$(python3 -c "import pkg_resources; print(pkg_resources.resource_filename('hypermatrix', 'make_combined_methy_hic_tensor_single_cell.py'))")
 
 
+# echo "[LOG]: preparing to export configuration"
+# eval "$(python3 "${EXPORT_CONFIG_PATH}")" 
 
-# 1. Load scripts from package 
-# Check if the path was correctly retrieved
-# Write function to resolve script tools loop through 
-if [ -z "$EXPORT_CONFIG_PATH" ]; then
-    echo "[ERROR]: Failed to retrieve the path to export_config.py"
-    exit 1
-else
-    echo "[LOG]: successfully resolved path for export_config.py \n"
-    echo "\n PATH: ${EXPORT_CONFIG_PATH} s\n"
-fi
+# # -eq 0 || echo "[ERROR]: failed to retrieve output configurations"
 
+# echo "[LOG]: Generating methylation matrix generation"
+# python $MAKE_METHY_MATRICES_PATH
 
-# Check if the path was correctly retrieved
-if [ -z "$MAKE_METHY_MATRICES_PATH" ]; then
-    echo "[ERROR]: Failed to retrieve the path to export_config.py"
-    exit 1
-else
-    echo "\n [LOG]: successfully resolved path for export_config.py \n"
-    echo "\n PATH: ${MAKE_METHY_MATRICES_PATH} s\n"
-fi
+# # Ref: http://homer.ucsd.edu/homer/interactions/HiCmatrices.html
+# echo "[LOG]: Generating HIC matrices methylation matrix generation"
+# python $MAKE_METHY_MATRICES_PATH
 
-# Check if the path was correctly retrieved
-if [ -z "$MAKE_HIC_MATRICES_PATH" ]; then
-    echo "[ERROR]: Failed to retrieve the path to export_config.py"
-    exit 1
-else
-    echo "[LOG]: successfully resolved path for export_config.py \n"
-    echo "\n PATH: ${MAKE_HIC_MATRICES_PATH} s\n"
-fi
+# echo "[LOG]: Combining Methyl + HiC Single Cell in Tensor"
+# python $MAKE_METHY_MATRICES_PATH
 
 
-# Check if the path was correctly retrieved
-if [ -z "$MAKE_COMBINED_METHY_HIC_MATRICES_PATH" ]; then
-    echo "[ERROR]: Failed to retrieve the path to export_config.py"
-    exit 1
-else
-    echo "[LOG]: successfully resolved path for export_config.py \n"
-    echo "\n PATH: ${MAKE_COMBINED_METHY_HIC_MATRICES_PATH} s\n"
-fi
-
-# Import parameters from export_config.py 
-# Load as variables into work space
-eval "$(python3 "${EXPORT_CONFIG_PATH}")"
-
-
-
-# # Get the correct path to config_and_print.py using Python and pkg_resources
-# CONFIG_AND_PRINT_PATH=$(python3 -c "import pkg_resources; print(pkg_resources.resource_filename('hypermatrix', 'config_and_print.py'))")
-
-
-
-
-# # Get the directory where this script (single_cell_pipeline.sh) is located
-# SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
-# echo "[LOG] -- Script directory: $SCRIPT_DIR"
-
-# # Import the parameters from config.py (relative to the script's directory)
-# eval "$(python3 "$SCRIPT_DIR/../../../export_config.py")"
-
-# # Make the methylation matrices
-# # FIX with AB2
-# python $SCRIPT_DIR/make_methy_matrices.py
-
-
-# # Fix with AB3
-# # Make the hic matrices
-# python $SCRIPT_DIR/make_hic_matrices.py
 
 # #Make the combined tensor for each cell
 # #[TO DO: need to decide if imputation and emphasis and merging will happen]

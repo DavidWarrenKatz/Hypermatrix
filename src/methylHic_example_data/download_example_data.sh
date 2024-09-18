@@ -9,13 +9,16 @@
 #make
 #make install
 
+#!/bin/bash
+
 # Load necessary modules
 module load sra-toolkit/2.10.9
 module load FastQC/0.11.9
 
-# Create directory if it doesn't exist
+# Create necessary directories
 mkdir -p ../../projects/methyHic
 mkdir -p ../../projects/methyHic/fastqc_reports
+mkdir -p ../../projects/methyHic/output_bam  # Directory for output BAM files
 
 # Check if the main tar file is already downloaded
 if [ ! -f ../../projects/methyHic/GSE119171_RAW.tar ]; then
@@ -33,7 +36,7 @@ else
     echo "Files already extracted. Skipping extraction."
 fi
 
-# Function to download, convert, and verify each SRR
+# Function to download, convert, verify each SRR, and run bisulfite Hi-C mapping
 process_srr() {
     SRR=$1
     echo "[$(date)] Processing ${SRR} with PID $$"
@@ -70,14 +73,48 @@ process_srr() {
         return 1
     fi
 
+    # Run the bisulfite Hi-C mapping using Java
+    echo "Running bisulfite Hi-C mapping for ${SRR}..."
+
+    # Set variables for the paths to make the command more readable
+    BISULFITEHIC_DIR="./bisulfitehic"
+    REFERENCE_GENOME="../../projects/methyHic/mm9.fa"
+    OUTPUT_BAM="../../projects/methyHic/output_bam/${SRR}_output.bam"
+    FASTQ_R1="../../projects/methyHic/${SRR}_1.fastq.gz"
+    FASTQ_R2="../../projects/methyHic/${SRR}_2.fastq.gz"
+    ENZYME_LIST="hg19_MboI.span_region.bedgraph"
+
+    # Java command for bisulfite Hi-C mapping
+    java -Xmx15G \
+         -Djava.library.path=${BISULFITEHIC_DIR}/jbwa/src/main/native/ \
+         -cp "${BISULFITEHIC_DIR}/target/bisulfitehic-0.38-jar-with-dependencies.jar:${BISULFITEHIC_DIR}/lib/jbwa.jar" \
+         main.java.edu.mit.compbio.bisulfitehic.mapping.Bhmem \
+         ${REFERENCE_GENOME} \
+         ${OUTPUT_BAM} \
+         ${FASTQ_R1} \
+         ${FASTQ_R2} \
+         -t 1 \
+         -rgId ${SRR} \
+         -rgSm sample_id \
+         -outputMateDiffChr \
+         -buffer 1000 \
+         -nonDirectional \
+         -pbat \
+         -enzymeList ${ENZYME_LIST}
+
+    # Check for errors in the Java execution
+    if [ $? -ne 0 ]; then
+        echo "Error: Bisulfite Hi-C mapping failed for ${SRR}."
+        return 1
+    fi
+
     echo "[$(date)] Finished processing ${SRR} with PID $$"
 }
 
 export -f process_srr
 
-# Use GNU Parallel to download, convert, and verify SRA files in parallel
-# Logging the start and end of each job
+# Use GNU Parallel to download, convert, verify, and map SRA files in parallel
 cat SRR_Acc_List.txt | parallel -j 8 process_srr
 
-echo "All downloads, conversions, and verifications completed."
+echo "All downloads, conversions, verifications, and mappings completed."
 

@@ -7,4 +7,5 @@
 #SBATCH --ntasks=1         # Request a single task
 #SBATCH --cpus-per-task=8  # Use 8 CPUs for faster indexing (adjust as necessary)
 
+#./download_example_data.sh
 ./setup_bhmem.sh

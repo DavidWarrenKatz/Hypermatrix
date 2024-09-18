@@ -5,6 +5,10 @@
 /src/softwarefiles/
 /Hypermatrix.egg-info/
 /build/
+/src/methylHic_example_data/bwa_indexing_25800913.err
+/src/methylHic_example_data/bwa_indexing_25800913.log
+/src/methylHic_example_data/bwa_indexing_*.err
+/src/methylHic_example_data/bwa_indexing_*.log
 /java_error.log
 /methy_summary.cmd.txt
 /src/methylHic_example_data/bisulfitehic/

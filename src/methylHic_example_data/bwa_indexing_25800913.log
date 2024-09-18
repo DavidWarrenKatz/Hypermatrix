@@ -162,3 +162,109 @@ You can change size download limit by setting
 --min-size and --max-size command line arguments
 Converting SRR7770799.sra to FASTQ format...
 Error: FASTQ conversion for SRR7770799.sra failed.
+[Wed Sep 18 14:39:10 EDT 2024] Processing SRR7770795 with PID 16579
+Downloading SRR7770795...
+
+2024-09-18T18:39:11 prefetch.2.10.9: 1) Downloading 'SRR7770795'...
+2024-09-18T18:39:11 prefetch.2.10.9:  Downloading via HTTPS...
+2024-09-18T18:39:42 prefetch.2.10.9:  HTTPS download succeed
+2024-09-18T18:39:43 prefetch.2.10.9:  'SRR7770795' is valid
+2024-09-18T18:39:43 prefetch.2.10.9: 1) 'SRR7770795' was downloaded successfully
+2024-09-18T18:39:43 prefetch.2.10.9: 'SRR7770795' has 0 unresolved dependencies
+Converting SRR7770795.sra to FASTQ format...
+Read 10101271 spots for ../../projects/methyHic/SRR7770795/SRR7770795.sra
+Written 10101271 spots for ../../projects/methyHic/SRR7770795/SRR7770795.sra
+Running FastQC on SRR7770795 FASTQ files...
+Analysis complete for SRR7770795_1.fastq.gz
+Analysis complete for SRR7770795_2.fastq.gz
+[Wed Sep 18 14:52:16 EDT 2024] Finished processing SRR7770795 with PID 16579
+[Wed Sep 18 14:39:10 EDT 2024] Processing SRR7770802 with PID 16617
+Downloading SRR7770802...
+
+2024-09-18T18:39:11 prefetch.2.10.9: 1) Downloading 'SRR7770802'...
+2024-09-18T18:39:11 prefetch.2.10.9:  Downloading via HTTPS...
+2024-09-18T18:39:48 prefetch.2.10.9:  HTTPS download succeed
+2024-09-18T18:39:50 prefetch.2.10.9:  'SRR7770802' is valid
+2024-09-18T18:39:50 prefetch.2.10.9: 1) 'SRR7770802' was downloaded successfully
+2024-09-18T18:39:50 prefetch.2.10.9: 'SRR7770802' has 0 unresolved dependencies
+Converting SRR7770802.sra to FASTQ format...
+Read 12202946 spots for ../../projects/methyHic/SRR7770802/SRR7770802.sra
+Written 12202946 spots for ../../projects/methyHic/SRR7770802/SRR7770802.sra
+Running FastQC on SRR7770802 FASTQ files...
+Analysis complete for SRR7770802_1.fastq.gz
+Analysis complete for SRR7770802_2.fastq.gz
+[Wed Sep 18 14:54:48 EDT 2024] Finished processing SRR7770802 with PID 16617
+[Wed Sep 18 14:54:48 EDT 2024] Processing SRR7770805 with PID 18349
+Downloading SRR7770805...
+
+2024-09-18T18:54:49 prefetch.2.10.9: 1) 'SRR7770805' (23GB) is larger than maximum allowed: skipped 
+
+Download of some files was skipped because they are too large
+You can change size download limit by setting
+--min-size and --max-size command line arguments
+Converting SRR7770805.sra to FASTQ format...
+Error: FASTQ conversion for SRR7770805.sra failed.
+[Wed Sep 18 14:39:10 EDT 2024] Processing SRR7770796 with PID 16581
+Downloading SRR7770796...
+
+2024-09-18T18:39:11 prefetch.2.10.9: 1) Downloading 'SRR7770796'...
+2024-09-18T18:39:11 prefetch.2.10.9:  Downloading via HTTPS...
+2024-09-18T18:40:12 prefetch.2.10.9:  HTTPS download succeed
+2024-09-18T18:40:15 prefetch.2.10.9:  'SRR7770796' is valid
+2024-09-18T18:40:15 prefetch.2.10.9: 1) 'SRR7770796' was downloaded successfully
+2024-09-18T18:40:15 prefetch.2.10.9: 'SRR7770796' has 0 unresolved dependencies
+Converting SRR7770796.sra to FASTQ format...
+Read 22206757 spots for ../../projects/methyHic/SRR7770796/SRR7770796.sra
+Written 22206757 spots for ../../projects/methyHic/SRR7770796/SRR7770796.sra
+Running FastQC on SRR7770796 FASTQ files...
+Analysis complete for SRR7770796_1.fastq.gz
+Analysis complete for SRR7770796_2.fastq.gz
+[Wed Sep 18 15:05:51 EDT 2024] Finished processing SRR7770796 with PID 16581
+[Wed Sep 18 14:39:10 EDT 2024] Processing SRR7770800 with PID 16600
+Downloading SRR7770800...
+
+2024-09-18T18:39:11 prefetch.2.10.9: 1) Downloading 'SRR7770800'...
+2024-09-18T18:39:11 prefetch.2.10.9:  Downloading via HTTPS...
+2024-09-18T18:40:10 prefetch.2.10.9:  HTTPS download succeed
+2024-09-18T18:40:13 prefetch.2.10.9:  'SRR7770800' is valid
+2024-09-18T18:40:13 prefetch.2.10.9: 1) 'SRR7770800' was downloaded successfully
+2024-09-18T18:40:13 prefetch.2.10.9: 'SRR7770800' has 0 unresolved dependencies
+Converting SRR7770800.sra to FASTQ format...
+Read 22152142 spots for ../../projects/methyHic/SRR7770800/SRR7770800.sra
+Written 22152142 spots for ../../projects/methyHic/SRR7770800/SRR7770800.sra
+Running FastQC on SRR7770800 FASTQ files...
+Analysis complete for SRR7770800_1.fastq.gz
+Analysis complete for SRR7770800_2.fastq.gz
+[Wed Sep 18 15:06:03 EDT 2024] Finished processing SRR7770800 with PID 16600
+[Wed Sep 18 14:39:10 EDT 2024] Processing SRR7770801 with PID 16605
+Downloading SRR7770801...
+
+2024-09-18T18:39:11 prefetch.2.10.9: 1) Downloading 'SRR7770801'...
+2024-09-18T18:39:11 prefetch.2.10.9:  Downloading via HTTPS...
+2024-09-18T18:40:15 prefetch.2.10.9:  HTTPS download succeed
+2024-09-18T18:40:18 prefetch.2.10.9:  'SRR7770801' is valid
+2024-09-18T18:40:18 prefetch.2.10.9: 1) 'SRR7770801' was downloaded successfully
+2024-09-18T18:40:18 prefetch.2.10.9: 'SRR7770801' has 0 unresolved dependencies
+Converting SRR7770801.sra to FASTQ format...
+Read 23184287 spots for ../../projects/methyHic/SRR7770801/SRR7770801.sra
+Written 23184287 spots for ../../projects/methyHic/SRR7770801/SRR7770801.sra
+Running FastQC on SRR7770801 FASTQ files...
+Analysis complete for SRR7770801_1.fastq.gz
+Analysis complete for SRR7770801_2.fastq.gz
+[Wed Sep 18 15:07:28 EDT 2024] Finished processing SRR7770801 with PID 16605
+[Wed Sep 18 14:39:10 EDT 2024] Processing SRR7770798 with PID 16588
+Downloading SRR7770798...
+
+2024-09-18T18:39:11 prefetch.2.10.9: 1) Downloading 'SRR7770798'...
+2024-09-18T18:39:11 prefetch.2.10.9:  Downloading via HTTPS...
+2024-09-18T18:39:58 prefetch.2.10.9:  HTTPS download succeed
+2024-09-18T18:40:00 prefetch.2.10.9:  'SRR7770798' is valid
+2024-09-18T18:40:00 prefetch.2.10.9: 1) 'SRR7770798' was downloaded successfully
+2024-09-18T18:40:00 prefetch.2.10.9: 'SRR7770798' has 0 unresolved dependencies
+Converting SRR7770798.sra to FASTQ format...
+Read 16601537 spots for ../../projects/methyHic/SRR7770798/SRR7770798.sra
+Written 16601537 spots for ../../projects/methyHic/SRR7770798/SRR7770798.sra
+Running FastQC on SRR7770798 FASTQ files...
+Analysis complete for SRR7770798_1.fastq.gz
+Analysis complete for SRR7770798_2.fastq.gz
+[Wed Sep 18 15:13:44 EDT 2024] Finished processing SRR7770798 with PID 16588

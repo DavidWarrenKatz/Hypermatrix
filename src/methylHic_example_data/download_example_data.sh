@@ -1,16 +1,5 @@
 #!/bin/bash
 
-#Do this if parallel not available
-# Download and install GNU Parallel locally
-#wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2
-#tar -xjf parallel-latest.tar.bz2
-#cd parallel-*
-#./configure --prefix=$HOME/.local
-#make
-#make install
-
-#!/bin/bash
-
 # Load necessary modules
 module load sra-toolkit/2.10.9
 module load FastQC/0.11.9
@@ -19,6 +8,14 @@ module load FastQC/0.11.9
 mkdir -p ../../projects/methyHic
 mkdir -p ../../projects/methyHic/fastqc_reports
 mkdir -p ../../projects/methyHic/output_bam  # Directory for output BAM files
+
+# Files to store success and failure lists
+SUCCESS_LIST="../../projects/methyHic/successful_fastqs.txt"
+FAILED_LIST="../../projects/methyHic/failed_fastqs.txt"
+
+# Initialize or clear the success and failure lists
+echo -n > $SUCCESS_LIST
+echo -n > $FAILED_LIST
 
 # Check if the main tar file is already downloaded
 if [ ! -f ../../projects/methyHic/GSE119171_RAW.tar ]; then
@@ -37,6 +34,7 @@ else
 fi
 
 # Function to download, convert, verify each SRR, and run bisulfite Hi-C mapping
+# These are the Fastq files form RunSelector
 process_srr() {
     SRR=$1
     echo "[$(date)] Processing ${SRR} with PID $$"
@@ -47,6 +45,7 @@ process_srr() {
         prefetch -O ../../projects/methyHic/ ${SRR}
         if [ $? -ne 0 ]; then
             echo "Error: Download of ${SRR} failed."
+            echo "${SRR}" >> $FAILED_LIST
             return 1
         fi
     else
@@ -59,6 +58,7 @@ process_srr() {
         fastq-dump --split-files --gzip "../../projects/methyHic/${SRR}/${SRR}.sra" -O ../../projects/methyHic/
         if [ $? -ne 0 ]; then
             echo "Error: FASTQ conversion for ${SRR}.sra failed."
+            echo "${SRR}" >> $FAILED_LIST
             return 1
         fi
     else
@@ -70,6 +70,7 @@ process_srr() {
     fastqc ../../projects/methyHic/${SRR}_*.fastq.gz -o ../../projects/methyHic/fastqc_reports/
     if [ $? -ne 0 ]; then
         echo "Error: FastQC failed for ${SRR}."
+        echo "${SRR}" >> $FAILED_LIST
         return 1
     fi
 
@@ -105,8 +106,12 @@ process_srr() {
     # Check for errors in the Java execution
     if [ $? -ne 0 ]; then
         echo "Error: Bisulfite Hi-C mapping failed for ${SRR}."
+        echo "${SRR}" >> $FAILED_LIST
         return 1
     fi
+
+    # If everything was successful, add to success list
+    echo "${SRR}" >> $SUCCESS_LIST
 
     echo "[$(date)] Finished processing ${SRR} with PID $$"
 }
@@ -117,4 +122,9 @@ export -f process_srr
 cat SRR_Acc_List.txt | parallel -j 8 process_srr
 
 echo "All downloads, conversions, verifications, and mappings completed."
+
+# Summary of results
+echo "Summary of FASTQ processing:"
+echo "Successfully processed FASTQs: $(wc -l < $SUCCESS_LIST)"
+echo "Failed FASTQs: $(wc -l < $FAILED_LIST)"
 

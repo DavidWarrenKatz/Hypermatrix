@@ -1,8 +1,16 @@
 #!/bin/bash
 
 # Define the directory to install HiC-Pro and the output file for the enzyme list
-HICPRO_DIR="$HOME/HiC-Pro"
-MM9_GENOME="/path/to/mm9/genome.fasta"
+HICPRO_DIR="$../softwarefiles/HiC-Pro"
+# Check if the directory exists, if not, create it
+if [ ! -d "$HICPRO_DIR" ]; then
+  mkdir -p "$HICPRO_DIR"
+  echo "Directory $HICPRO_DIR created."
+else
+  echo "Directory $HICPRO_DIR already exists."
+fi
+
+MM9_GENOME="../../projects/methyHic/ m9.fa"
 OUTPUT_ENZYME_LIST="mm9_DpnII.bed"
 
 # Check if HiC-Pro is installed

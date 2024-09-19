@@ -24,6 +24,8 @@ else
     conda install -c bioconda bowtie2=2.4.2
     conda install -c bioconda bismark
     conda install -c bioconda bwa
+    conda install -c bioconda samtools
+    conda install -c bioconda picard
     pip install numpy
     pip install pysam
 
@@ -33,6 +35,8 @@ fi
 # Directory where the mm9 genome should be downloaded
 GENOME_DIR="../../projects/methyHic"
 GENOME_FILE="$GENOME_DIR/mm9.fa"
+FAI_FILE="$GENOME_DIR/mm9.fa.fai"
+DICT_FILE="$GENOME_DIR/mm9.dict"
 
 # Check if the mm9 genome has already been downloaded
 if [ -f "$GENOME_FILE" ]; then
@@ -44,6 +48,26 @@ else
     echo "Download and extraction of mm9 genome complete."
 fi
 
+# Generate the .fai file using samtools if it doesn't exist
+if [ ! -f "$FAI_FILE" ]; then
+    echo "Generating .fai index file for mm9..."
+    samtools faidx "$GENOME_FILE"
+    echo "mm9.fa.fai generated."
+else
+    echo "mm9.fa.fai already exists. Skipping."
+fi
+
+# Generate the .dict file using Picard if it doesn't exist
+if [ ! -f "$DICT_FILE" ]; then
+    echo "Generating .dict file for mm9..."
+    picard CreateSequenceDictionary REFERENCE="$GENOME_FILE" OUTPUT="$DICT_FILE"
+    echo "mm9.dict generated."
+else
+    echo "mm9.dict already exists. Skipping."
+fi
+
+
+<<comment
 # Check if the Bisulfite_Genome directory exists
 if [ -d "$GENOME_DIR/Bisulfite_Genome" ]; then
     echo "Bisulfite Genome already prepared. Skipping bismark genome preparation."
@@ -98,3 +122,4 @@ else
     echo "GA_conversion genome or BWA index files are missing!"
 fi
 
+comment

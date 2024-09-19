@@ -8,11 +8,10 @@
 # images for comparison.                                                  #
 ##########################################################################
 
-# Enable robust debugging
-set -x  # Prints commands and their arguments before execution
 
-# Function to check if a file path is resolved correctly
+
 check_path() {
+    # Function to check if a file path is resolved correctly
     local script_name=$1
     local path=$2
 
@@ -26,8 +25,8 @@ check_path() {
     fi
 }
 
-# Function to execute a Python script and check its exit status
 run_script() {
+    # Function to execute a Python script and check its exit status
     local script_path=$1
     local script_desc=$2
 
@@ -45,13 +44,7 @@ run_script() {
     fi
 }
 
-# Debug: Start of script
-echo "[DEBUG]: Starting single-cell pipeline script"
-
-# 1. Resolve script paths by constructing them relative to the hypermatrix package
-echo "[DEBUG]: Resolving script paths using known directory structure"
-
-# Get the directory of the hypermatrix package
+# Stable method to resolve script paths
 HYPERMATRIX_DIR=$(python3 -c "
 import os
 import hypermatrix
@@ -82,7 +75,7 @@ run_script "$EXPORT_CONFIG_PATH" "Export configuration"
 run_script "$MAKE_METHY_MATRICES_PATH" "Make methylation matrices"
 run_script "$MAKE_HIC_MATRICES_PATH" "Make Hi-C matrices"
 run_script "$MAKE_COMBINED_METHY_HIC_MATRICES_PATH" "Make combined methylation and Hi-C tensor"
-
+ 
 
 
 

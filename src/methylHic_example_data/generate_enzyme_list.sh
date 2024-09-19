@@ -10,8 +10,8 @@ else
   echo "Directory $HICPRO_DIR already exists."
 fi
 
-MM9_GENOME="../../projects/methyHic/ m9.fa"
-OUTPUT_ENZYME_LIST="mm9_DpnII.bed"
+MM9_GENOME="../../projects/methyHic/m9.fa"
+OUTPUT_ENZYME_LIST="../../projects/methyHic/mm9_DpnII.bed"
 
 # Check if HiC-Pro is installed
 if [ ! -d "$HICPRO_DIR" ]; then

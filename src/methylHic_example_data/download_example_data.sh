@@ -42,7 +42,7 @@ process_srr() {
     # Check if the directory for the SRR ID exists and skip download if it does
     if [ ! -d "../../projects/methyHic/${SRR}" ]; then
         echo "Downloading ${SRR}..."
-        prefetch -O ../../projects/methyHic/ ${SRR}
+        prefetch --max-size 100000000000 -O ../../projects/methyHic/ ${SRR}
         if [ $? -ne 0 ]; then
             echo "Error: Download of ${SRR} failed."
             echo "${SRR}" >> $FAILED_LIST

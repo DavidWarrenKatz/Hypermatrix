@@ -90,7 +90,7 @@ process_srr() {
         REFERENCE_GENOME="../../projects/methyHic/mm9.fa"
         FASTQ_R1="../../projects/methyHic/${SRR}_1.fastq.gz"
         FASTQ_R2="../../projects/methyHic/${SRR}_2.fastq.gz"
-        ENZYME_LIST="hg19_MboI.span_region.bedgraph"
+        ENZYME_LIST="../../projects/methyHic/mm9_DpnII.bed"
 
         # Java command for bisulfite Hi-C mapping
         java -Xmx15G \

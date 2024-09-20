@@ -9,6 +9,15 @@ set -e
 # Directory containing FASTQ files
 fastq_dir="/jet/home/dkatz/tmp_ondemand_ocean_mcb190124p_symlink/dkatz/hypermatrix/projects/methyHic"
 
+# Adapter file for Trimmomatic
+adapter_file="/path/to/TruSeq3-PE.fa"
+
+# Check if adapter file exists
+if [ ! -f "$adapter_file" ]; then
+    echo "Adapter file $adapter_file not found. Exiting."
+    exit 1
+fi
+
 # Change to the directory containing FASTQ files
 cd "$fastq_dir" || { echo "Directory not found: $fastq_dir"; exit 1; }
 
@@ -55,33 +64,37 @@ for fastq_file_1 in *_1.fastq.gz; do
     fi
 
     # Look for adapter content in the FastQC report
-    adapter_content=$(grep "Adapter Content" "$fastqc_report" | tail -n 1 | awk '{print $NF}')
-    
-    # Check if adapter trimming is required and if the trimmed files already exist
-    if [ -n "$adapter_content" ] && (( $(echo "$adapter_content > 5" | bc -l) )); then
-        echo "Adapter contamination detected: $adapter_content%"
+    if grep -q "Adapter Content" "$fastqc_report"; then
+        adapter_content=$(grep "Adapter Content" "$fastqc_report" | tail -n 1 | awk '{print $NF}')
+        
+        # Check if adapter trimming is required and if the trimmed files already exist
+        if [ -n "$adapter_content" ] && (( $(echo "$adapter_content > 5" | bc -l) )); then
+            echo "Adapter contamination detected: $adapter_content%"
 
-        if [ -f "$paired_output1" ] && [ -f "$paired_output2" ]; then
-            echo "Trimmed files already exist for $fastq_file_1. Skipping trimming..."
+            if [ -f "$paired_output1" ] && [ -f "$paired_output2" ]; then
+                echo "Trimmed files already exist for $fastq_file_1. Skipping trimming..."
+            else
+                echo "Proceeding with trimming $fastq_file_1 and $fastq_file_2"
+
+                unpaired_output1="${output_prefix}_unpaired_R1.fastq.gz"
+                unpaired_output2="${output_prefix}_unpaired_R2.fastq.gz"
+                
+                # Run Trimmomatic for paired-end trimming
+                trimmomatic PE \
+                    -threads 4 \
+                    "$fastq_file_1" "$fastq_file_2" \
+                    "$paired_output1" "$unpaired_output1" \
+                    "$paired_output2" "$unpaired_output2" \
+                    ILLUMINACLIP:$adapter_file:2:30:10 \
+                    LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+                echo "Trimming completed for $fastq_file_1 and $fastq_file_2"
+            fi
         else
-            echo "Proceeding with trimming $fastq_file_1 and $fastq_file_2"
-
-            unpaired_output1="${output_prefix}_unpaired_R1.fastq.gz"
-            unpaired_output2="${output_prefix}_unpaired_R2.fastq.gz"
-            
-            # Run Trimmomatic for paired-end trimming
-            trimmomatic PE \
-                -threads 4 \
-                "$fastq_file_1" "$fastq_file_2" \
-                "$paired_output1" "$unpaired_output1" \
-                "$paired_output2" "$unpaired_output2" \
-                ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 \
-                LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
-
-            echo "Trimming completed for $fastq_file_1 and $fastq_file_2"
+            echo "No significant adapter contamination detected for $fastq_file_1."
         fi
     else
-        echo "No significant adapter contamination detected for $fastq_file_1."
+        echo "No adapter content section found in FastQC report for $fastq_file_1."
     fi
 done
 

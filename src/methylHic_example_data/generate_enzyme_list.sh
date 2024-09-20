@@ -1,16 +1,9 @@
 #!/bin/bash
 
 # Define the directory to install HiC-Pro and the output file for the enzyme list
-HICPRO_DIR="$../softwarefiles/HiC-Pro"
-# Check if the directory exists, if not, create it
-if [ ! -d "$HICPRO_DIR" ]; then
-  mkdir -p "$HICPRO_DIR"
-  echo "Directory $HICPRO_DIR created."
-else
-  echo "Directory $HICPRO_DIR already exists."
-fi
-
-MM9_GENOME="../../projects/methyHic/m9.fa"
+HICPRO_DIR="../../softwarefiles/HiC-Pro"  # Correct the path here
+UTIL_DIR="$HICPRO_DIR/bin/utils"
+MM9_GENOME="../../projects/methyHic/mm9.fa"
 OUTPUT_ENZYME_LIST="../../projects/methyHic/mm9_DpnII.bed"
 
 # Check if HiC-Pro is installed
@@ -34,11 +27,8 @@ fi
 if [ ! -f "$OUTPUT_ENZYME_LIST" ]; then
     echo "Generating DpnII enzyme list for mm9..."
     
-    # Navigate to the HiC-Pro bin directory to run digest_genome.py
-    cd $HICPRO_DIR/scripts
-    
     # Run the digest_genome.py script to generate the enzyme list
-    python digest_genome.py -r DpnII -o $OUTPUT_ENZYME_LIST -g $MM9_GENOME
+    python $UTIL_DIR/digest_genome.py -r dpnii -o $OUTPUT_ENZYME_LIST $MM9_GENOME
     
     echo "Enzyme list generated: $OUTPUT_ENZYME_LIST"
 else

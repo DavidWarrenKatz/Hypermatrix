@@ -1,8 +1,8 @@
 ### ABSTRACT
 
-Advancements in single-cell multi-omics technologies have enabled the simultaneous measurement of various omics modalities within individual cells. Integrating multi-omics data while preserving the interaction information between different modalities remains an open challenge. Traditional methods lose critical interaction information by applying matrix methods. To address this, we propose a Non-Negative Tensor Factorization (NTF) model for multi-omics integration. 
+Advancements in single-cell multi-omics technologies have enabled the simultaneous measurement of various omics modalities within individual cells. Integrating multi-omics data while preserving the interaction information between different modalities remains an open challenge. Traditional methods lose critical interaction information by applying matrix methods. To address this, we propose a Non-Negative Tensor Factorization (NTF) pipeline for multi-omics integration. 
 
-### The NTF Model with Single-Cell Data  
+### The Hypermatrix Tool with Single-Cell Data  
 
 **The 'ABcluster' command effectively distinguishes GM12878 and IMR90 cells based on their A/B compartment calls and their cell type factors.** 
 The 'ABcluster' command is designed to robustly analyze single-cell Hi-C, methylation, and chromatin accessibility data, outputting cell-type factors and single-cell A/B compartment calls. Additionally, 'ABcluster' can flexibly process inputs from any two of the above modalities or even just a single modality.
@@ -29,7 +29,7 @@ Below is a comparison of A/B compartment calls derived from single-cell methylat
 
 A/B compartments can be reliably called from both bulk Hi-C and bulk CpG methylation data. However, the methods used in bulk do not work well in the sparse single-cell setting. The 'ABcluster' command overcomes this difficulty by combining the single cell data from both modalities. The resulting A/B compartments derived approximately half of their information from each modality. 
 
-**Background on the NTF Model**   
+**Background on Non-Negative Tensor Factorization**   
 A matrix is more than a collection of vectors. The equality of row rank and column rank (Figure 1\) illustrates that there is a fundamental relationship between the rows and columns of a matrix. Information encoded in this relationship, such as eigenvalues, is lost when a matrix is reorganized as a vector. Similarly, if data can more naturally be viewed in three separate but interconnected ways \- as rows, columns, and pillars \- then information is lost when the data is organized as a matrix or as a collection of matrices. In this situation, it is more appropriate to organize the data as a 3-fold tensor (Figure 2).   
 
 <div style="text-align: center;">
@@ -57,7 +57,7 @@ If MATLAB is not available, the software defaults to using the 'non_negative_par
     <img src="files/input_output_image_biorender.png" width="600" height="auto">
 </div>
 
-**The NTF model with Synthetic Data**  
+**The Hypermatrix Tool with Synthetic Data**  
 Many tensor models, such as scHiCluster \[Zhou *et al.*, 2019\], reshape tensor data into a matrix. The scatter plots in Figure 4 illustrate how reshaping a tensor into a matrix can result in the loss of crucial information from the original tensor. The NTF model, on the other hand, decomposes the original tensor as a unified entity, without losing information between the slices of the tensor. In Figure 4, a 3-fold tensor representing synthetic data is depicted. Visually, it is evident that this tensor consists of six types of matrix slices, each representing a distinct cell type. Each type of matrix slice is more similar to slices of the same cell type than to those of different types. The bottom left scatter plot in Figure 4 shows that tensor decomposition effectively recovers a unique factor for each cell type. The sample components of the cell type factors derived from the NTF model can be used to accurately cluster the cells according to their types. On the other hand, the bottom right scatter plot shows that a matrix decomposition of the tensor, after being reshaped into a matrix, fails to cluster the cells correctly. In fact, in this case, a matrix decomposition incorrectly identifies three clusters that do not exist in the original data. Figure 5 shows that matrix reshaping methods are only comparable to tensor methods for matrices with simplified structure. 
 
 <div style="text-align: center;">
@@ -70,7 +70,7 @@ Many tensor models, such as scHiCluster \[Zhou *et al.*, 2019\], reshape tensor 
 </div>
 
 
-**The NTF model with Bulk Data**  
+**The Hypermatrix Tool with Bulk Data**  
 Rank Two Decompositions of Bulk Hi-C and Bulk DNA Methylation Data Produces A/B Compartment Factors  
 One of the most striking characteristics of Hi-C heatmaps is their intrachromosomal checkerboard pattern. The checkerboard-like pattern suggests that each chromosome is clustered into two components, referred to as A/B compartments in Lieberman-Aiden *et al.* \[2009\]. For the NTF model to identify A/B compartments from bulk Hi-C data, the intrachromosomal contact matrices were processed as follows. First, the correlation matrix of each intrachromosomal contact matrix was computed, and then translated by one to make the matrix non-negative. Next, the square matrix was converted into a 3-fold tensor by downsampling to create additional slices. In this context, an 80% downsampled matrix is the matrix that results from modifying the original matrix by replacing 20% of its entries randomly with zeros. The model takes as input a non-negative real tensor tensor​ whose *ijk*\-th entry represents the interaction between genomic bin *i* and genomic bin *j* in the *k*\-th downsampled matrix of the translated correlation Hi-C matrix. The number of downsampled slices did not affect the outcome, suggesting the rank one components of the decomposition are meaningful. Denote the downsampled processed interaction tensor by C and its entries by c*ijk*.The NTF model produces non-negative real numbers *hti* and *wti* such that for some small natural number *r* and all *i*, *j*, and *k* in the appropriate range, the following relationship holds:  
 

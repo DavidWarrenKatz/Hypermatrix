@@ -24,7 +24,7 @@ env:
 		conda env create -f $(YML_FILE) -n $(ENV_NAME); \
 	fi
 	@echo "Ensuring 'r-base' and 'gcc' are installed in the environment..."
-	$(CONDA_ACTIVATE) && conda install -y r-base gcc
+	$(CONDA_ACTIVATE) && conda install conda-forge::r-base conda-forge::rpy2 gcc_linux-64 gxx_linux-64 -y
 
 install: env
 	@echo "Activating environment and installing Python dependencies..."

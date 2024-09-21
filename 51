@@ -1,0 +1,12 @@
+Requirement already satisfied: pip in /home/kasonde/anaconda3/envs/hypermatrix/lib/python3.9/site-packages (24.2)
+Requirement already satisfied: wheel in /home/kasonde/anaconda3/envs/hypermatrix/lib/python3.9/site-packages (0.44.0)
+Requirement already satisfied: setuptools in /home/kasonde/anaconda3/envs/hypermatrix/lib/python3.9/site-packages (74.1.2)
+Collecting setuptools
+  Using cached setuptools-75.1.0-py3-none-any.whl.metadata (6.9 kB)
+Using cached setuptools-75.1.0-py3-none-any.whl (1.2 MB)
+Installing collected packages: setuptools
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 74.1.2
+    Uninstalling setuptools-74.1.2:
+      Successfully uninstalled setuptools-74.1.2
+Successfully installed setuptools-75.1.0

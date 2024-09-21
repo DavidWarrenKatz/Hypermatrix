@@ -1,40 +1,27 @@
 import gzip
 import h5py
 import numpy as np
-
-import sys
 import os
+import sys
+from config import config  # Import the config dictionary directly
 
-# # Add the directory where config.py is located to the Python path
-# config_dir = '../../../'
-# config_dir = os.path.abspath(config_dir)  # Get absolute path
+# Access values from config using the dictionary
+print(config['methy_directory'])
+print(config['filtered_list'])
+print(config['chrom_file'])
+print(config['resolutions'])
+print(config['output_directory'])
+print(config['reference_genome'])
 
-# Temp absolute path to config.py
-# AB3
-# config_file = os.path.join(config_dir, 'config.py')  # Full path to config.py
-config_file = "/home/kasonde/projects/Hypermatrix/hypermatrix/utilities/single-cell/standard_pipeline/config.py"
+# Ensure config['resolutions'] is treated as a tuple or list of strings
+if isinstance(config['resolutions'], str):
+    config['resolutions'] = (config['resolutions'],)
 
-# # Check if the directory and config.py exist
-# if os.path.isdir(config_dir) and os.path.isfile(config_file):
-#     sys.path.append(config_dir)
-#     print(f"Config directory added to sys.path: {config_dir}")
-#     print(f"Found config.py at: {config_file}")
-# else:
-#     raise FileNotFoundError(f"config.py not found in directory: {config_dir}")
+# Print config['resolutions'] for debugging
+print(f"config.resolutions from config: {config['resolutions']}")
 
-
-
-from config_file import methy_directory, filtered_list, chrom_file, resolutions, output_directory, reference_genome
-
-# Ensure resolutions is treated as a tuple or list of strings
-if isinstance(resolutions, str):
-    resolutions = (resolutions,)
-
-# Print resolutions for debugging
-print(f"Resolutions from config: {resolutions}")
-
-# Extract resolution value and label from the resolutions string
-resolution_str = resolutions[0]
+# Extract resolution value and label from the config['resolutions'] string
+resolution_str = config['resolutions'][0]
 
 # Debug print to check the value of resolution_str
 print(f"Extracted resolution string: {resolution_str}")
@@ -52,9 +39,10 @@ def parse_resolution(resolution_str):
 
 resolution, resolution_label = parse_resolution(resolution_str)
 
-methy_output_dir = os.path.join(output_directory, f"methy_{resolution_label}_outerproduct_dir")
-methy_matrix_path = os.path.join(output_directory, f'{reference_genome}.autosome.{resolution_label}_interval.add_value.methy.bed.gz')
-prefix_file_path = filtered_list
+# Update paths based on config variables
+methy_output_dir = os.path.join(config['output_directory'], f"methy_{resolution_label}_outerproduct_dir")
+methy_matrix_path = os.path.join(config['output_directory'], f'{config["reference_genome"]}.autosome.{resolution_label}_interval.add_value.methy.bed.gz')
+prefix_file_path = config['filtered_list']
 
 # File to save all tensors
 hdf5_filename = os.path.join(methy_output_dir, f"all_chromosomes_methylation_tensor_{resolution_label}.h5")
@@ -85,7 +73,7 @@ else:
 
     # Read chromosome sizes from the chrom_file
     chromosome_lengths = {}
-    with open(chrom_file, 'r') as f:
+    with open(config['chrom_file'], 'r') as f:
         for line in f:
             chrom, length = line.strip().split()
             chromosome_lengths[chrom] = int(length)
@@ -153,4 +141,3 @@ else:
                     individual_chromosome_file.create_dataset(f"{chromosome}", data=tensor_transposed, compression="gzip")
 
             print(f"Saved tensor for chromosome {chromosome} in both collective and individual HDF5 files.")
-

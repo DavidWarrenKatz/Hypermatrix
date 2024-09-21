@@ -57,24 +57,24 @@ MAKE_METHY_MATRICES_PATH="$HYPERMATRIX_DIR/utilities/single-cell/standard_pipeli
 MAKE_HIC_MATRICES_PATH="$HYPERMATRIX_DIR/utilities/single-cell/standard_pipeline/make_hic_matrices.py"
 MAKE_COMBINED_METHY_HIC_MATRICES_PATH="$HYPERMATRIX_DIR/utilities/single-cell/standard_pipeline/make_combined_methy_hic_tensor_single_cell.py"
 
-# Debug: Print resolved paths
-echo "[DEBUG]: Resolved paths:"
-echo "EXPORT_CONFIG_PATH: $EXPORT_CONFIG_PATH"
-echo "MAKE_METHY_MATRICES_PATH: $MAKE_METHY_MATRICES_PATH"
-echo "MAKE_HIC_MATRICES_PATH: $MAKE_HIC_MATRICES_PATH"
-echo "MAKE_COMBINED_METHY_HIC_MATRICES_PATH: $MAKE_COMBINED_METHY_HIC_MATRICES_PATH"
+# # Debug: Print resolved paths
+# echo "[DEBUG]: Resolved paths:"
+# echo "EXPORT_CONFIG_PATH: $EXPORT_CONFIG_PATH"
+# echo "MAKE_METHY_MATRICES_PATH: $MAKE_METHY_MATRICES_PATH"
+# echo "MAKE_HIC_MATRICES_PATH: $MAKE_HIC_MATRICES_PATH"
+# echo "MAKE_COMBINED_METHY_HIC_MATRICES_PATH: $MAKE_COMBINED_METHY_HIC_MATRICES_PATH"
 
-# Check paths using the check_path function
-check_path "export_config.py" "$EXPORT_CONFIG_PATH"
-check_path "make_methy_matrices.py" "$MAKE_METHY_MATRICES_PATH"
-check_path "make_hic_matrices.py" "$MAKE_HIC_MATRICES_PATH"
-check_path "make_combined_methy_hic_tensor_single_cell.py" "$MAKE_COMBINED_METHY_HIC_MATRICES_PATH"
+# # Check paths using the check_path function
+# check_path "export_config.py" "$EXPORT_CONFIG_PATH"
+# check_path "make_methy_matrices.py" "$MAKE_METHY_MATRICES_PATH"
+# check_path "make_hic_matrices.py" "$MAKE_HIC_MATRICES_PATH"
+# check_path "make_combined_methy_hic_tensor_single_cell.py" "$MAKE_COMBINED_METHY_HIC_MATRICES_PATH"
 
 # 3. Run the scripts and check exit status
-run_script "$EXPORT_CONFIG_PATH" "Export configuration"
+run_script "$EXPORT_CONFIG_PATH" "Export configuration" 
 run_script "$MAKE_METHY_MATRICES_PATH" "Make methylation matrices"
-run_script "$MAKE_HIC_MATRICES_PATH" "Make Hi-C matrices"
-run_script "$MAKE_COMBINED_METHY_HIC_MATRICES_PATH" "Make combined methylation and Hi-C tensor"
+# run_script "$MAKE_HIC_MATRICES_PATH" "Make Hi-C matrices"
+# run_script "$MAKE_COMBINED_METHY_HIC_MATRICES_PATH" "Make combined methylation and Hi-C tensor"
  
 
 

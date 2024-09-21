@@ -1,7 +1,6 @@
-# config.py
+# config_and_print.py
 #This file sets the default parameters for the scNomeHic pipeline
-# date 9/21/2024 version 3 ]find OG in backups 
-
+# date 9/21/2024 version 2 replaced by version 3
 import scipy.io
 import os
 

@@ -36,16 +36,17 @@ def main():
     preprocess_parser.add_argument('--input_dir', type=str, required=True, help='Directory containing BAM files')
     preprocess_parser.add_argument('--output_dir', type=str, required=True, help='Directory where the output files will be saved')
     preprocess_parser.add_argument('--ref_genome', type=str, required=True, help='Reference genome (e.g., hg19 or hg38)')
-
+    
     # ABcluster subcommand
     abcluster_parser = subparsers.add_parser('ABcluster', help='Run the ABcluster analysis')
-    abcluster_parser.add_argument('--methy', type=str, help='Path to the single-cell CpG methylation directory')
-    abcluster_parser.add_argument('--hic', type=str, help='Path to the single-cell chromosome conformation directory')
-    abcluster_parser.add_argument('--output_dir', type=str, help='Directory where the output files will be saved')
-    abcluster_parser.add_argument('-cumulant', action='store_true', help='Run cumulant shell script')
-    abcluster_parser.add_argument('-impute', action='store_true', help='Run impute shell script')
-    abcluster_parser.add_argument('-genome_id', type=str, help='Reference genome (e.g., hg19 or hg38)')
-    abcluster_parser.add_argument('-res', type=str, help='Resolution, size of genomic bins')
+    abcluster_parser.add_argument('-m', '--methy', type=str, help='Path to the single-cell CpG methylation directory')
+    abcluster_parser.add_argument('-i', '--hic', type=str, help='Path to the single-cell chromosome conformation directory')
+    abcluster_parser.add_argument('-o', '--output_dir', type=str, help='Directory where the output files will be saved')
+    abcluster_parser.add_argument('-c', '--cumulant', action='store_true', help='Run cumulant shell script')
+    abcluster_parser.add_argument('-p', '--impute', action='store_true', help='Run impute shell script')
+    abcluster_parser.add_argument('-g', '--genome_id', type=str, help='Reference genome (e.g., hg19 or hg38)')
+    abcluster_parser.add_argument('-r', '--res', type=str, help='Resolution, size of genomic bins')
+
 
     # differentiate_chromosomes subcommand
     diffchrom_parser = subparsers.add_parser('differentiate_chromosomes', help='Analyze distinct A/B compartments for homologous chromosomes')

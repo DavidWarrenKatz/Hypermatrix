@@ -2,11 +2,9 @@
 
 # Load necessary modules
 module load sra-toolkit/2.10.9
-module load FastQC/0.11.9
 
 # Create necessary directories
 mkdir -p ../../projects/methyHic
-mkdir -p ../../projects/methyHic/fastqc_reports
 mkdir -p ../../projects/methyHic/output_bam  # Directory for output BAM files
 
 # Files to store success and failure lists
@@ -64,21 +62,6 @@ process_srr() {
         echo "FASTQ files for ${SRR} already exist. Skipping conversion."
     fi
 
-    # Check if FastQC report already exists
-    FASTQC_REPORT="../../projects/methyHic/fastqc_reports/${SRR}_1_fastqc.html"
-    if [ ! -f "${FASTQC_REPORT}" ]; then
-        # Run FastQC to check the integrity of the FASTQ files
-        echo "Running FastQC on ${SRR} FASTQ files..."
-        fastqc ../../projects/methyHic/${SRR}_*.fastq.gz -o ../../projects/methyHic/fastqc_reports/
-        if [ $? -ne 0 ]; then
-            echo "Error: FastQC failed for ${SRR}."
-            echo "${SRR}" >> $FAILED_LIST
-            return 1
-        fi
-    else
-        echo "FastQC report for ${SRR} already exists. Skipping FastQC."
-    fi
-
     # Check if output BAM file already exists
     OUTPUT_BAM="../../projects/methyHic/output_bam/${SRR}_output.bam"
     if [ ! -f "${OUTPUT_BAM}" ]; then
@@ -94,7 +77,7 @@ process_srr() {
 
         # Java command for bisulfite Hi-C mapping
         java -Xmx15G \
-             -Djava.library.path=${BISULFITEHIC_DIR}/jbwa/src/main/native/ \
+             -Djava.library.path=${BISULFITEHIC_DIR}/jbwa/jbwa-1.0.0/src/main/native/ \
              -cp "${BISULFITEHIC_DIR}/target/bisulfitehic-0.38-jar-with-dependencies.jar:${BISULFITEHIC_DIR}/lib/jbwa.jar" \
              main.java.edu.mit.compbio.bisulfitehic.mapping.Bhmem \
              ${REFERENCE_GENOME} \

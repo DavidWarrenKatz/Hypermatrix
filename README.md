@@ -117,8 +117,10 @@ hypermatrix preprocess --nomehic --input_dir <path_to_bam_directory> --output_di
 
 ## Example Usage of Hypermatrix Software
 
+First, download single-cell Methyl-HiC fastq files from SRA under accession number SRP159191 using the `prefetch` and `fastq-dump` utilities from the SRA toolkit. An example scripts for doing this are located in the directory hypermatrix/src/methylHic_example_data. Thne, run the following command to preprocess the Methyl-HiC data. After preprocessing, run `ABcluster` cluster command.
+
 ```bash
-hypermatrix preprocess --nomehic --input_dir /path/to/bam_files ---output_dir /path/to/output -ref hg19
+hypermatrix preprocess --nomehic --input_dir /path/to/fastq_folder ---output_dir /path/to/output -ref hg19
 hypermatrix ABcluster --methy /path/to/output/methy --hic /path/to/output/hic --output_dir <output_directory> --res 1000000
 ```
 

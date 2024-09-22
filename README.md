@@ -99,7 +99,7 @@ It is recommended to use both the `--methy` and `--hic` flags together when both
 
 ### **Preprocess Command**
 
-The `preprocess` command processes BAM files to prepare them for use in commands like `ABcluster`. If run with the `--nomehic` flag, the BAM files are assumed to be from the scNOMe-HiC technique and are processed accordingly. This will produce Hi-C and methylation files in the correct format for the `ABcluster` command.
+The `preprocess` command processes FASTQ files to prepare them for use in commands like `ABcluster`. If run with the `--nomehic` flag, the BAM files are assumed to be from the scNOMe-HiC technique and are processed accordingly. This will produce Hi-C and methylation files in the correct format for the `ABcluster` command.
 
 #### General Syntax
 

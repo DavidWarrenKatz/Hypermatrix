@@ -99,12 +99,12 @@ It is recommended to use both the `--methy` and `--hic` flags together when both
 
 ### **Preprocess Command**
 
-The `preprocess` command processes FASTQ files to prepare them for use in commands like `ABcluster`. If run with the `--nomehic` flag, the BAM files are assumed to be from the scNOMe-HiC technique and are processed accordingly. This will produce Hi-C and methylation files in the correct format for the `ABcluster` command.
+The `preprocess` command uses the `--nomehic`, `--methylhic`, or `--m3c` flags to process FASTQ files from scNOMe-HiC, scMethyl-HiC, or sn-m3C-seq techniques, respectively, preparing them for commands like `ABcluster`.
 
 #### General Syntax
 
 ```bash
-hypermatrix preprocess --nomehic --input_dir <path_to_bam_directory> --output_dir <path_to_output_directory> --ref_genome <path_to_reference_genome>
+hypermatrix preprocess --nomehic --input_dir <path_to_fastq_directory> --output_dir <path_to_output_directory> --ref_genome <path_to_reference_genome>
 ```
 
 #### Input Parameters
@@ -117,10 +117,10 @@ hypermatrix preprocess --nomehic --input_dir <path_to_bam_directory> --output_di
 
 ## Example Usage of Hypermatrix Software
 
-First, download single-cell Methyl-HiC fastq files from SRA under accession number SRP159191 using the `prefetch` and `fastq-dump` utilities from the SRA toolkit. An example scripts for doing this are located in the directory hypermatrix/src/methylHic_example_data. Thne, run the following command to preprocess the Methyl-HiC data. After preprocessing, run `ABcluster` cluster command.
+First, download single-cell Methyl-HiC FASTQ files from SRA under accession number SRP159191 using the `prefetch` and `fastq-dump` utilities from the SRA toolkit, with example scripts located in `hypermatrix/src/methylHic_example_data`. Then, run the following commands to preprocess the Methyl-HiC data and execute `ABcluster`, saving the output to `hypermatrix/output_files`:
 
 ```bash
-hypermatrix preprocess --nomehic --input_dir /path/to/fastq_folder ---output_dir /path/to/output -ref hg19
+hypermatrix preprocess --methylhic --input_dir /path/to/fastq_folder ---output_dir /path/to/output -ref hg19
 hypermatrix ABcluster --methy /path/to/output/methy --hic /path/to/output/hic --output_dir <output_directory> --res 1000000
 ```
 

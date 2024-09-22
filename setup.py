@@ -44,6 +44,7 @@ setup(
         include_package_data=True,  # To include package data as specified in MANIFEST.in
         package_data={
             '': ['utilities/**/*'],  # Include everything under utilities folder
+            '': ['src/**/*'],  # Include everything under src folder
     },
 )
 

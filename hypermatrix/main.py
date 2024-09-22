@@ -177,6 +177,8 @@ def preprocess(args):
         preprocess_script = 'nomehic_preprocess.sh'
     elif args.m3C:
         preprocess_script = 'm3C_preprocess.sh'
+    elif args.test:
+        preprocess_script = 'run_process_test.sh'
     else:
         logging.error("Either the --nomehic flag or the --m3C flag is required.")
         sys.exit(1)

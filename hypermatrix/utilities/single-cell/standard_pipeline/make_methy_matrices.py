@@ -1,30 +1,25 @@
+#!/usr/bin/env python3
+# File: make_methy_matrices.py
+
+import argparse
 import gzip
 import h5py
+import json
+import logging
 import numpy as np
 import os
 import sys
-from config import config  # Import the config dictionary directly
+from collections import defaultdict
 
-# Access values from config using the dictionary
-print(config['methy_directory'])
-print(config['filtered_list'])
-print(config['chrom_file'])
-print(config['resolutions'])
-print(config['output_directory'])
-print(config['reference_genome'])
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Ensure config['resolutions'] is treated as a tuple or list of strings
-if isinstance(config['resolutions'], str):
-    config['resolutions'] = (config['resolutions'],)
-
-# Print config['resolutions'] for debugging
-print(f"config.resolutions from config: {config['resolutions']}")
-
-# Extract resolution value and label from the config['resolutions'] string
-resolution_str = config['resolutions'][0]
-
-# Debug print to check the value of resolution_str
-print(f"Extracted resolution string: {resolution_str}")
+def load_config(config_path):
+    if not os.path.exists(config_path):
+        logging.error(f"Configuration file not found at {config_path}")
+        sys.exit(1)
+    with open(config_path, 'r') as f:
+        return json.load(f)
 
 def parse_resolution(resolution_str):
     if ':' in resolution_str:
@@ -37,107 +32,164 @@ def parse_resolution(resolution_str):
     else:
         raise ValueError(f"Invalid resolution format: '{resolution_str}'. Expected format 'value:label', e.g., '1000000:1Mb'.")
 
-resolution, resolution_label = parse_resolution(resolution_str)
+def calculate_matrix(file_path, chromosomes, resolution):
+    # Initialize a dictionary to hold binned methylation values per chromosome
+    binned_data = defaultdict(lambda: defaultdict(list))  # {chrom: {bin_index: [methylation_levels]}}
 
-# Update paths based on config variables
-methy_output_dir = os.path.join(config['output_directory'], f"methy_{resolution_label}_outerproduct_dir")
-methy_matrix_path = os.path.join(config['output_directory'], f'{config["reference_genome"]}.autosome.{resolution_label}_interval.add_value.methy.bed.gz')
-prefix_file_path = config['filtered_list']
+    with gzip.open(file_path, 'rt') as file:
+        for line in file:
+            fields = line.strip().split('\t')
+            # Assuming columns: chrom, start, end, methylation_level
+            if len(fields) < 4:
+                continue
+            chrom = fields[0]
+            if chrom not in chromosomes:
+                continue  # Skip chromosomes we're not interested in
+            try:
+                start = int(fields[1])
+                methylation_level = float(fields[3])
+            except ValueError:
+                continue  # Skip lines with invalid data
+            bin_index = start // resolution
+            binned_data[chrom][bin_index].append(methylation_level)
 
-# File to save all tensors
-hdf5_filename = os.path.join(methy_output_dir, f"all_chromosomes_methylation_tensor_{resolution_label}.h5")
+    # Calculate mean methylation levels per bin
+    methylation_matrices = {}
+    for chrom in binned_data:
+        bins = sorted(binned_data[chrom].keys())
+        methylation_levels = []
+        for bin_index in bins:
+            levels = binned_data[chrom][bin_index]
+            mean_level = np.mean(levels)
+            methylation_levels.append(mean_level)
+        methylation_matrices[chrom] = np.array(methylation_levels)
 
-# Check if the file already exists and skip computations if it does
-if os.path.exists(hdf5_filename):
-    print(f"File {hdf5_filename} already exists. Skipping all computations.")
-else:
-    # Ensure the output directory exists
-    os.makedirs(methy_output_dir, exist_ok=True)
+    return methylation_matrices
 
-    # Function to calculate the matrix from a compressed file.
-    def calculate_matrix(file_path):
-        data = []
-        with gzip.open(file_path, 'rt') as file:
-            for line in file:
-                fields = line.strip().split('\t')
-                numerator_indices = range(6, len(fields), 2)
-                denominator_indices = range(7, len(fields), 2)
-                row_data = []
-                for num_idx, denom_idx in zip(numerator_indices, denominator_indices):
-                    numerator = float(fields[num_idx])
-                    denominator = float(fields[denom_idx])
-                    row_data.append(0 if denominator == 0 else numerator / denominator)
-                data.append(row_data)
-        data_matrix = np.array(data)
-        return data_matrix
+def main():
+    parser = argparse.ArgumentParser(description='Generate methylation matrices and tensors.')
+    parser.add_argument('--config', type=str, default='config.json', help='Path to the configuration JSON file')
+    parser.add_argument('--methy_directory', type=str, help='Path to the methylation directory')
+    parser.add_argument('--chrom_file', type=str, help='Path to the chromosome sizes file')
+    parser.add_argument('--resolutions', type=str, help='Resolution in the format value:label, e.g., "1000000:1Mb"')
+    parser.add_argument('--output_directory', type=str, help='Output directory')
+    parser.add_argument('--reference_genome', type=str, help='Reference genome (e.g., hg19 or hg38)')
+    parser.add_argument('--methy_data_file', type=str, help='Name of the methylation data file')
+    parser.add_argument('--chromosomes', type=str, nargs='+', help='List of chromosomes to process')
+    args = parser.parse_args()
 
-    # Read chromosome sizes from the chrom_file
-    chromosome_lengths = {}
-    with open(config['chrom_file'], 'r') as f:
-        for line in f:
-            chrom, length = line.strip().split()
-            chromosome_lengths[chrom] = int(length)
+    # Load config
+    config_path = args.config
+    config = load_config(config_path)
 
-    # Normalize the methylation matrix columns
-    methylation_matrix = calculate_matrix(methy_matrix_path)
-    print(f'methylation matrix shape at resolution {resolution_label}')
-    print(methylation_matrix.shape)
+    # Override config with command-line arguments if provided
+    for key in ['methy_directory', 'chrom_file', 'resolutions', 'output_directory', 'reference_genome', 'methy_data_file', 'chromosomes']:
+        arg_value = getattr(args, key)
+        if arg_value is not None:
+            config[key] = arg_value
 
-    # Calculate bins per chromosome and slice data accordingly
-    chromosome_bins = {key: length // resolution for key, length in chromosome_lengths.items()}
-    chromosome_data = {}
-    start_bin = 0
+    # Access values from config
+    methy_directory = config.get('methy_directory')
+    chrom_file = config.get('chrom_file')
+    resolutions = config.get('resolutions')
+    output_directory = config.get('output_directory')
+    reference_genome = config.get('reference_genome')
+    methy_data_file = config.get('methy_data_file')
+    chromosomes = config.get('chromosomes')
 
-    for chromosome, bins in chromosome_bins.items():
-        end_bin = start_bin + bins
-        chromosome_data[chromosome] = methylation_matrix[start_bin:end_bin, :]
-        start_bin = end_bin
+    # Validate required parameters
+    required_params = {
+        'methy_directory': methy_directory,
+        'chrom_file': chrom_file,
+        'resolutions': resolutions,
+        'output_directory': output_directory,
+        'reference_genome': reference_genome,
+        'methy_data_file': methy_data_file,
+        'chromosomes': chromosomes
+    }
+    for param_name, param_value in required_params.items():
+        if not param_value:
+            logging.error(f"Missing required parameter: {param_name}")
+            sys.exit(1)
 
-    # Read prefixes from the file
-    with open(prefix_file_path, 'r') as f:
-        prefixes = [line.strip() for line in f]
+    # Convert chromosomes to strings if they are integers
+    chromosomes = [str(chrom) for chrom in chromosomes]
 
-    with h5py.File(hdf5_filename, 'w') as all_chromosomes_file:
-        # Loop through each chromosome and process its data
-        for chromosome, data in chromosome_data.items():
-            num_samples = data.shape[1]  # Number of samples
-            outer_product_matrices = []
+    # Log configuration
+    logging.info(f"Using configuration: {json.dumps(required_params, indent=2)}")
 
-            # Create directory for the chromosome
-            chromosome_dir = os.path.join(methy_output_dir, f"{chromosome}")
+    # Ensure resolutions is a list
+    if isinstance(resolutions, str):
+        resolutions = [resolutions]
+
+    # Process resolutions
+    for resolution_str in resolutions:
+        try:
+            resolution, resolution_label = parse_resolution(resolution_str)
+        except ValueError as e:
+            logging.error(e)
+            sys.exit(1)
+
+        # Update paths
+        methy_output_dir = os.path.join(output_directory, f"methy_{resolution_label}_outerproduct_dir")
+        methy_matrix_path = os.path.join(methy_directory, methy_data_file)
+
+        # Ensure output directory exists
+        os.makedirs(methy_output_dir, exist_ok=True)
+
+        # Read chromosome sizes
+        chromosome_lengths = {}
+        try:
+            with open(chrom_file, 'r') as f:
+                for line in f:
+                    chrom, length = line.strip().split()
+                    if chrom in chromosomes:
+                        chromosome_lengths[chrom] = int(length)
+        except Exception as e:
+            logging.error(f"Error reading chromosome sizes: {e}")
+            sys.exit(1)
+
+        # Calculate methylation matrices per chromosome
+        try:
+            logging.info(f"Calculating methylation matrices from {methy_matrix_path}")
+            methylation_matrices = calculate_matrix(methy_matrix_path, chromosomes, resolution)
+        except Exception as e:
+            logging.error(f"Error calculating methylation matrices: {e}")
+            sys.exit(1)
+
+        # Process each chromosome
+        for chrom in chromosomes:
+            if chrom not in methylation_matrices:
+                logging.warning(f"No data found for chromosome {chrom}")
+                continue
+
+            data_vector = methylation_matrices[chrom]
+            logging.info(f'Chromosome {chrom}: Data vector length: {len(data_vector)}')
+
+            # Center the data
+            vector_centered = data_vector - np.mean(data_vector)
+
+            # Compute outer product (if size is manageable)
+            vector_length = len(vector_centered)
+            if vector_length > 10000:
+                logging.warning(f"Chromosome {chrom} has {vector_length} bins, which may cause memory issues.")
+                logging.info(f"Skipping outer product computation for chromosome {chrom} due to size.")
+                continue
+
+            outer_product_matrix = np.outer(vector_centered, vector_centered)
+
+            # Save individual matrix
+            chromosome_dir = os.path.join(methy_output_dir, chrom)
             os.makedirs(chromosome_dir, exist_ok=True)
+            individual_matrix_filename = os.path.join(chromosome_dir, f"{chrom}_outer_product.h5")
+            with h5py.File(individual_matrix_filename, 'w') as individual_matrix_file:
+                individual_matrix_file.create_dataset('methylation', data=outer_product_matrix, compression="gzip")
 
-            # Compute the outer product for each sample
-            for sample_index in range(num_samples):
-                vector = data[:, sample_index]
+            logging.info(f"Saved outer product matrix for chromosome {chrom}")
 
-                # Center the vector around 0
-                vector_centered = vector - np.mean(vector)
+        logging.info(f"Processing for resolution {resolution_label} completed.")
 
-                # Calculate the outer product of the centered vector
-                outer_product_matrix = np.outer(vector_centered, vector_centered)
-                outer_product_matrices.append(outer_product_matrix)
+    logging.info("Processing completed successfully.")
 
-                # Save each outer product matrix in its own .h5 file if it doesn't exist
-                prefix = prefixes[sample_index]
-                individual_matrix_filename = os.path.join(chromosome_dir, f"{prefix}_outer_product.h5")
-                if not os.path.exists(individual_matrix_filename):
-                    with h5py.File(individual_matrix_filename, 'w') as individual_matrix_file:
-                        individual_matrix_file.create_dataset(f"{chromosome}", data=outer_product_matrix, compression="gzip")
-
-            # Stack all the matrices into a tensor
-            tensor = np.stack(outer_product_matrices, axis=0)
-
-            # Transpose the tensor to put the sample index as the third dimension
-            tensor_transposed = tensor.transpose((1, 2, 0))
-
-            # Save the transposed tensor to the collective HDF5 file
-            all_chromosomes_file.create_dataset(f"{chromosome}", data=tensor_transposed, compression="gzip")
-
-            # Also save to an individual HDF5 file for this chromosome if it doesn't exist
-            individual_hdf5_filename = os.path.join(chromosome_dir, f"{chromosome}_tensor_methylation.h5")
-            if not os.path.exists(individual_hdf5_filename):
-                with h5py.File(individual_hdf5_filename, 'w') as individual_chromosome_file:
-                    individual_chromosome_file.create_dataset(f"{chromosome}", data=tensor_transposed, compression="gzip")
-
-            print(f"Saved tensor for chromosome {chromosome} in both collective and individual HDF5 files.")
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,92 @@
+[DEBUG]: Initializing Conda for the current shell...
+[DEBUG]: Activating hypermatrix Conda environment...
+[DEBUG]: TEST_DATA_DIR is set to /home/kasonde/test_data
+[DEBUG]: TEST_OUTPUT_DIR is set to /home/kasonde/test_data/output
+[DEBUG]: HYPERMATRIX_DIR is set to /home/kasonde/Hypermatrix/hypermatrix
+[DEBUG]: HYPERMATRIX_CONFIG is set to /home/kasonde/test_data/output/config.json
+[DEBUG]: config.json already exists at /home/kasonde/test_data/output/config.json
+[DEBUG]: Updating config.json with test-specific paths...
+[DEBUG]: Updated config.json content:
+{
+    "bam_directory": "/home/kasonde/test_data",
+    "methy_directory": "/home/kasonde/test_data",
+    "output_directory": "/home/kasonde/test_data/output",
+    "reference_genome": "hg38",
+    "genome_fa": "/home/kasonde/test_data/hg38.fa.gz",
+    "chrom_file": "/home/kasonde/test_data/hg38.chrom.sizes",
+    "resolutions": [
+        "40000:40kb"
+    ],
+    "impute": false,
+    "cluster_compartments": false,
+    "cumulant": false,
+    "iterations": 400,
+    "chromosomes": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22"
+    ],
+    "mappability_threshold": 0.5,
+    "normalization": "NONE",
+    "data_type": "oe",
+    "correlation": true,
+    "hic_cell_type1_url": "",
+    "hic_cell_type2_url": "",
+    "filtered_list": "/home/kasonde/test_data/output/filtered_bam_list.txt",
+    "software_directory": "/home/kasonde/Hypermatrix/hypermatrix/genomes",
+    "fragments_file": "/home/kasonde/Hypermatrix/hypermatrix/genomes/hg38_DpnII.txt"
+}[DEBUG]: Running single_cell_pipeline.sh script at /home/kasonde/Hypermatrix/hypermatrix/utilities/single-cell/standard_pipeline/single_cell_pipeline.sh
+[DEBUG]: HYPERMATRIX_DIR resolved to /home/kasonde/Hypermatrix/hypermatrix
+[DEBUG]: HYPERMATRIX_CONFIG is set to /home/kasonde/test_data/output/config.json
+[DEBUG]: Checking if the path for export_config.py is valid...
+[LOG]: Successfully resolved path for export_config.py
+ PATH: /home/kasonde/Hypermatrix/hypermatrix/export_config.py
+[DEBUG]: Checking if the path for make_methy_matrices.py is valid...
+[LOG]: Successfully resolved path for make_methy_matrices.py
+ PATH: /home/kasonde/Hypermatrix/hypermatrix/utilities/single-cell/standard_pipeline/make_methy_matrices.py
+[LOG]: Running Export configuration (Path: /home/kasonde/Hypermatrix/hypermatrix/export_config.py)
+[DEBUG]: Current HYPERMATRIX_CONFIG is /home/kasonde/test_data/output/config.json
+export bam_directory='/home/kasonde/test_data/hic'
+export methy_directory='/home/kasonde/test_data/methylation'
+export output_directory='/home/kasonde/test_data/output'
+export reference_genome='hg38'
+export genome_fa='/home/kasonde/test_data/hg38.fa.gz'
+export chrom_file='/home/kasonde/test_data/hg38.chrom.sizes'
+export filtered_list='/home/kasonde/output/filtered_bam_list.txt'
+export resolutions='100000'
+export impute='False'
+export cluster_compartments='False'
+export cumulant='False'
+export iterations='400'
+export chromosomes='1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22'
+export mappability_threshold='0.5'
+export normalization='NONE'
+export data_type='oe'
+export correlation='True'
+export hic_cell_type1_url='https://example.com/hic/cell_type1.hic'
+export hic_cell_type2_url='https://example.com/hic/cell_type2.hic'
+export software_directory='/home/kasonde/Hypermatrix/hypermatrix/genomes'
+export fragments_file='/home/kasonde/Hypermatrix/hypermatrix/genomes/hg38_DpnII.txt'
+[DEBUG]: Exit code for Export configuration is 0
+[LOG]: Export configuration completed successfully
+[LOG]: Running Make methylation matrices (Path: /home/kasonde/Hypermatrix/hypermatrix/utilities/single-cell/standard_pipeline/make_methy_matrices.py)
+[DEBUG]: Current HYPERMATRIX_CONFIG is /home/kasonde/test_data/output/config.json

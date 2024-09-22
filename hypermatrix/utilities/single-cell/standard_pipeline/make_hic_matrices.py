@@ -1,36 +1,27 @@
-import numpy as np
-import matplotlib.pyplot as plt
+#!/usr/bin/env python3
+# File: make_hic_matrices.py
+
+import argparse
+import gzip
 import h5py
-from scipy.sparse import csr_matrix, triu, tril, csc_matrix
+import json
+import logging
+import numpy as np
 import os
-import glob
-
 import sys
-import os
+import glob
+from scipy.sparse import csr_matrix, triu, tril
+from collections import defaultdict
 
-# Add the directory where config.py is located to the Python path
-config_dir = '../../../'
-config_dir = os.path.abspath(config_dir)  # Get absolute path
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-config_file = os.path.join(config_dir, 'config.py')  # Full path to config.py
-
-# Check if the directory and config.py exist
-if os.path.isdir(config_dir) and os.path.isfile(config_file):
-    sys.path.append(config_dir)
-    print(f"Config directory added to sys.path: {config_dir}")
-    print(f"Found config.py at: {config_file}")                                                 
-
-else:                                                                                               
-    raise FileNotFoundError(f"config.py not found in directory: {config_dir}")   
-                                                                                           
-from config import methy_directory, filtered_list, chrom_file, resolutions, output_directory, reference_genome  
-
-# Ensure resolutions is treated as a tuple or list of strings
-if isinstance(resolutions, str):
-    resolutions = (resolutions,)
-
-# Print resolutions for debugging
-print(f"Resolutions from config: {resolutions}")
+def load_config(config_path):
+    if not os.path.exists(config_path):
+        logging.error(f"Configuration file not found at {config_path}")
+        sys.exit(1)
+    with open(config_path, 'r') as f:
+        return json.load(f)
 
 def parse_resolution(resolution_str):
     if ':' in resolution_str:
@@ -43,12 +34,6 @@ def parse_resolution(resolution_str):
     else:
         raise ValueError(f"Invalid resolution format: '{resolution_str}'. Expected format 'value:label', e.g., '1000000:1Mb'.")
 
-# Extract resolution value and label from the resolutions string
-resolution_str = resolutions[0]
-resolution, resolution_label = parse_resolution(resolution_str)
-
-print(f"Extracted resolution: {resolution}, label: {resolution_label}")
-
 def load_hic_data(filepath):
     """Load Hi-C data from a text file."""
     data = []
@@ -56,105 +41,160 @@ def load_hic_data(filepath):
         for line in file:
             parts = line.strip().split()
             if len(parts) == 3:
-                i, j, reads = int(parts[0]), int(parts[1]), int(parts[2])
+                i, j, reads = int(parts[0]), int(parts[1]), float(parts[2])
                 data.append((i, j, reads))
     return data
 
-def create_matrix(data):
+def create_matrix(data, size):
     """Creates a symmetric matrix from Hi-C data."""
     if not data:
         return None
-    max_index = max(max(i, j) for i, j, _ in data)
-    matrix = np.zeros((max_index + 1, max_index + 1), dtype=int)
+    matrix = csr_matrix((size, size), dtype=float)
+    rows = []
+    cols = []
+    values = []
     for i, j, reads in data:
-        matrix[i][j] += reads
+        rows.append(i)
+        cols.append(j)
+        values.append(reads)
         if i != j:
-            matrix[j][i] += reads
-    return csr_matrix(matrix)
-
-def load_csr_matrix_from_hdf5(file_path):
-    """Load a CSR matrix from an HDF5 file."""
-    with h5py.File(file_path, 'r') as file:
-        data = file['Matrix/data'][:]
-        indices = file['Matrix/indices'][:]
-        indptr = file['Matrix/indptr'][:]
-        shape = file['Matrix'].attrs['shape']
-    return csr_matrix((data, indices, indptr), shape=shape)
+            rows.append(j)
+            cols.append(i)
+            values.append(reads)
+    matrix = csr_matrix((values, (rows, cols)), shape=(size, size))
+    return matrix
 
 def emphasize_interactions(matrix, max_distance):
     """Emphasize interactions by adding offsets of contacts."""
-    emphasized_matrix = csr_matrix(matrix.shape)
+    emphasized_matrix = matrix.copy()
     for offset in range(1, max_distance + 1):
-        emphasized_matrix += triu(matrix, offset) + tril(matrix, -offset)
+        emphasized_matrix += triu(matrix, k=offset) + tril(matrix, k=-offset)
     return emphasized_matrix
 
-def csr_pearson_correlation(csr_mat):
-    """Calculate Pearson correlation from a CSR matrix."""
-    csc_mat = csr_mat.tocsc()
-    
-    mean = np.array(csc_mat.mean(axis=1)).flatten()
-    std_dev = np.sqrt(csc_mat.power(2).mean(axis=1).A1 - mean**2)
-    epsilon = 1e-10
-    std_dev[std_dev == 0] = epsilon
-
-    rows, cols = csr_mat.nonzero()
-    standardized_data = (csr_mat.data - mean[rows]) / std_dev[rows]
-    standardized_csr = csr_matrix((standardized_data, (rows, cols)), shape=csr_mat.shape)
-
-    correlation_matrix = standardized_csr.dot(standardized_csr.T).toarray()
-    diag = np.sqrt(np.diag(correlation_matrix))
-    diag[diag == 0] = epsilon
-
-    correlation_matrix /= diag[:, None]
-    correlation_matrix /= diag[None, :]
-
-    return csr_matrix(np.nan_to_num(correlation_matrix))
-
-def process_matrices(input_dir, output_emphasized_dir, max_distance):
+def process_matrices(input_dir, output_emphasized_dir, max_distance, size):
     """Process each Hi-C data file, compute matrices, and save the results."""
     os.makedirs(output_emphasized_dir, exist_ok=True)
-    print(f"input directory{input_dir}")
+    logging.info(f"Processing input directory: {input_dir}")
     for file_path in glob.glob(os.path.join(input_dir, '*.txt')):
-        print(f"Processing file: {file_path}")
-        
+        logging.info(f"Processing file: {file_path}")
+
         file_name = os.path.splitext(os.path.basename(file_path))[0] + '.h5'
         output_emphasized_path = os.path.join(output_emphasized_dir, file_name)
-        
-        # Skip computation if both output files already exist
+
+        # Skip computation if the output file already exists
         if os.path.exists(output_emphasized_path):
-            print(f"Skipping {output_emphasized_path}, emphasized hic matrix already exist.")
+            logging.info(f"Skipping {output_emphasized_path}, emphasized Hi-C matrix already exists.")
             continue
 
         data = load_hic_data(file_path)
         if not data:
-            print(f"No data loaded from {file_path}")
+            logging.warning(f"No data loaded from {file_path}")
             continue
-        csr_mat = create_matrix(data)
+        csr_mat = create_matrix(data, size)
         if csr_mat is None:
-            print(f"Failed to create matrix from data in {file_path}")
+            logging.warning(f"Failed to create matrix from data in {file_path}")
             continue
-        
-        emphasized_matrix = None
-        if not os.path.exists(output_emphasized_path):
-            emphasized_matrix = emphasize_interactions(csr_mat, max_distance)
 
-        if not os.path.exists(output_emphasized_path):
-            emphasized_matrix = emphasized_matrix
-            with h5py.File(output_emphasized_path, 'w') as output_file:
-                grp = output_file.create_group('Matrix')
-                grp.create_dataset('data', data=emphasized_matrix.data)
-                grp.create_dataset('indices', data=emphasized_matrix.indices)
-                grp.create_dataset('indptr', data=emphasized_matrix.indptr)
-                grp.attrs['shape'] = emphasized_matrix.shape
+        emphasized_matrix = emphasize_interactions(csr_mat, max_distance)
 
-max_genomic_distance = int(10_000_000 / resolution) + 1
-base_input_dir = f'{output_directory}/hic_{resolution_label}_raw_dir/'
-base_output_emphasized_dir = f'{output_directory}/hic_{resolution_label}_emphasized_dir/'
+        with h5py.File(output_emphasized_path, 'w') as output_file:
+            grp = output_file.create_group('Matrix')
+            grp.create_dataset('data', data=emphasized_matrix.data)
+            grp.create_dataset('indices', data=emphasized_matrix.indices)
+            grp.create_dataset('indptr', data=emphasized_matrix.indptr)
+            grp.attrs['shape'] = emphasized_matrix.shape
 
-for i in range(1, 23):  
-    chromosome = f'chr{i}'
-    input_dir = base_input_dir + f'{chromosome}'
-    output_emphasized_dir = base_output_emphasized_dir + f'{chromosome}'
-    print(f'processing chr{i}')
-    process_matrices(input_dir, output_emphasized_dir, max_genomic_distance)
+        logging.info(f"Saved emphasized Hi-C matrix to {output_emphasized_path}")
 
+def main():
+    parser = argparse.ArgumentParser(description='Generate Hi-C matrices and tensors.')
+    parser.add_argument('--config', type=str, default='config.json', help='Path to the configuration JSON file')
+    parser.add_argument('--bam_directory', type=str, help='Path to the Hi-C BAM directory')
+    parser.add_argument('--chrom_file', type=str, help='Path to the chromosome sizes file')
+    parser.add_argument('--resolutions', type=str, help='Resolution in the format value:label, e.g., "1000000:1Mb"')
+    parser.add_argument('--output_directory', type=str, help='Output directory')
+    parser.add_argument('--chromosomes', type=str, nargs='+', help='List of chromosomes to process')
+    args = parser.parse_args()
+
+    # Load config
+    config_path = args.config
+    config = load_config(config_path)
+
+    # Override config with command-line arguments if provided
+    for key in ['bam_directory', 'chrom_file', 'resolutions', 'output_directory', 'chromosomes']:
+        arg_value = getattr(args, key)
+        if arg_value is not None:
+            config[key] = arg_value
+
+    # Access values from config
+    bam_directory = config.get('bam_directory')
+    chrom_file = config.get('chrom_file')
+    resolutions = config.get('resolutions')
+    output_directory = config.get('output_directory')
+    chromosomes = config.get('chromosomes')
+
+    # Validate required parameters
+    required_params = {
+        'bam_directory': bam_directory,
+        'chrom_file': chrom_file,
+        'resolutions': resolutions,
+        'output_directory': output_directory,
+        'chromosomes': chromosomes
+    }
+    for param_name, param_value in required_params.items():
+        if not param_value:
+            logging.error(f"Missing required parameter: {param_name}")
+            sys.exit(1)
+
+    # Convert chromosomes to strings if they are integers
+    chromosomes = [str(chrom) for chrom in chromosomes]
+
+    # Log configuration
+    logging.info(f"Using configuration: {json.dumps(required_params, indent=2)}")
+
+    # Ensure resolutions is a list
+    if isinstance(resolutions, str):
+        resolutions = [resolutions]
+
+    # Read chromosome sizes
+    chromosome_lengths = {}
+    try:
+        with open(chrom_file, 'r') as f:
+            for line in f:
+                chrom, length = line.strip().split()
+                if chrom in chromosomes:
+                    chromosome_lengths[chrom] = int(length)
+    except Exception as e:
+        logging.error(f"Error reading chromosome sizes: {e}")
+        sys.exit(1)
+
+    # Process resolutions
+    for resolution_str in resolutions:
+        try:
+            resolution, resolution_label = parse_resolution(resolution_str)
+        except ValueError as e:
+            logging.error(e)
+            sys.exit(1)
+
+        max_genomic_distance = int(10_000_000 / resolution) + 1
+        base_input_dir = os.path.join(output_directory, f'hic_{resolution_label}_raw_dir')
+        base_output_emphasized_dir = os.path.join(output_directory, f'hic_{resolution_label}_emphasized_dir')
+
+        for chrom in chromosomes:
+            input_dir = os.path.join(base_input_dir, chrom)
+            output_emphasized_dir = os.path.join(base_output_emphasized_dir, chrom)
+
+            # Calculate the number of bins for the chromosome
+            chrom_length = chromosome_lengths.get(chrom)
+            if chrom_length is None:
+                logging.warning(f"Chromosome {chrom} not found in chromosome sizes file.")
+                continue
+            size = chrom_length // resolution + 1  # Number of bins
+
+            logging.info(f'Processing chromosome {chrom} at resolution {resolution_label}')
+            process_matrices(input_dir, output_emphasized_dir, max_genomic_distance, size)
+
+    logging.info("Processing completed successfully.")
+
+if __name__ == '__main__':
+    main()

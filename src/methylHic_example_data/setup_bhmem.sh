@@ -3,24 +3,54 @@
 # Check if the 'bisulfitehic' environment exists
 if conda env list | grep -q 'bisulfitehic'; then
     echo "Conda environment 'bisulfitehic' already exists. Skipping creation and setup."
+    source activate bisulfitehic
 else
-    # Clone the repository from Bitbucket
-    git clone https://bitbucket.org/dnaase/bisulfitehic.git
-
-    cd bisulfitehic
-
-    # Set the JAVA_HOME environment variable
-    export JAVA_HOME=$(/usr/libexec/java_home)
-
-    # Source the install.sh script
-    source ./install.sh
-
-    # Create a new conda environment named 'bisulfitehic' with Python 3.8
-    conda create -n bisulfitehic python=3.8 -y
+    #Create the conda bisulfitehic environment according to yml 
+    conda env create -f bisulfitehic_environment.yml
 
     # Activate the conda environment
     source activate bisulfitehic
 
+    # Download the directory
+    wget https://bitbucket.org/dnaase/bisulfitehic/get/04680506dd40.zip
+    zip_file="04680506dd40.zip"
+    output_folder=bisulfitehic  
+
+    # Create the output folder if it doesn't exist
+    mkdir -p "$output_folder"
+
+    # Unzip the file into the custom output folder
+    unzip "$zip_file" -d "$output_folder"
+
+    # Dynamically set the JAVA_HOME environment variable
+    # Find the Java executable within the Conda environment
+    java_path=$(which java)
+
+    # Check if Java is installed
+    if [ -z "$java_path" ]; then
+        echo "Java not found in the current Conda environment."
+        exit 1
+    fi
+
+    # Get the directory of the Java installation
+    java_home=$(dirname $(dirname "$java_path"))
+
+    # Set JAVA_HOME and export it
+    export JAVA_HOME="$java_home"
+
+    # Verify JAVA_HOME is set correctly
+    if [ -z "$JAVA_HOME" ]; then
+        echo "Failed to set JAVA_HOME."
+    else
+        echo "JAVA_HOME is set to: $JAVA_HOME"
+    fi
+
+    cd bisulfitehic/dnaase-bisulfitehic-04680506dd40
+
+    # Source the install.sh script to install bisulfitehic software into enviroment
+    source ./install.sh
+
+    # install the remianing packages
     conda install -c bioconda bowtie2=2.4.2
     conda install -c bioconda bismark
     conda install -c bioconda bwa
@@ -30,6 +60,9 @@ else
     pip install pysam
 
     echo "Setup complete. The 'bisulfitehic' environment is activated."
+
+    cd ..
+    cd ..
 fi
 
 # Directory where the mm9 genome should be downloaded
@@ -66,8 +99,6 @@ else
     echo "mm9.dict already exists. Skipping."
 fi
 
-
-<<comment
 # Check if the Bisulfite_Genome directory exists
 if [ -d "$GENOME_DIR/Bisulfite_Genome" ]; then
     echo "Bisulfite Genome already prepared. Skipping bismark genome preparation."
@@ -122,4 +153,4 @@ else
     echo "GA_conversion genome or BWA index files are missing!"
 fi
 
-comment
+

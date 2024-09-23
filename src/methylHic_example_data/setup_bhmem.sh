@@ -61,12 +61,10 @@ else
 
     echo "Setup complete. The 'bisulfitehic' environment is activated."
 
-    cd ..
-    cd ..
 fi
 
 # Directory where the mm9 genome should be downloaded
-GENOME_DIR="../../projects/methyHic"
+GENOME_DIR="../../../../projects/methyHic"
 GENOME_FILE="$GENOME_DIR/mm9.fa"
 FAI_FILE="$GENOME_DIR/mm9.fa.fai"
 DICT_FILE="$GENOME_DIR/mm9.dict"

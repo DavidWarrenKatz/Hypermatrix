@@ -1,5 +1,0 @@
-If you have trouble installing the conda enviroment form the yml file, mkae sure you load gcc 
-module load gcc/10.2.0
-  use the command module spider gcc to see which verison of gcc is available on your cluster. 
-  Please note that juicer may require an older verison of gcc, need to check this
-  

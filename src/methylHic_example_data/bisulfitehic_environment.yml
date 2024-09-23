@@ -1,0 +1,29 @@
+name: bisulfitehic
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - _libgcc_mutex=0.1
+  - ca-certificates
+  - libffi
+  - libgcc-ng
+  - libstdcxx-ng
+  - ncurses
+  - openssl
+  - python=3.6
+  - readline
+  - sqlite
+  - tk
+  - xz
+  - zlib
+  - pip
+  - pip:
+      - bx-python==0.8.9
+      - cython==0.29.21
+      - numpy==1.17.4
+      - pybigwig==0.3.17
+      - scipy==1.5.4
+      - six==1.15.0
+      - setuptools==42.0.2
+      - wheel==0.33.6
+

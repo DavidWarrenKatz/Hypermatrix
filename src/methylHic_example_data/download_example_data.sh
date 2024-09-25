@@ -69,7 +69,7 @@ process_srr() {
         echo "Running bisulfite Hi-C mapping for ${SRR}..."
 
         # Set variables for the paths to make the command more readable
-        BISULFITEHIC_DIR="./bisulfitehic"
+        BISULFITEHIC_DIR="./bisulfitehic/dnaase-bisulfitehic-04680506dd40"
         REFERENCE_GENOME="../../projects/methyHic/mm9.fa"
         FASTQ_R1="../../projects/methyHic/${SRR}_1.fastq.gz"
         FASTQ_R2="../../projects/methyHic/${SRR}_2.fastq.gz"

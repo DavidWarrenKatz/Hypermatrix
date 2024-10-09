@@ -1,8 +1,11 @@
 #!/bin/bash
 
+eval "($conda shell.bash hook)"
+
 # Check if the 'bisulfitehic' environment exists
 if conda env list | grep -q 'bisulfitehic'; then
     echo "Conda environment 'bisulfitehic' already exists. Skipping creation and setup."
+    source $(conda info --base)/etc/profile.d/conda.sh
     conda activate bisulfitehic
     GENOME_DIR="${1:-"../../projects/methyHic"}"
 else
@@ -18,16 +21,16 @@ else
     GENOME_DIR="${1:-"../../../../projects/methyHic"}"
 
     # Download the directory
-    wget https://bitbucket.org/dnaase/bisulfitehic/get/04680506dd40.zip || { echo "Failed to download zip file"; exit 1; }
-    zip_file="04680506dd40.zip"
+    #wget https://bitbucket.org/dnaase/bisulfitehic/get/04680506dd40.zip || { echo "Failed to download zip file"; exit 1; }
+    #zip_file="04680506dd40.zip"
     output_folder="bisulfitehic"
 
     # Create the output folder if it doesn't exist
     mkdir -p "$output_folder"
 
     # Unzip the file into the custom output folder
-    unzip "$zip_file" -d "$output_folder" || { echo "Failed to unzip file"; exit 1; }
-    rm "$zip_file" # Clean up zip file
+    #unzip "$zip_file" -d "$output_folder" || { echo "Failed to unzip file"; exit 1; }
+    #rm "$zip_file" # Clean up zip file
 
     # Dynamically set the JAVA_HOME environment variable
     # Find the Java executable within the Conda environment

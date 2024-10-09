@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$" dumb="true">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
+    </content>
+  </component>
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/lib/args4j-2.0.31.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/biojava-genome-4.1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/commons-lang3-3.4.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/commons-math3-3.3.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/htsjdk-1.141.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/log4j-1.2.17.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/picard-lib.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gatk-package-distribution-3.3.jar!/" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
+    </src_description>
+  </component>
+</module>

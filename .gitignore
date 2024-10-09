@@ -11,7 +11,6 @@
 /src/methylHic_example_data/bwa_indexing_*.log
 /java_error.log
 /methy_summary.cmd.txt
-/src/methylHic_example_data/bisulfitehic/
 /src/methylHic_example_data/old_files/
 /src/methylHic_example_data/04680506dd40.zip
 /src/methylHic_example_data/parallel-20240822/

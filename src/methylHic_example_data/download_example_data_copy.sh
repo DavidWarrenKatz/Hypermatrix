@@ -7,7 +7,31 @@ module load sra-toolkit/2.10.9
 mkdir -p ../../projects/methyHic
 mkdir -p ../../projects/methyHic/output_bam  # Directory for output BAM files
 
-## Function to download, convert, verify each SRR, and run bisulfite Hi-C mapping
+# Files to store success and failure lists
+SUCCESS_LIST="../../projects/methyHic/successful_fastqs.txt"
+FAILED_LIST="../../projects/methyHic/failed_fastqs.txt"
+
+# Initialize or clear the success and failure lists
+echo -n > $SUCCESS_LIST
+echo -n > $FAILED_LIST
+
+# Check if the main tar file is already downloaded
+if [ ! -f ../../projects/methyHic/GSE119171_RAW.tar ]; then
+    echo "Downloading GSE119171_RAW.tar..."
+    wget -O ../../projects/methyHic/GSE119171_RAW.tar "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE119nnn/GSE119171/suppl/GSE119171_RAW.tar"
+else
+    echo "GSE119171_RAW.tar already exists. Skipping download."
+fi
+
+# Check if the files from the tar archive are already extracted
+if [ ! -f "../../projects/methyHic/GSM3359999_JL_457_1.CGATGT.mm9.calmd.cpg.filtered.sort.CG.strand.6plus2.bed.gz" ]; then
+    echo "Extracting GSE119171_RAW.tar..."
+    tar -xvf ../../projects/methyHic/GSE119171_RAW.tar -C ../../projects/methyHic/
+else
+    echo "Files already extracted. Skipping extraction."
+fi
+
+# Function to download, convert, verify each SRR, and run bisulfite Hi-C mapping
 process_srr() {
     SRR=$1
     echo "[$(date)] Processing ${SRR} with PID $$"
@@ -79,6 +103,10 @@ process_srr() {
         echo "Output BAM for ${SRR} already exists. Skipping mapping."
     fi
 
+    # If everything was successful, add to success list
+    echo "${SRR}" >> $SUCCESS_LIST
+
+    echo "[$(date)] Finished processing ${SRR} with PID $$"
 }
 
 export -f process_srr
@@ -88,4 +116,8 @@ cat SRR_Acc_List.txt | parallel -j 8 process_srr
 
 echo "All downloads, conversions, verifications, and mappings completed."
 
+# Summary of results
+echo "Summary of FASTQ processing:"
+echo "Successfully processed FASTQs: $(wc -l < $SUCCESS_LIST)"
+echo "Failed FASTQs: $(wc -l < $FAILED_LIST)"
 

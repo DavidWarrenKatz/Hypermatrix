@@ -9,21 +9,8 @@ mkdir -p ../../projects/methyHic/demux  # Directory for demultiplexed FASTQ file
 mkdir -p ../../projects/methyHic/extracted  # Directory for extracted FASTQ files
 
 # Define barcode sequences for demultiplexing (AD002, AD006, AD008, AD010)
-BARCODE_FILE=barcodes.fasta
-
-<<comment
-# Create the barcode file
-cat > ${BARCODE_FILE} << EOL
->P5L_AD002
-TTCCCTACACGACGCTCTTCCGATCTCGATGT
->P5L_AD006
-TTCCCTACACGACGCTCTTCCGATCTGCCAAT
->P5L_AD008
-TTCCCTACACGACGCTCTTCCGATCTACTTGA
->P5L_AD010
-TTCCCTACACGACGCTCTTCCGATCTTAGCTT
-EOL
-comment
+BARCODE_FILE=$(pwd)/barcodes.fasta  # Ensure absolute path to barcode file
+echo $BARCODE_FILE
 
 # Function to download, convert, extract UMI/barcodes, and demultiplex SRA to FASTQ
 process_srr() {
@@ -55,21 +42,31 @@ process_srr() {
     fi
 
     # Extract UMI and cell barcodes from Read 1
-    echo "Extracting UMI and cell barcodes for ${SRR}..."
-    umi_tools extract \
-        --stdin ../../projects/methyHic/${SRR}_1.fastq.gz \
-        --read2-in=../../projects/methyHic/${SRR}_2.fastq.gz \
-        --bc-pattern=NNNNNNNNNNCCCCCCCCC \
-        --stdout=../../projects/methyHic/extracted/${SRR}_R1_extracted.fastq.gz \
-        --read2-out=../../projects/methyHic/extracted/${SRR}_R2_extracted.fastq.gz
+    if [ ! -f "../../projects/methyHic/extracted/${SRR}_R1_extracted.fastq.gz" ] || [ ! -f "../../projects/methyHic/extracted/${SRR}_R2_extracted.fastq.gz" ]; then
+        echo "Extracting UMI and cell barcodes for ${SRR}..."
+        umi_tools extract \
+            --stdin ../../projects/methyHic/${SRR}_1.fastq.gz \
+            --read2-in=../../projects/methyHic/${SRR}_2.fastq.gz \
+            --bc-pattern=NNNNNNNNNNCCCCCCCCC \
+            --stdout=../../projects/methyHic/extracted/${SRR}_R1_extracted.fastq.gz \
+            --read2-out=../../projects/methyHic/extracted/${SRR}_R2_extracted.fastq.gz
 
-    if [ $? -ne 0 ]; then
-        echo "Error: UMI extraction for ${SRR} failed."
-        return 1
+        if [ $? -ne 0 ]; then
+            echo "Error: UMI extraction for ${SRR} failed."
+            return 1
+        fi
+    else
+        echo "Extracted UMI and cell barcodes for ${SRR} already exist. Skipping extraction."
     fi
 
-    # Demultiplex the extracted FASTQ files based on cell barcodes
-    echo "Demultiplexing FASTQ files for ${SRR}..."
+
+    BARCODE_FILE=barcodes.fasta  # Ensure absolute path to barcode file
+
+    # Echo the cutadapt command to ensure correct parameters
+    echo "Demultiplexing FASTQ files for ${SRR} using cutadapt..."
+    echo "cutadapt -g file:${BARCODE_FILE} -o ../../projects/methyHic/demux/${SRR}_demux_{name}_R1.fastq.gz -p ../../projects/methyHic/demux/${SRR}_demux_{name}_R2.fastq.gz ../../projects/methyHic/extracted/${SRR}_R1_extracted.fastq.gz ../../projects/methyHic/extracted/${SRR}_R2_extracted.fastq.gz"
+    
+    # Run the cutadapt command and handle errors
     cutadapt -g file:${BARCODE_FILE} \
         -o ../../projects/methyHic/demux/${SRR}_demux_{name}_R1.fastq.gz \
         -p ../../projects/methyHic/demux/${SRR}_demux_{name}_R2.fastq.gz \

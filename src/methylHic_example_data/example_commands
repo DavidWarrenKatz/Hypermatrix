@@ -1,0 +1,23 @@
+# Download SRR7770822
+prefetch --max-size 100000000000 -O ../../projects/methyHic/ SRR7770822
+
+fastq-dump --split-files --gzip "../../projects/methyHic/SRR7770822/SRR7770822.sra" -O ../../projects/methyHic/
+
+umi_tools extract \
+    --stdin ../../projects/methyHic/SRR7770822_1.fastq.gz \
+    --read2-in ../../projects/methyHic/SRR7770822_2.fastq.gz \
+    --bc-pattern=NNNNNNNNNNCCCCCCCCC \
+    --stdout=../../projects/methyHic/demux/SRR7770822_R1_extracted.fastq.gz \
+    --read2-out=../../projects/methyHic/demux/SRR7770822_R2_extracted.fastq.gz
+
+ls -lh ../../projects/methyHic/demux/SRR7770822_R1_extracted.fastq.gz ../../projects/methyHic/demux/SRR7770822_R2_extracted.fastq.gz
+
+cutadapt -g file:barcodes.fasta \
+    -o ../../projects/methyHic/demux/SRR7770822_demux_{name}_R1.fastq.gz \
+    -p ../../projects/methyHic/demux/SRR7770822_demux_{name}_R2.fastq.gz \
+    ../../projects/methyHic/demux/SRR7770822_R1_extracted.fastq.gz \
+    ../../projects/methyHic/demux/SRR7770822_R2_extracted.fastq.gz
+
+
+
+

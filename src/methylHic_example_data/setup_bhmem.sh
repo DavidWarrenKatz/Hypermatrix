@@ -6,6 +6,7 @@ eval "$(conda shell.bash hook)"
 
 # Function to check if a package is installed in the environment
 function check_and_install_package() {
+    # to-do add channel arg $2
     package_name=$1
     if ! conda list | grep -q "^$package_name"; then
         echo "$package_name not found. Installing..."
@@ -24,9 +25,9 @@ if conda env list | grep -q 'bisulfitehic'; then
     # Check and install necessary packages if not already installed
     check_and_install_package openjdk
     check_and_install_package gcc
-    # check_and_install_package bioconda::bismark
-    # check_and_install_package bioconda::picard
-    # check_and_install_package bioconda::bwa
+    check_and_install_package bismark
+    check_and_install_package picard
+    check_and_install_package bwa
     
     # Check and install Python packages via pip
     pip show numpy || pip install numpy

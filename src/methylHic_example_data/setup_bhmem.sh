@@ -1,4 +1,7 @@
 #!/bin/bash
+# file: setup_bhmem.sh
+
+
 
 eval "($conda shell.bash hook)"
 

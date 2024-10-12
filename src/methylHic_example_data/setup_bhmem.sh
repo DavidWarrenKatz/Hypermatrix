@@ -64,15 +64,17 @@ else
     exit 1
 fi
 
-# Ensure the genome directory exists
+# Genome directory
 GENOME_DIR="${1:-"../../../../projects/methyHic"}"
 mkdir -p "$GENOME_DIR"
+
+echo "[LOG]: showing working directory $GENOME_DIR"
 
 GENOME_FILE="$GENOME_DIR/mm9.fa"
 FAI_FILE="$GENOME_FILE.fai"
 DICT_FILE="$GENOME_DIR/mm9.dict"
 
-# Check if the mm9 genome has already been downloaded
+# mm9 genome has already been downloaded?
 if [ -f "$GENOME_FILE" ]; then
     echo "mm9 genome already exists. Skipping download."
 else
@@ -114,10 +116,14 @@ if [ -f "$CT_CONVERSION_FA.bwt" ] && [ -f "$GA_CONVERSION_FA.bwt" ]; then
     echo "BWA index for bisulfite genomes already exists."
 else
     echo "Indexing bisulfite genomes with bwa..."
-    bwa index -t 64 "$CT_CONVERSION_FA" || { echo "Failed to index CT genome"; exit 1; }
-    bwa index -t 64 "$GA_CONVERSION_FA" || { echo "Failed to index GA genome"; exit 1; }
+    bwa index "$CT_CONVERSION_FA" || { echo "Failed to index CT genome"; exit 1; }
+    bwa index "$GA_CONVERSION_FA" || { echo "Failed to index GA genome"; exit 1; }
     echo "BWA indexing complete."
 fi
+
+# consider increasing block size to improve indexing performance. bwa index has no multithreading support 
+# consider options for human genome bisulfite genome generation 
+
 
 # Confirm expected files are present
 echo "Final file structure in the genome folder:"

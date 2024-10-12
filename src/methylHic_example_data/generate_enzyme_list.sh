@@ -10,11 +10,6 @@ UTIL_DIR="$HICPRO_DIR/bin/utils"
 MM9_GENOME="../../../../projects/methyHic/mm9.fa"
 OUTPUT_ENZYME_LIST="../../../../projects/methyHic/mm9_DpnII.bed"
 
-# Debug: Trace the directories and paths
-echo "HICPRO_DIR is set to: $HICPRO_DIR"
-echo "UTIL_DIR is set to: $UTIL_DIR"
-echo "MM9_GENOME is set to: $MM9_GENOME"
-echo "OUTPUT_ENZYME_LIST is set to: $OUTPUT_ENZYME_LIST"
 
 # Check if HiC-Pro is installed
 if [ ! -d "$HICPRO_DIR" ]; then
@@ -71,5 +66,5 @@ fi
 
 echo "All done!"
 
-# Disable tracing after execution
-set +x
+# # Disable tracing after execution
+# set +x

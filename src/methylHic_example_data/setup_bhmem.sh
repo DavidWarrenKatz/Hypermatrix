@@ -1,5 +1,11 @@
 #!/bin/bash
 # file: setup_bhmem.sh
+# To-Do List 
+# 1. consider increasing block size to improve indexing performance. bwa index has no multithreading support 
+# 2. consider options for human genome bisulfite genome generation 
+# 3. add a --force / -f parameter to force setup to start from scratch 
+# 4. fa
+
 
 # Load conda functions into the shell
 eval "$(conda shell.bash hook)"
@@ -121,10 +127,6 @@ else
     bwa index "$GA_CONVERSION_FA" || { echo "Failed to index GA genome"; exit 1; }
     echo "BWA indexing complete."
 fi
-
-# consider increasing block size to improve indexing performance. bwa index has no multithreading support 
-# consider options for human genome bisulfite genome generation 
-
 
 # Confirm expected files are present
 echo "Final file structure in the genome folder:"

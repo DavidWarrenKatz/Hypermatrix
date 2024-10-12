@@ -13,10 +13,11 @@ eval "$(conda shell.bash hook)"
 # Function to check if a package is installed in the environment
 function check_and_install_package() {
     # to-do add channel arg $2
+    # alter to use bioconda channel
     package_name=$1
     if ! conda list | grep -q "^$package_name"; then
         echo "$package_name not found. Installing..."
-        conda install -y -c conda-forge $package_name || { echo "Failed to install $package_name"; exit 1; }
+        conda install -y -c bioconda -c conda-forge $package_name || { echo "Failed to install $package_name"; exit 1; }
     else
         echo "$package_name is already installed."
     fi

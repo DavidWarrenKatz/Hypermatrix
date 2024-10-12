@@ -4,7 +4,6 @@
 # Enable debugging for the script
 # set -x  # Turn on tracing to see each command executed
 
-# Define the directory to install HiC-Pro and the output file for the enzyme list
 HICPRO_DIR="../../softwarefiles/HiC-Pro"  # Path for HiC-Pro installation
 UTIL_DIR="$HICPRO_DIR/bin/utils"
 MM9_GENOME="../../../../projects/methyHic/mm9.fa"

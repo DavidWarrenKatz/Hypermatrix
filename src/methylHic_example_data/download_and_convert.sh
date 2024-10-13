@@ -5,7 +5,7 @@
 set -x
 
 # Force download variable
-force_download=TRUE
+force_download=FALSE
 
 # Function to check if a package is installed in the environment
 function check_and_install_package() {
@@ -50,8 +50,9 @@ check_and_install_package "umi_tools" "1.1.5" "bioconda"
 check_and_install_package "cutadapt" "4.9" "bioconda"
 
 # Base directories
+# move 4 directories up (placed adjacent to cloned Hypermatrix folder)
 echo "Setting up base directories..."
-BASE_DIR="/oceanus/collab/InternalJeff/users/kxc732/downloads/projects/methyHic"
+BASE_DIR="../../../../"
 DEMUX_DIR="${BASE_DIR}/demux"
 EXTRACTED_DIR="${BASE_DIR}/extracted"
 
@@ -60,6 +61,7 @@ mkdir -p "${DEMUX_DIR}"
 mkdir -p "${EXTRACTED_DIR}"
 
 # Define and export barcode file path
+# manually move directory location 
 BARCODE_FILE="/oceanus/collab/InternalJeff/users/kxc732/downloads/new/Hypermatrix/src/methylHic_example_data/barcodes.fasta"
 export BARCODE_FILE
 

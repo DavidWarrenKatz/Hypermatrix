@@ -1,0 +1,2 @@
+Error: Could not find or load main class main.java.edu.mit.compbio.utils.AlignMultiWigInsideBed
+Caused by: java.lang.ClassNotFoundException: main.java.edu.mit.compbio.utils.AlignMultiWigInsideBed

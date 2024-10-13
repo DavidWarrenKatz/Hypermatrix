@@ -1,3 +1,11 @@
+#!/bin/bash
+# file: single-cell/preprocess/nomehic_preprocess.sh
+# To-do 
+# add shebang line 
+# import parameters from config.json instead of config.py
+
+
+
 # Get the directory where this script (single_cell_pipeline.sh) is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 

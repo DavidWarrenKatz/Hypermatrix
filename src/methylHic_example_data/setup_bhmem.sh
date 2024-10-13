@@ -1,10 +1,6 @@
 #!/bin/bash
 # file: setup_bhmem.sh
-# To-Do List 
-# 1. consider increasing block size to improve indexing performance. bwa index has no multithreading support 
-# 2. consider options for human genome bisulfite genome generation 
-# 3. add a --force / -f parameter to force setup to start from scratch 
-# 4. fa
+
 
 
 # Load conda functions into the shell

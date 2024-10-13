@@ -14,7 +14,6 @@ OUTPUT_ENZYME_LIST="../../../../projects/methyHic/mm9_DpnII.bed"
 if [ ! -d "$HICPRO_DIR" ]; then
     echo "HiC-Pro not found. Installing HiC-Pro..."
 
-    # Clone the HiC-Pro repository
     git clone https://github.com/nservant/HiC-Pro.git $HICPRO_DIR
     
     # Debug: Check if the directory was created successfully

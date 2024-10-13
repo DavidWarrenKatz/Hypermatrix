@@ -2,7 +2,7 @@
 # file: download_and_convert.sh
 
 # Enable debugging to trace variables and commands
-set -x
+# set -x
 
 # Force download variable
 force_download=FALSE
@@ -214,4 +214,7 @@ cat SRR_Acc_List_sc.txt | parallel -j 64 process_srr
 echo "All downloads, conversions, UMI extractions, and demultiplexing completed."
 
 # Disable debugging
-set +x
+# set +x
+
+# cutadapt creates 5 files 
+# 4 files and 1 not mapped well

@@ -25,16 +25,30 @@ if conda env list | grep -q 'bisulfitehic'; then
     source $(conda info --base)/etc/profile.d/conda.sh
     conda activate bisulfitehic
     
-    # Check and install necessary packages if not already installed
-    check_and_install_package openjdk
-    check_and_install_package gcc
-    check_and_install_package bismark
-    check_and_install_package picard
-    check_and_install_package bwa
+    # # Check and install necessary packages if not already installed
+    # check_and_install_package openjdk
+    # check_and_install_package gcc
+    # check_and_install_package bismark
+    # check_and_install_package picard
+    # check_and_install_package bwa
     
-    # Check and install Python packages via pip
-    pip show numpy || pip install numpy
-    pip show pysam || pip install pysam
+    # # Check and install Python packages via pip
+    # pip show numpy || pip install numpy
+    # pip show pysam || pip install pysam
+
+
+    # ensure bitbucket exist if not download it 
+    # Download the directory
+    #wget https://bitbucket.org/dnaase/bisulfitehic/get/04680506dd40.zip || { echo "Failed to download zip file"; exit 1; }
+    #zip_file="04680506dd40.zip"
+    output_folder="bisulfitehic"
+
+
+    # Unzip the file into the custom output folder
+    # unzip "$zip_file" -d "$output_folder" || { echo "Failed to unzip file"; exit 1; }
+    # rm "$zip_file" # Clean up zip file
+
+ 
 
 else
     # Create the conda environment if it doesn't exist
@@ -67,6 +81,15 @@ else
     echo "The Java installation found is not a JDK. Please install a JDK."
     exit 1
 fi
+
+pwd
+cd bisulfitehic/dnaase-bisulfitehic-04680506dd40 || { echo "Failed to change directory"; exit 1; }
+pwd
+
+echo "running install.sh"
+#  Source the install.sh script to install bisulfitehic software
+source ./install.sh || { echo "Failed to install bisulfitehic"; exit 1; }
+
 
 # Genome directory
 GENOME_DIR="${1:-"../../../../projects/methyHic"}"

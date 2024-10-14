@@ -1,6 +1,7 @@
 #!/bin/bash
 
-eval "($conda shell.bash hook)"
+# Initialize conda in the current shell session
+eval "$(conda shell.bash hook)"
 
 # Check if the 'bisulfitehic' environment exists
 if conda env list | grep -q 'bisulfitehic'; then
@@ -15,14 +16,15 @@ else
     # Activate the conda environment
     conda activate bisulfitehic
 
+    # Install openjdk
     conda install -y -c conda-forge openjdk
 
-    # Set GENOME_DIR only if environment was created
+    # Set GENOME_DIR only if the environment was created
     GENOME_DIR="${1:-"../../../../projects/methyHic"}"
 
     # Download the directory
     wget https://bitbucket.org/dnaase/bisulfitehic/get/04680506dd40.zip || { echo "Failed to download zip file"; exit 1; }
-    #zip_file="04680506dd40.zip"
+    zip_file="04680506dd40.zip"  # Un-commented the zip_file variable
     output_folder="bisulfitehic"
 
     # Create the output folder if it doesn't exist
@@ -32,8 +34,9 @@ else
     unzip "$zip_file" -d "$output_folder" || { echo "Failed to unzip file"; exit 1; }
     rm "$zip_file" # Clean up zip file
 
-    #Replace native install.sh file with file in methylHic_example_data, overriding existing file
+    # Replace native install.sh file with file in methylHic_example_data, overriding existing file
     mv install.sh bisulfitehic/dnaase-bisulfitehic-04680506dd40/install.sh
+    cp bisulfitehic/dnaase-bisulfitehic-04680506dd40/install.sh install.sh
 
     # Dynamically set the JAVA_HOME environment variable
     # Find the Java executable within the Conda environment
@@ -63,7 +66,7 @@ else
     source ./install.sh || { echo "Failed to install bisulfitehic"; exit 1; }
 
     # Install the remaining packages (suppressing yes prompts)
-    conda install -y -c bioconda bowtie2=2.4.2 bismark bwa samtools picard || { echo "Failed to install packages"; exit 1; }
+    conda install -y -c bioconda bowtie2 bismark bwa samtools picard || { echo "Failed to install packages"; exit 1; }
     pip install numpy pysam || { echo "Failed to install Python packages"; exit 1; }
     pip install cutadapt || { echo "Failed to install Python packages"; exit 1; }
 

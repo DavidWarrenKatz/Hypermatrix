@@ -69,7 +69,7 @@ else
     conda install -y -c bioconda bismark bwa samtools picard || { echo "Failed to install packages"; exit 1; }
     pip install numpy pysam || { echo "Failed to install Python packages"; exit 1; }
     pip install cutadapt || { echo "Failed to install Python packages"; exit 1; }
-    conda install -c bioconda bowtie2=2.4.2
+    conda install -c bioconda bowtie2=2.3.5
     
     echo "Setup complete. The 'bisulfitehic' environment is activated."
 fi

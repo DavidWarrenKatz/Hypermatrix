@@ -112,7 +112,7 @@ echo "Running cutadapt for ${SRR}..."
 cutadapt -g "file:${BARCODE_FILE}" \
     -o "${DEMUX_DIR}/${SRR}_demux_{name}_R1.fastq.gz" \
     -p "${DEMUX_DIR}/${SRR}_demux_{name}_R2.fastq.gz" \
-    "${EXTRACTED_R1}" "${EXTRACTED_R2}" > "${SRR_DIR}/cutadapt.log" 2>&1
+    "${FASTQ_R1}" "${FASTQ_R2}" > "${SRR_DIR}/cutadapt.log" 2>&1
 CUTADAPT_EXIT_CODE=$?
 if [ $CUTADAPT_EXIT_CODE -ne 0 ]; then
     echo "Error: Demultiplexing for ${SRR} failed with exit code $CUTADAPT_EXIT_CODE. See ${SRR_DIR}/cutadapt.log for details."

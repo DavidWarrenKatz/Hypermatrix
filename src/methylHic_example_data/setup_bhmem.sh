@@ -23,18 +23,18 @@ function check_and_install_package() {
 if conda env list | grep -q 'bisulfitehic'; then
     echo "Conda environment 'bisulfitehic' already exists."
     source $(conda info --base)/etc/profile.d/conda.sh
-    conda activate bisulfitehic
+     
     
-    # # Check and install necessary packages if not already installed
-    # check_and_install_package openjdk
-    # check_and_install_package gcc
-    # check_and_install_package bismark
-    # check_and_install_package picard
-    # check_and_install_package bwa
+    # Check and install necessary packages if not already installed
+    check_and_install_package openjdk
+    check_and_install_package gcc
+    check_and_install_package bismark
+    check_and_install_package picard
+    check_and_install_package bwa
     
-    # # Check and install Python packages via pip
-    # pip show numpy || pip install numpy
-    # pip show pysam || pip install pysam
+    # Check and install Python packages via pip
+    pip show numpy || pip install numpy
+    pip show pysam || pip install pysam
 
 
     # ensure bitbucket exist if not download it 
